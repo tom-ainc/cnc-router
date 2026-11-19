@@ -229,6 +229,7 @@ body.sim-mode .ctl, body.sim-mode .stats { display: none; }
 .sim-bar label { display: inline-flex; gap: 4px; align-items: center; }
 .sim-bar input[type=range] { width: 80px; accent-color: var(--accent); }
 .sim-bar .jog button { padding: 1px 7px; font-family: var(--font-mono); }
+.sim-bar .jog button:disabled { opacity: .45; cursor: default; color: var(--muted); border-color: var(--line); }
 .sim-bar .vals { margin-left: auto; }
 #sim-t.buf { color: var(--open); }
 .sim-note { font-size: 12px; color: var(--muted); }
@@ -1394,10 +1395,10 @@ body.sim-mode .ctl, body.sim-mode .stats { display: none; }
   function simLoad(job, opt) {
     opt = opt || {};
     if (!SIMP) return;
-    simJob = job || simJob; simRun = false; simSeeking = false; simBuffering = false;
+    simJob = job || simJob; simRun = false; simSeeking = false; simBuffering = false; simJog = null;
     const P = JSON.parse(JSON.stringify(SIMP));
     SR = CNCSIM.Run(P, opt.custom ? null : simJob, { feed: simFeed, acc: simAcc, custom: opt.custom, start: opt.start });
-    SR.P = P;
+    SR.P = P; SR.start = (opt.start || SIMP.job.park).slice();
     if (!opt.keep) { recReset(SR.M.names.length); simTOff = 0; simTp = 0; simMeter = CNCSIM.Meter(P); traceReset(SR.M.planner.plan); }
     else { simTOff = REC.n ? REC.t[REC.n - 1] : 0; REC.next = simTOff + REC.dt; traceAppendPlan(SR.M.planner.plan); }
     SR.M.step();
@@ -1411,6 +1412,7 @@ body.sim-mode .ctl, body.sim-mode .stats { display: none; }
   }
   // the computation runs ahead of the playback into the recording; playback starts (and resumes) only once the
   // computation can stay ahead of it to the end of the job at the chosen speed
+  let simJog = null;
   let simTp = 0, simBuffering = false, simCs = 0, simFrameMs = 16, simFrames = 0;
   const PLAY_MS = 12, BUF_MS = 30;                    // computing per frame while playing, and while waiting
   const tcNow = () => SR ? SR.M.t + simTOff : 0, tEnd = () => SR ? SR.T + simTOff : 0, simDone = () => SR && SR.M.t >= SR.T - 1e-9;
@@ -1444,11 +1446,11 @@ body.sim-mode .ctl, body.sim-mode .stats { display: none; }
     if (!simRun) return;
     if (simBuffering) { if (simReady()) simBuffering = false; else return; }
     simTp = Math.min(simTp + Math.min(dtReal, 0.5) * simSpeed, tcNow());
-    if (simTp >= tEnd() - 1e-9) { simTp = tEnd(); simRun = false; simUI(); }
+    if (simTp >= tEnd() - 1e-9) { simTp = tEnd(); simRun = false; simPose(true); simUI(); }     // the last frame: show where it ended
     else if (simTp >= tcNow() - 1e-9) { simBuffering = true; simUI(); }                    // it caught up: wait again
   }
   // a recorded value at the playback time (the middle of its 10 ms bucket's range)
-  function recK(t) { let lo = 0, hi = REC.n - 1; if (hi < 0) return -1; while (lo < hi) { const m = (lo + hi + 1) >> 1; if (REC.t[m] <= t) lo = m; else hi = m - 1; } return lo; }
+  function recK(t) { let lo = 0, hi = REC.n - 1; if (hi < 0 || t < REC.t[0]) return -1; while (lo < hi) { const m = (lo + hi + 1) >> 1; if (REC.t[m] <= t) lo = m; else hi = m - 1; } return lo; }
   function recVal(k, i) { if (k < 0) return SR.M.v[i]; const o = k * REC.ns + i; return 0.5 * (REC.min[o] + REC.max[o]); }
   function traceStep(M) {
     const ix = (n) => M.v[M.index.get(n)];
@@ -1802,7 +1804,8 @@ body.sim-mode .ctl, body.sim-mode .stats { display: none; }
   function simUI() {
     if (!SR) return;
     $("sim-play").textContent = simRun ? "Pause" : simDone() && simTp >= tEnd() - 1e-9 ? "Run again" : "Run";
-    $("sim-note").textContent = SR.job ? SR.job.note || "" : "";
+    simJogState();
+    $("sim-note").textContent = simJog || (SR.job ? SR.job.note || "" : "");
     simMeasures();
   }
   function simMeasures() {
@@ -1929,14 +1932,30 @@ body.sim-mode .ctl, body.sim-mode .stats { display: none; }
     $("sim-win").onchange = (e) => { simWin = +e.target.value; scopeDraw(true); };
     $("sim-vals").onchange = (e) => { simShowVals = e.target.checked; sdRender(); };
     $("p-sim").querySelectorAll("[data-jog]").forEach(el => el.onclick = () => {
-      if (!SR || simRun || simSeeking || !simDone() || simTp < tEnd() - 1e-9) return;      // jog from rest, at the end of what has played
-      const M = SR.M, cur = [M.get("ref.x"), M.get("ref.y"), M.get("ref.z")].map(v => v * 1000);
+      if (!SR || simRun || simSeeking) return;
+      // jog from where the playback is: drop whatever was computed after it, and start there at rest
+      const kb = recK(simTp), M = SR.M;
+      const cur = REC.n && kb >= 0 ? ["ref.x", "ref.y", "ref.z"].map(n => recVal(kb, M.index.get(n)) * 1000) : SR.start.slice();
       const [a, sgn] = [el.dataset.jog[0], el.dataset.jog[1] === "+" ? 1 : -1], i = "XYZ".indexOf(a), to = cur.slice();
       to[i] += sgn * +$("sim-jstep").value;
+      const lim = SIMP.job.lim[i]; to[i] = Math.max(lim[0], Math.min(lim[1], to[i]));
+      if (Math.abs(to[i] - cur[i]) < 0.01) { $("sim-note").textContent = `${a} is at the ${sgn > 0 ? "upper" : "lower"} end of its travel (${lim[sgn > 0 ? 1 : 0]} mm): no jog that way.`; return; }
       const custom = { label: "Jog", note: `jog ${a} ${sgn > 0 ? "+" : "−"}${$("sim-jstep").value} mm at the rapid speed`, prog: [{ op: "rapid", to }] };
-      simLoad(simJob, { custom, start: cur, keep: true }); simRun = true; simBuffering = !simReady(); simLastReal = performance.now(); simUI();
+      simTruncate();
+      simLoad(simJob, { custom, start: cur, keep: true }); simJog = custom.note; simRun = true; simBuffering = !simReady(); simLastReal = performance.now(); simUI();
     });
     sdRender(); simUI();
+  }
+  function simJogState() {
+    const ok = SR && !simRun && !simSeeking;
+    document.querySelectorAll("[data-jog]").forEach(b => { b.disabled = !ok; b.title = ok ? "jog from where the playback is" : "pause to jog"; });
+  }
+  // cut the recording and the 3D track back to the playback time, so a jog carries on from there
+  function simTruncate() {
+    const k = recK(simTp);
+    REC.n = Math.max(0, k + 1); REC.bmin.fill(Infinity); REC.bmax.fill(-Infinity);
+    for (const kd of ["cut", "move"]) { let n = trace.n[kd]; while (n > 0 && trace.tt[kd][n - 1] > simTp) n--; trace.n[kd] = n; }
+    trace.last = null;
   }
   function enterSim() {
     if (!SIMP) return;
@@ -1966,7 +1985,7 @@ body.sim-mode .ctl, body.sim-mode .stats { display: none; }
       $("sim-t").classList.toggle("buf", simRun && simBuffering);
     }
     scopeDraw(false); sdLive(false);
-    if ((now | 0) % 6 === 0) simMeasures();
+    if ((now | 0) % 6 === 0) { simMeasures(); simJogState(); }
   }
   // a requirement from the simulation: open the job and run ahead to just before its worst moment
   function simFocusReq(id) {
@@ -2008,7 +2027,8 @@ body.sim-mode .ctl, body.sim-mode .stats { display: none; }
   function frame(now) {
     if (anim) anim(now);
     if (buildAnim) buildAnim(now);
-    simFrame(now);
+    try { simFrame(now); }
+    catch (e) { console.error(e); simRun = false; simSeeking = false; if ($("sim-t")) $("sim-t").textContent = "simulation stopped: " + e.message; }
     dgReflect();
     controls.update();
     if (!simSeeking) renderer.render(scene, camera);

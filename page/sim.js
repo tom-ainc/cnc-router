@@ -182,6 +182,7 @@
       segs.push({ kind: op.op, p0: pos.slice(), p1: to, L, u, vmax, a, cut: op.cut || null, rpm, fail: !!op.fail });
       pos = to;
     }
+    if (!segs.length) segs.push({ kind: "dwell", T: 0, p0: pos.slice(), rpm });      // nothing to do: a program that stays put
     // junction speeds: zero at stops, type changes and ends; else the junction-deviation limit (grbl's)
     const mv = segs.filter(s => s.kind === "rapid" || s.kind === "feed");
     for (let i = 0; i < segs.length; i++) {
