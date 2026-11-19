@@ -1,0 +1,15 @@
+assembly,member,section,length_mm,qty,kg_each
+bed,rail beam,RHS 100x80x5,3186,2,42.5
+bed,cross member,RHS 50x50x3,1358,12,6.0
+bed,substrate,MDF 25,3186,1,81.1
+bed,spoilboard,MDF 25,2440,1,57.6
+column,web plate (+x and -x faces),plate 300x6,1478,2,20.9
+column,flange plate (front and back),plate 148x6,1478,2,10.3
+column,end cap,plate 160x300x10,160,2,3.8
+column,Y rail riser,flat 40x25,1478,2,11.6
+column,foot,plate 160x80x85 (fabricated),80,2,3.4
+floor frame,front rail,RHS 100x50x4,3186,1,28.4
+floor frame,rear rail,RHS 100x50x4,3186,1,28.4
+floor frame,cross member,RHS 100x50x4,375,5,3.3
+floor frame,outrigger,RHS 100x50x4 laid flat,444,5,4.0
+floor frame,rear post,SHS 60x60x4,1476,5,10.4

@@ -1,0 +1,126 @@
+part,material,how,size_x,size_y,size_z,kg,step_file
+bed.rail_beam_bottom,steel,"RHS 100x80x5, ends capped",3176.0,100.0,80.0,42.38,bed.rail_beam_bottom.step
+bed.beam_cap_bottom_0,steel,"5 mm plate, welded",5.0,100.0,80.0,0.31,bed.beam_cap_bottom_0.step
+bed.beam_cap_bottom_1,steel,"5 mm plate, welded",5.0,100.0,80.0,0.31,bed.beam_cap_bottom_1.step
+bed.rail_beam_top,steel,"RHS 100x80x5, ends capped",3176.0,100.0,80.0,42.38,bed.rail_beam_top.step
+bed.beam_cap_top_0,steel,"5 mm plate, welded",5.0,100.0,80.0,0.31,bed.beam_cap_top_0.step
+bed.beam_cap_top_1,steel,"5 mm plate, welded",5.0,100.0,80.0,0.31,bed.beam_cap_top_1.step
+bed.rail_land_bottom,steel,"flat 30x10, welded, flattened by hand; M6 tapped at 60",3186.0,30.0,10.0,7.42,bed.rail_land_bottom.step
+bed.rail_land_top,steel,"flat 30x10, welded, flattened by hand; M6 tapped at 60",3186.0,30.0,10.0,7.42,bed.rail_land_top.step
+bed.rack_land_bottom,steel,"flat 17x16, welded, flattened by hand to 13; M6 tapped at 125",3186.0,17.0,13.0,5.48,bed.rack_land_bottom.step
+bed.rack_land_top,steel,"flat 17x16, welded, flattened by hand to 13; M6 tapped at 125",3186.0,17.0,13.0,5.48,bed.rack_land_top.step
+bed.cross_00,steel,"RHS 50x50x3, welded between the rail beams",50.0,1358.0,49.5,5.98,bed.cross_00.step
+bed.cross_01,steel,"RHS 50x50x3, welded between the rail beams",50.0,1358.0,49.5,5.98,bed.cross_01.step
+bed.cross_02,steel,"RHS 50x50x3, welded between the rail beams",50.0,1358.0,49.5,5.98,bed.cross_02.step
+bed.cross_03,steel,"RHS 50x50x3, welded between the rail beams",50.0,1358.0,49.5,5.98,bed.cross_03.step
+bed.cross_04,steel,"RHS 50x50x3, welded between the rail beams",50.0,1358.0,49.5,5.98,bed.cross_04.step
+bed.cross_05,steel,"RHS 50x50x3, welded between the rail beams",50.0,1358.0,49.5,5.98,bed.cross_05.step
+bed.cross_06,steel,"RHS 50x50x3, welded between the rail beams",50.0,1358.0,49.5,5.98,bed.cross_06.step
+bed.cross_07,steel,"RHS 50x50x3, welded between the rail beams",50.0,1358.0,49.5,5.98,bed.cross_07.step
+bed.cross_08,steel,"RHS 50x50x3, welded between the rail beams",50.0,1358.0,49.5,5.98,bed.cross_08.step
+bed.cross_09,steel,"RHS 50x50x3, welded between the rail beams",50.0,1358.0,49.5,5.98,bed.cross_09.step
+bed.cross_10,steel,"RHS 50x50x3, welded between the rail beams",50.0,1358.0,49.5,5.98,bed.cross_10.step
+bed.cross_11,steel,"RHS 50x50x3, welded between the rail beams",50.0,1358.0,49.5,5.98,bed.cross_11.step
+bed.x_chain_tray,steel,"3 mm tray on the top rail beam, the X chain's fixed run sits in it; a 42 mm shelf behind for the cable trunking",3186.0,2.5,122.0,7.63,bed.x_chain_tray.step
+bed.substrate.0,MDF,"25 mm MDF 1165 x 1357, glued and screwed to the cross members; ends butt on a cross member",1165.1,1357.0,24.5,29.05,bed.substrate.0.step
+bed.substrate.1,MDF,"25 mm MDF 855 x 1357, glued and screwed to the cross members; ends butt on a cross member",854.8,1357.0,24.5,21.31,bed.substrate.1.step
+bed.substrate.2,MDF,"25 mm MDF 1165 x 1357, glued and screwed to the cross members; ends butt on a cross member",1165.1,1357.0,24.5,29.05,bed.substrate.2.step
+bed.spoilboard.0,MDF,"25 mm MDF 1270 x 1260, surfaced in place; 12 mm holes for the pop-up pins",1269.8,1260.0,25.0,29.98,bed.spoilboard.0.step
+bed.spoilboard.1,MDF,"25 mm MDF 1170 x 1260, surfaced in place; 12 mm holes for the pop-up pins",1169.8,1260.0,25.0,27.62,bed.spoilboard.1.step
+atc_rack.fork_plate,6061,"5 mm plate, 6 slots 41 wide engaging the ISO30 flange groove",128.0,690.0,5.0,0.92,atc_rack.fork_plate.step
+atc_rack.spine,6061,"12 x 30 bar under the fork plate's back edge, M6 tapped each end",12.0,649.0,24.5,0.51,atc_rack.spine.step
+atc_rack.stand_0,6061,"20 mm plate stand, M6 tapped underneath, bolted up through the substrate",128.0,20.0,145.0,1.00,atc_rack.stand_0.step
+atc_rack.stand_1,6061,"20 mm plate stand, M6 tapped underneath, bolted up through the substrate",128.0,20.0,145.0,1.00,atc_rack.stand_1.step
+gantry_frame.web_px,steel,"plate 300x6, slot for the rope sheave; M6 tapped for BK20/BF20",6.0,1478.0,300.0,20.64,gantry_frame.web_px.step
+gantry_frame.web_mx,steel,plate 300x6,6.0,1478.0,300.0,20.88,gantry_frame.web_mx.step
+gantry_frame.flange_back,steel,plate 148x6; sheave axle nut welded inside before the box is closed,148.0,1478.0,6.0,10.30,gantry_frame.flange_back.step
+gantry_frame.flange_front,steel,plate 148x6; M6 tapped for the Y chain bracket,148.0,1478.0,6.0,10.29,gantry_frame.flange_front.step
+gantry_frame.cap_top,steel,"plate 10, welded in; M8 tapped for the Y motor plate",148.0,10.0,288.0,3.33,gantry_frame.cap_top.step
+gantry_frame.cap_bottom,steel,"plate 10, bolted in (5 x M6) so the counterweight goes in from below",147.0,10.0,287.0,3.30,gantry_frame.cap_bottom.step
+gantry_frame.y_riser_0,steel,"flat 40x25 welded on, flattened by hand; M6 tapped at 60",40.0,1478.0,25.0,11.55,gantry_frame.y_riser_0.step
+gantry_frame.y_riser_1,steel,"flat 40x25 welded on, flattened by hand; M6 tapped at 60",40.0,1478.0,25.0,11.55,gantry_frame.y_riser_1.step
+gantry_frame.foot_bottom_base,steel,"plate 20, 8 counterbored M6 into the X blocks; M8 tapped for the X drive",160.0,80.0,20.0,1.93,gantry_frame.foot_bottom_base.step
+gantry_frame.foot_bottom_gusset_0,steel,"plate 10, welded",160.0,10.0,65.0,0.82,gantry_frame.foot_bottom_gusset_0.step
+gantry_frame.foot_bottom_gusset_1,steel,"plate 10, welded",160.0,10.0,65.0,0.82,gantry_frame.foot_bottom_gusset_1.step
+gantry_frame.foot_top_base,steel,"plate 20, 8 counterbored M6 into the X blocks; M8 tapped for the X drive",160.0,80.0,20.0,1.93,gantry_frame.foot_top_base.step
+gantry_frame.foot_top_gusset_0,steel,"plate 10, welded",160.0,10.0,65.0,0.82,gantry_frame.foot_top_gusset_0.step
+gantry_frame.foot_top_gusset_1,steel,"plate 10, welded",160.0,10.0,65.0,0.82,gantry_frame.foot_top_gusset_1.step
+gantry_drives.x_bearing_bottom,6061,"bearing housing, 2 x 61902, flange under the lower plate",68.0,68.0,18.5,0.09,gantry_drives.x_bearing_bottom.step
+gantry_drives.x_shaft_bottom,steel,"shaft 15 h6, flats for the pinion and pulley set screws",15.0,15.0,82.0,0.11,gantry_drives.x_shaft_bottom.step
+gantry_drives.x_pivot_plate_bottom,6061,"8 mm lower plate: bearing housing under it, 4 standoffs to the motor plate",99.0,178.9,8.0,0.37,gantry_drives.x_pivot_plate_bottom.step
+gantry_drives.x_motor_plate_bottom,6061,"6 mm, NEMA34 pattern, pilot 74; tab with 2 slots over the foot",137.0,178.9,6.0,0.24,gantry_drives.x_motor_plate_bottom.step
+gantry_drives.x_tab_spacer_bottom,steel,17 mm spacer block between the foot and the motor plate's tab,28.0,48.0,17.0,0.16,gantry_drives.x_tab_spacer_bottom.step
+gantry_drives.x_bearing_top,6061,"bearing housing, 2 x 61902, flange under the lower plate",68.0,68.0,18.5,0.09,gantry_drives.x_bearing_top.step
+gantry_drives.x_shaft_top,steel,"shaft 15 h6, flats for the pinion and pulley set screws",15.0,15.0,82.0,0.11,gantry_drives.x_shaft_top.step
+gantry_drives.x_pivot_plate_top,6061,"8 mm lower plate: bearing housing under it, 4 standoffs to the motor plate",99.0,178.9,8.0,0.37,gantry_drives.x_pivot_plate_top.step
+gantry_drives.x_motor_plate_top,6061,"6 mm, NEMA34 pattern, pilot 74; tab with 2 slots over the foot",137.0,178.9,6.0,0.24,gantry_drives.x_motor_plate_top.step
+gantry_drives.x_tab_spacer_top,steel,17 mm spacer block between the foot and the motor plate's tab,28.0,48.0,17.0,0.16,gantry_drives.x_tab_spacer_top.step
+gantry_drives.y_spacer_bk,steel,"6 mm spacer, ground",6.0,43.0,88.0,0.18,gantry_drives.y_spacer_bk.step
+gantry_drives.y_spacer_bf,steel,"6 mm spacer, ground",6.0,20.0,88.0,0.08,gantry_drives.y_spacer_bf.step
+gantry_drives.y_motor_plate,steel,"6.5 mm steel on the column's top cap; NEMA34 pattern tapped M5, screw bore",320.0,6.5,165.0,2.42,gantry_drives.y_motor_plate.step
+gantry_frame.chain_arm,steel,"3 mm folded channel bolted to the top foot's end, over the rack, to the X chain's moving end",80.0,292.5,150.0,1.88,gantry_frame.chain_arm.step
+gantry_drives.y_chain_fix,steel,Y chain fixed-end bracket on the column's front face,60.0,60.0,4.0,0.11,gantry_drives.y_chain_fix.step
+y_carriage.y_plate,6061,6061-T6 25 mm plate; all holes from the drawing,25.0,260.0,743.0,12.88,y_carriage.y_plate.step
+y_carriage.y_nut_bracket,6061,"nut housing, bolted to the Y plate (4 x M8)",68.5,71.0,80.0,0.73,y_carriage.y_nut_bracket.step
+y_carriage.rope_anchor,steel,"rope anchor block, 5 mm rope with a swaged stop",75.5,20.0,20.0,0.23,y_carriage.rope_anchor.step
+y_carriage.z_riser_l,6061,"6061 bar 32x23, faces machined; M6 rail and M8 base tapped",32.0,23.0,743.0,1.46,y_carriage.z_riser_l.step
+y_carriage.z_riser_r,6061,"6061 bar 32x23, faces machined; M6 rail and M8 base tapped",32.0,23.0,743.0,1.46,y_carriage.z_riser_r.step
+y_carriage.z_spacer_bk,6061,6 mm spacer,6.0,70.0,33.0,0.04,y_carriage.z_spacer_bk.step
+y_carriage.z_spacer_bf,6061,6 mm spacer,6.0,70.0,20.0,0.02,y_carriage.z_spacer_bf.step
+y_carriage.z_motor_mount,6061,"6 mm plate and 8 mm tab, NEMA34 pattern",120.0,90.0,50.0,0.19,y_carriage.z_motor_mount.step
+y_carriage.y_chain_bracket,steel,"folded 3 mm channel, 5 mm end wall, 2 x M6 into the Y plate",179.5,40.0,15.0,0.30,y_carriage.y_chain_bracket.step
+y_carriage.z_chain_fix,steel,"Z chain fixed-end tab, 2 x M6 into the Y plate's upper edge",60.0,4.5,50.0,0.10,y_carriage.z_chain_fix.step
+z_axis.z_plate,6061,6061-T6 25 mm plate,25.0,220.0,350.0,5.09,z_axis.z_plate.step
+z_axis.z_chain_bracket,steel,folded 4 mm angle from the Z plate's upper edge to the Z chain's moving end,166.0,24.5,30.0,0.38,z_axis.z_chain_bracket.step
+z_axis.z_nut_bracket,6061,"nut housing, bolted to the Z plate (4 x M8)",62.0,72.0,83.0,0.76,z_axis.z_nut_bracket.step
+z_axis.clamp_0_base,6061,"60 mm block, square bore 133.4 split on the centre line",76.0,173.0,60.0,0.58,z_axis.clamp_0_base.step
+z_axis.clamp_0_cap,6061,"clamp cap, 2 x M10",78.0,173.0,60.0,0.71,z_axis.clamp_0_cap.step
+z_axis.clamp_1_base,6061,"60 mm block, square bore 133.4 split on the centre line",76.0,173.0,60.0,0.58,z_axis.clamp_1_base.step
+z_axis.clamp_1_cap,6061,"clamp cap, 2 x M10",78.0,173.0,60.0,0.71,z_axis.clamp_1_cap.step
+counterweight.slab_0,steel,"steel plate 63 thick, flame cut, 2 holes for the M12 tie rods",128.0,62.5,268.0,16.68,counterweight.slab_0.step
+counterweight.slab_1,steel,"steel plate 63 thick, flame cut, 2 holes for the M12 tie rods",128.0,62.5,268.0,16.70,counterweight.slab_1.step
+counterweight.slab_2,steel,"steel plate 63 thick, flame cut, 2 holes for the M12 tie rods",128.0,62.5,268.0,16.70,counterweight.slab_2.step
+counterweight.slab_3,steel,"steel plate 63 thick, flame cut, 2 holes for the M12 tie rods",128.0,62.5,268.0,16.70,counterweight.slab_3.step
+counterweight.slab_4,steel,"steel plate 63 thick, flame cut, 2 holes for the M12 tie rods",128.0,62.5,268.0,16.70,counterweight.slab_4.step
+counterweight.slab_5,steel,"steel plate 63 thick, flame cut, 2 holes for the M12 tie rods",128.0,62.5,268.0,16.70,counterweight.slab_5.step
+counterweight.slab_6,steel,"steel plate 63 thick, flame cut, 2 holes for the M12 tie rods",128.0,62.5,268.0,16.70,counterweight.slab_6.step
+counterweight.slab_7,steel,"steel plate 63 thick, flame cut, 2 holes for the M12 tie rods",128.0,62.5,268.0,16.68,counterweight.slab_7.step
+counterweight.shoe_bottom_0,UHMW,"UHMW guide shoe 3.5 mm, 2 x M5 countersunk into the slab",3.5,53.5,236.0,0.04,counterweight.shoe_bottom_0.step
+counterweight.shoe_bottom_1,UHMW,"UHMW guide shoe 3.5 mm, 2 x M5 countersunk into the slab",3.5,53.5,236.0,0.04,counterweight.shoe_bottom_1.step
+counterweight.shoe_bottom_2,UHMW,"UHMW guide shoe 3.5 mm, 2 x M5 countersunk into the slab",96.0,53.5,3.5,0.02,counterweight.shoe_bottom_2.step
+counterweight.shoe_bottom_3,UHMW,"UHMW guide shoe 3.5 mm, 2 x M5 countersunk into the slab",96.0,53.5,3.5,0.02,counterweight.shoe_bottom_3.step
+counterweight.shoe_top_0,UHMW,"UHMW guide shoe 3.5 mm, 2 x M5 countersunk into the slab",3.5,53.5,236.0,0.04,counterweight.shoe_top_0.step
+counterweight.shoe_top_1,UHMW,"UHMW guide shoe 3.5 mm, 2 x M5 countersunk into the slab",3.5,53.5,236.0,0.04,counterweight.shoe_top_1.step
+counterweight.shoe_top_2,UHMW,"UHMW guide shoe 3.5 mm, 2 x M5 countersunk into the slab",96.0,53.5,3.5,0.02,counterweight.shoe_top_2.step
+counterweight.shoe_top_3,UHMW,"UHMW guide shoe 3.5 mm, 2 x M5 countersunk into the slab",96.0,53.5,3.5,0.02,counterweight.shoe_top_3.step
+counterweight.sheave_fork,steel,"welded fork on the top slab, M12 axle hole",40.0,120.0,216.0,3.05,counterweight.sheave_fork.step
+floor_frame.front_rail,steel,RHS 100x50x4 on edge,3186.0,100.0,100.0,38.42,floor_frame.front_rail.step
+floor_frame.rear_rail,steel,"RHS 100x50x4 on edge, 17 mm holes over the feet",3186.0,80.0,100.0,34.33,floor_frame.rear_rail.step
+floor_frame.cross_0,steel,RHS 100x50x4 between the rails,80.0,194.3,100.0,2.10,floor_frame.cross_0.step
+floor_frame.outrigger_0,steel,"RHS 100x50x4 laid flat, welded to the front rail; 17 mm hole over the foot",78.0,423.0,49.5,3.16,floor_frame.outrigger_0.step
+floor_frame.rear_post_0,steel,"SHS 60x60x4 (58 modelled), ends cut to fit, welded",58.0,58.0,1515.5,9.67,floor_frame.rear_post_0.step
+floor_frame.cross_1,steel,RHS 100x50x4 between the rails,80.0,194.3,100.0,2.10,floor_frame.cross_1.step
+floor_frame.outrigger_1,steel,"RHS 100x50x4 laid flat, welded to the front rail; 17 mm hole over the foot",78.0,423.0,49.5,3.16,floor_frame.outrigger_1.step
+floor_frame.rear_post_1,steel,"SHS 60x60x4 (58 modelled), ends cut to fit, welded",58.0,58.0,1515.5,9.67,floor_frame.rear_post_1.step
+floor_frame.cross_2,steel,RHS 100x50x4 between the rails,80.0,194.3,100.0,2.10,floor_frame.cross_2.step
+floor_frame.outrigger_2,steel,"RHS 100x50x4 laid flat, welded to the front rail; 17 mm hole over the foot",78.0,423.0,49.5,3.16,floor_frame.outrigger_2.step
+floor_frame.rear_post_2,steel,"SHS 60x60x4 (58 modelled), ends cut to fit, welded",58.0,58.0,1515.5,9.67,floor_frame.rear_post_2.step
+floor_frame.cross_3,steel,RHS 100x50x4 between the rails,80.0,194.3,100.0,2.10,floor_frame.cross_3.step
+floor_frame.outrigger_3,steel,"RHS 100x50x4 laid flat, welded to the front rail; 17 mm hole over the foot",78.0,423.0,49.5,3.16,floor_frame.outrigger_3.step
+floor_frame.rear_post_3,steel,"SHS 60x60x4 (58 modelled), ends cut to fit, welded",58.0,58.0,1515.5,9.67,floor_frame.rear_post_3.step
+floor_frame.cross_4,steel,RHS 100x50x4 between the rails,80.0,194.3,100.0,2.10,floor_frame.cross_4.step
+floor_frame.outrigger_4,steel,"RHS 100x50x4 laid flat, welded to the front rail; 17 mm hole over the foot",78.0,423.0,49.5,3.16,floor_frame.outrigger_4.step
+floor_frame.rear_post_4,steel,"SHS 60x60x4 (58 modelled), ends cut to fit, welded",58.0,58.0,1515.5,9.67,floor_frame.rear_post_4.step
+cabinet_stand.stub_front,steel,"RHS 100x50x4 on edge, welded to the floor rail's end",731.0,100.0,100.0,8.80,cabinet_stand.stub_front.step
+cabinet_stand.stub_rear,steel,"RHS 100x50x4 on edge, welded to the floor rail's end",731.0,80.0,100.0,7.88,cabinet_stand.stub_rear.step
+cabinet_stand.cross,steel,RHS 100x50x4 between the stubs' ends,80.0,194.3,100.0,2.10,cabinet_stand.cross.step
+cabinet_stand.upright_0,steel,"SHS 40x40x3, welded on the rear stub; 9 mm holes for the cabinet",40.0,40.0,1570.0,5.47,cabinet_stand.upright_0.step
+cabinet_stand.upright_1,steel,"SHS 40x40x3, welded on the rear stub; 9 mm holes for the cabinet",40.0,40.0,1570.0,5.46,cabinet_stand.upright_1.step
+ducts.tray,steel,"2 mm cable tray under the cabinet, flange on the left upright",259.5,257.8,40.0,1.08,ducts.tray.step
+sensors.x_home_bottom_bracket,steel,"3 mm angle, 2 x M5 into the foot's end",31.5,40.0,23.0,0.04,sensors.x_home_bottom_bracket.step
+sensors.x_flag_bottom,steel,"3 mm steel flag, 2 screws into the substrate",40.0,20.0,2.5,0.01,sensors.x_flag_bottom.step
+sensors.x_home_top_bracket,steel,"3 mm angle, 2 x M5 into the foot's end",31.5,40.0,23.0,0.04,sensors.x_home_top_bracket.step
+sensors.x_flag_top,steel,"3 mm steel flag, 2 screws into the substrate",40.0,20.0,2.5,0.01,sensors.x_flag_top.step
+sensors.y_home_bracket,steel,"3 mm angle, 2 x M5 into the column web",35.5,30.0,30.0,0.04,sensors.y_home_bracket.step
+sensors.z_target,steel,"3 mm steel target tab, M5 into the Z plate",21.5,24.0,45.0,0.11,sensors.z_target.step
+sensors.z_home_bracket,steel,"3 mm angle, 2 x M5 into the Y plate",21.5,30.0,33.0,0.04,sensors.z_home_bracket.step

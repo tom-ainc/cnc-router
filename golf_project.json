@@ -1,0 +1,128 @@
+{
+  "next": 16,
+  "current": 15,
+  "changes": 31,
+  "versions": [
+    {
+      "number": 1,
+      "label": "t",
+      "folder": "v0001_t_failed",
+      "status": "failed",
+      "script": "/home/claude/cnc/t.py",
+      "time": 1794959993
+    },
+    {
+      "number": 2,
+      "label": "t",
+      "folder": "v0002_t_failed",
+      "status": "failed",
+      "script": "/home/claude/cnc/t.py",
+      "time": 1794959995
+    },
+    {
+      "number": 3,
+      "label": "t",
+      "folder": "v0003_t",
+      "status": "ok",
+      "script": "/home/claude/cnc/t.py",
+      "time": 1794960001
+    },
+    {
+      "number": 4,
+      "label": "v1",
+      "folder": "v0004_v1_failed",
+      "status": "failed",
+      "script": "/home/claude/cnc/router.py",
+      "time": 1794960326
+    },
+    {
+      "number": 5,
+      "label": "v1",
+      "folder": "v0005_v1_failed",
+      "status": "failed",
+      "script": "/home/claude/cnc/router.py",
+      "time": 1794960329
+    },
+    {
+      "number": 6,
+      "label": "v1",
+      "folder": "v0006_v1_failed",
+      "status": "failed",
+      "script": "/home/claude/cnc/router.py",
+      "time": 1794960343
+    },
+    {
+      "number": 7,
+      "label": "v1",
+      "folder": "v0007_v1",
+      "status": "ok",
+      "script": "/home/claude/cnc/router.py",
+      "time": 1794960365
+    },
+    {
+      "number": 8,
+      "label": "probe",
+      "folder": "v0008_probe",
+      "status": "ok",
+      "script": "/home/claude/cnc/probe.py",
+      "time": 1794960382
+    },
+    {
+      "number": 9,
+      "label": "v2",
+      "folder": "v0009_v2_failed",
+      "status": "failed",
+      "script": "/home/claude/cnc/router.py",
+      "time": 1794960397
+    },
+    {
+      "number": 10,
+      "label": "v2",
+      "folder": "v0010_v2",
+      "status": "ok",
+      "script": "/home/claude/cnc/router.py",
+      "time": 1794960415
+    },
+    {
+      "number": 11,
+      "label": "v3",
+      "folder": "v0011_v3",
+      "status": "ok",
+      "script": "/home/claude/cnc/router.py",
+      "time": 1794960443
+    },
+    {
+      "number": 12,
+      "label": "v4",
+      "folder": "v0012_v4",
+      "status": "ok",
+      "script": "/home/claude/cnc/router.py",
+      "time": 1794960457
+    },
+    {
+      "number": 13,
+      "label": "v5",
+      "folder": "v0013_v5",
+      "status": "ok",
+      "script": "/home/claude/cnc/router.py",
+      "time": 1794960476
+    },
+    {
+      "number": 14,
+      "label": "final",
+      "folder": "v0014_final",
+      "status": "ok",
+      "script": "/home/claude/cnc/router.py",
+      "time": 1794960555
+    },
+    {
+      "number": 15,
+      "label": "final2",
+      "folder": "v0015_final2",
+      "status": "ok",
+      "script": "/home/claude/cnc/router.py",
+      "time": 1794960570
+    }
+  ],
+  "settings": {}
+}

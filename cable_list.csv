@@ -1,0 +1,57 @@
+cable,type,od_mm,from,chains,to,length_m
+cable.spindle_power,4G2.5 shielded continuous-flex,13.0,spindle.body,Z Y X,cabinet.vfd,9.4
+cable.spindle_fan,3G0.75 continuous-flex,6.5,spindle.body,Z Y X,cabinet.terminals,9.0
+cable.spindle_sensors,"5 x 0.25 continuous-flex (clamp, unclamp sensors)",6.0,spindle.body,Z Y X,cabinet.terminals,9.1
+hose.tool_release,PU 8/6 air,8.0,spindle.body,Z Y X,air.valves,9.3
+hose.taper_blow,PU 6/4 air,6.0,spindle.body,Z Y X,air.valves,9.3
+cable.z_motor_power,4 x 1.0 shielded continuous-flex,8.0,y_carriage.z_motor,Y X,cabinet.drv_z,8.8
+cable.z_motor_encoder,encoder 6 x 0.14 shielded,7.0,y_carriage.z_motor,Y X,cabinet.drv_z,8.7
+cable.z_home,3 x 0.34 PUR,5.0,sensors.z_home,Y X,cabinet.terminals,8.3
+cable.y_motor_power,4 x 1.0 shielded continuous-flex,8.0,gantry_drives.y_motor,X,cabinet.drv_y,7.1
+cable.y_motor_encoder,encoder 6 x 0.14 shielded,7.0,gantry_drives.y_motor,X,cabinet.drv_y,7.1
+cable.y_brake,2 x 0.75 continuous-flex,6.0,gantry_drives.y_brake,X,cabinet.terminals,8.1
+cable.y_home,3 x 0.34 PUR,5.0,sensors.y_home,X,cabinet.terminals,8.1
+cable.x1_motor_power,4 x 1.0 shielded continuous-flex,8.0,gantry_drives.x_motor_bottom,X,cabinet.drv_x1,8.1
+cable.x1_motor_encoder,encoder 6 x 0.14 shielded,7.0,gantry_drives.x_motor_bottom,X,cabinet.drv_x1,8.1
+cable.x2_motor_power,4 x 1.0 shielded continuous-flex,8.0,gantry_drives.x_motor_top,X,cabinet.drv_x2,6.9
+cable.x2_motor_encoder,encoder 6 x 0.14 shielded,7.0,gantry_drives.x_motor_top,X,cabinet.drv_x2,7.0
+cable.x1_home,3 x 0.34 PUR,5.0,sensors.x_home_bottom,X,cabinet.terminals,8.0
+cable.x2_home,3 x 0.34 PUR,5.0,sensors.x_home_top,X,cabinet.terminals,6.8
+cable.estop_front,4 x 0.75 PUR,6.5,estop.front_box,-,cabinet.safety_relay,5.5
+hose.popup_pins,"PU 6/4 air, tee to 3 cylinders",6.0,popup.cyl_1,-,air.valves,2.8
+hose.supply,PU 10/7 air from the compressor's line,10.0,air.frl,-,air.valves,0.8
+cable.mains,"3G2.5 H07RN-F, 3 m, 15 A plug",11.0,cabinet.rcd,-,cabinet.terminals,1.2
+
+wire,from,to,what
+wire.00,cable.mains,cabinet.rcd,"L N PE: 15 A plug to RCBO 16 A 30 mA, PE to the PE bar"
+wire.01,cabinet.rcd,cabinet.mcb_vfd,L N 2.5 mm2
+wire.02,cabinet.rcd,cabinet.mcb_psu,L N 1.5 mm2
+wire.03,cabinet.rcd,cabinet.mcb_ctl,L 1.0 mm2
+wire.04,cabinet.mcb_vfd,cabinet.emc_filter,L N 2.5 mm2
+wire.05,cabinet.emc_filter,cabinet.vfd,L N 2.5 mm2 to R/L1 S/L2
+wire.06,cabinet.mcb_psu,cabinet.contactor,L N 1.5 mm2 through the main contacts
+wire.07,cabinet.contactor,cabinet.psu_x1,L N 1.0 mm2
+wire.08,cabinet.contactor,cabinet.psu_x2,L N 1.0 mm2
+wire.09,cabinet.contactor,cabinet.psu_y,L N 1.0 mm2
+wire.10,cabinet.contactor,cabinet.psu_z,L N 1.0 mm2
+wire.11,cabinet.psu_x1,cabinet.drv_x1,+60 V / 0 V 1.5 mm2
+wire.12,cabinet.psu_x2,cabinet.drv_x2,+60 V / 0 V 1.5 mm2
+wire.13,cabinet.psu_y,cabinet.drv_y,+60 V / 0 V 1.5 mm2
+wire.14,cabinet.psu_z,cabinet.drv_z,+60 V / 0 V 1.5 mm2
+wire.15,cabinet.mcb_ctl,cabinet.psu_24,L N 1.0 mm2
+wire.16,cabinet.psu_24,cabinet.terminals,24 V / 0 V bus 1.0 mm2
+wire.17,cabinet.terminals,cabinet.controller,"24 V supply, 16 inputs (home switches, spindle sensors, VFD fault, driver alarms)"
+wire.18,cabinet.controller,cabinet.drv_x1,"step, dir, enable, alarm (shielded 4-pair)"
+wire.19,cabinet.controller,cabinet.drv_x2,"step, dir, enable, alarm"
+wire.20,cabinet.controller,cabinet.drv_y,"step, dir, enable, alarm"
+wire.21,cabinet.controller,cabinet.drv_z,"step, dir, enable, alarm"
+wire.22,cabinet.controller,cabinet.vfd,"0-10 V speed, run/stop, fault (shielded)"
+wire.23,cabinet.controller,cabinet.brake_relay,output: Y brake release
+wire.24,cabinet.brake_relay,cabinet.terminals,24 V to the brake's terminals
+wire.25,cabinet.controller,cabinet.valve_relays,"outputs: tool release, taper blow, pop-up pins"
+wire.26,cabinet.valve_relays,air.valves,24 V to 3 solenoids (3 x 2 x 0.5 cable via the gland)
+wire.27,cabinet.terminals,cabinet.safety_relay,"door E-stop and front E-stop, 2 channels each, in series"
+wire.28,cabinet.safety_relay,cabinet.contactor,safety output to the contactor coil (drops the stepper supplies)
+wire.29,cabinet.safety_relay,cabinet.vfd,STO1 / STO2: safe torque off
+wire.30,cabinet.safety_relay,cabinet.controller,E-stop status input
+wire.31,cabinet.psu_24,cabinet.fan,24 V to the filter fan

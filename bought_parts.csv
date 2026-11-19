@@ -1,0 +1,139 @@
+item,qty,kg_each,where
+12 mm cutter,1,0.09,tool
+"24 V 2.5 A DIN supply, on the DIN rail",1,0.32,cabinet.psu_24
+"24 V spring-applied brake, 4 N*m, 2 standoffs to the BF20",1,1.03,gantry_drives.y_brake
+"3 interface relays, solenoid valves, on the DIN rail",1,0.25,cabinet.valve_relays
+"5 mm 7x19 galvanised wire rope: swaged stop at the carriage anchor, swaged eye over the dead-end bolt",1,0.29,gantry_frame.rope
+"60 V 14.6 A 350 W supply (salvaged), X1",1,1.04,cabinet.psu_x1
+"60 V 14.6 A 350 W supply (salvaged), X2",1,1.04,cabinet.psu_x2
+"60 V 14.6 A 350 W supply (salvaged), Y",1,1.04,cabinet.psu_y
+"60 V 14.6 A 350 W supply (salvaged), Z",1,1.04,cabinet.psu_z
+61902-2RS bearing 15 x 28 x 7,4,0.02,gantry_drives.x_brg_bottom_0 gantry_drives.x_brg_bottom_1 gantry_drives.x_brg_top_0 gantry_drives.x_brg_top_1
+BF15 floating support,1,0.38,y_carriage.z_bf15
+BF20 floating support,1,0.61,gantry_drives.y_bf20
+BK15 fixed support,1,0.55,y_carriage.z_bk15
+BK20 fixed support,1,1.13,gantry_drives.y_bk20
+DIN rail 35 x 7.5,2,0.70,cabinet.din_top cabinet.din_terminals
+"Delta VFD11AMS21ANSHA, 1-ph 230 V in, 11 A, 1500 Hz, STO",1,1.72,cabinet.vfd
+"E-stop safety relay, 2-channel, 3 NO, on the DIN rail",1,0.23,cabinet.safety_relay
+"E-stop, 40 mm red mushroom, 2 NC, in a yellow 1-hole box with ears",1,0.49,estop.front_box
+HIWIN HGH25CA,8,0.75,y_carriage.y_block_140_l y_carriage.y_block_140_r y_carriage.y_block_360_l y_carriage.y_block_360_r z_axis.z_block_l_50 z_axis.z_block_l_316 z_axis.z_block_r_50 z_axis.z_block_r_316
+"HIWIN HGH25CA, grease nipple outwards",4,0.75,gantry_drives.x_block_bottom_l gantry_drives.x_block_bottom_r gantry_drives.x_block_top_l gantry_drives.x_block_top_r
+"HIWIN HGR25R, cut to length",6,11.65,bed.x_rail_bottom bed.x_rail_top gantry_drives.y_rail_0 gantry_drives.y_rail_1 y_carriage.z_rail_l y_carriage.z_rail_r
+HTD 5M 15 wide belt,4,0.02,gantry_drives.x_belt_bottom gantry_drives.x_belt_top gantry_drives.y_belt y_carriage.z_belt
+"HTD 5M 20T 15 wide, bore 12",1,0.04,y_carriage.z_pulley_screw
+"HTD 5M 20T 15 wide, bore 14",2,0.04,gantry_drives.x_pulley20_bottom gantry_drives.x_pulley20_top
+"HTD 5M 20T 15 wide, bore 15",1,0.04,gantry_drives.y_pulley_screw
+"HTD 5M 30T 15 wide, bore 14",1,0.10,gantry_drives.y_pulley_motor
+"HTD 5M 40T 15 wide, bore 14",1,0.17,y_carriage.z_pulley_motor
+"HTD 5M 60T 15 wide, bore 15",2,0.38,gantry_drives.x_pulley60_bottom gantry_drives.x_pulley60_top
+ISO30 ER32 holder,1,0.99,spindle.holder
+"ISO30 holder, ER32, with cutter",6,1.03,atc_rack.holder_0 atc_rack.holder_1 atc_rack.holder_2 atc_rack.holder_3 atc_rack.holder_4 atc_rack.holder_5
+"M12 weld nut, welded inside the back flange",1,0.02,gantry_frame.sheave_axle_nut
+"M16 levelling foot, 80 pad, lock nut",12,0.39,feet.foot_0_0 feet.foot_0_1 feet.foot_1_0 feet.foot_1_1 feet.foot_2_0 feet.foot_2_1 feet.foot_3_0 feet.foot_3_1 feet.foot_4_0 feet.foot_4_1 cabinet_stand.foot_front cabinet_stand.foot_rear
+"M16 nut, welded under the rail",10,0.04,floor_frame.foot_nut_0_0 floor_frame.foot_nut_0_1 floor_frame.foot_nut_1_0 floor_frame.foot_nut_1_1 floor_frame.foot_nut_2_0 floor_frame.foot_nut_2_1 floor_frame.foot_nut_3_0 floor_frame.foot_nut_3_1 floor_frame.foot_nut_4_0 floor_frame.foot_nut_4_1
+"M16 nut, welded under the stub",2,0.04,cabinet_stand.foot_nut_front cabinet_stand.foot_nut_rear
+"MCB 10 A C-curve 2-pole, VFD, on the DIN rail",1,0.22,cabinet.mcb_vfd
+"MCB 2 A 1-pole, 24 V supply and control, on the DIN rail",1,0.11,cabinet.mcb_ctl
+"MCB 6 A C-curve 2-pole, stepper supplies, on the DIN rail",1,0.22,cabinet.mcb_psu
+PVC trunking 40 x 35 on the chain tray's rear shelf,1,0.46,ducts.beam
+PVC trunking 40 x 60 down the stand's left upright,1,0.46,ducts.riser
+"RCBO 16 A 30 mA type A, 2-pole (supply protection), on the DIN rail",1,0.22,cabinet.rcd
+"SFU2010 ball screw, ends machined for BK15/BF15",1,1.77,y_carriage.z_screw
+SFU2010 flanged ball nut,1,0.55,z_axis.z_nut
+StepperOnline 34E1K-120 closed-loop stepper (salvaged),4,5.00,x_motor_bottom x_motor_top y_motor z_motor
+"ball screw 25 x 20 lead (BSS2520 class), ends machined for BK20/BF20",1,5.65,gantry_drives.y_screw
+"cable chain 25 x 38 inside, R100, pitch 33",2,0.68,gantry_drives.y_chain y_carriage.z_chain
+"cable chain 25 x 57 inside, R100, pitch 38, upright on a tray on the bed's top edge",1,1.51,bed.x_chain
+"closed-loop stepper driver for 34E1K-120 (salvaged), X1",1,0.63,cabinet.drv_x1
+"closed-loop stepper driver, X2",1,0.63,cabinet.drv_x2
+"closed-loop stepper driver, Y",1,0.63,cabinet.drv_y
+"closed-loop stepper driver, Z",1,0.63,cabinet.drv_z
+"compact air cylinder 16 bore, 30 stroke, 12 mm pin, flange on top",3,0.47,popup.cyl_0 popup.cyl_1 popup.cyl_2
+"contactor 25 A AC-1, 24 V DC coil, 2 NO + aux, on the DIN rail",1,0.28,cabinet.contactor
+"enclosure door, 2 locks, isolator and E-stop on it",1,8.39,cabinet.door
+"exhaust filter grille 100 sq, clipped in",1,0.32,cabinet.exhaust
+"filter fan 150 sq, 70 m3/h with its filters, 24 V, inlet",1,0.86,cabinet.fan
+"filter-regulator 6 bar with gauge and dump valve, G1/4",1,0.75,air.frl
+flanged ball nut 25 x 20 lead,1,0.78,y_carriage.y_nut
+galvanised backplate 560 x 760 x 3,1,10.01,cabinet.backplate
+"gland plate, 6 x M25 glands (spindle, motors, sensors, air, mains)",1,2.26,cabinet.gland_plate
+"helical pinion m1.5 20T, 19.5 deg, bored 15, hub with set screw on a flat",2,0.09,gantry_drives.x_pinion_bottom gantry_drives.x_pinion_top
+"helical rack m1.5 17x17, 19.5 deg, 1 m",6,1.98,bed.rack_bottom.0 bed.rack_bottom.1 bed.rack_bottom.2 bed.rack_top.0 bed.rack_top.1 bed.rack_top.2
+"helical rack m1.5 17x17, 19.5 deg, 1 m (cut)",2,0.37,bed.rack_bottom.3 bed.rack_top.3
+"inductive sensor M12, 4 mm, PNP NO, 2 m PUR cable",4,0.01,sensors.x_home_bottom sensors.x_home_top sensors.y_home sensors.z_home
+"interface relay, Y brake, on the DIN rail",1,0.09,cabinet.brake_relay
+"manifold, 3 x 5/2 24 V solenoid valves: tool release, taper blow, pop-up pins",1,0.46,air.valves
+"motion controller, Ethernet, 4 axes step/dir, 16 in / 8 out",1,0.50,cabinet.controller
+"rope sheave 100 PCD for 5 mm rope, sealed bearings, bore 12",1,0.61,gantry_frame.rope_sheave
+"rope sheave 100 PCD, sealed bearings, bore 12",1,0.61,counterweight.sheave
+"salvaged 9 kW ISO30 ATC spindle, 380 V (shape estimated beyond 510 x 133 x 133)",1,29.00,spindle.body
+"single-phase EMC filter 16 A, VFD input",1,0.24,cabinet.emc_filter
+"slotted wiring duct 40 x 60, lid",3,0.23,cabinet.duct_0 cabinet.duct_1 cabinet.duct_2
+"standoff M6 x 30, hex 12, female both ends",8,0.02,gantry_drives.x_standoff_bottom_0 gantry_drives.x_standoff_bottom_1 gantry_drives.x_standoff_bottom_2 gantry_drives.x_standoff_bottom_3 gantry_drives.x_standoff_top_0 gantry_drives.x_standoff_top_1 gantry_drives.x_standoff_top_2 gantry_drives.x_standoff_top_3
+"steel wall enclosure 600 x 800 x 300, IP54, 4 studs for the backplate",1,14.03,cabinet.enclosure
+"terminal blocks: 4 mm2 feed-through, PE, fused, 2-level sensor blocks, on the DIN rail",1,0.73,cabinet.terminals
+"trunking lid, clipped on",2,0.15,ducts.beam_lid ducts.riser_lid
+"4.5 x 20 chipboard screw, countersunk",4,,fasteners
+"4.5 x 30 chipboard screw, countersunk",6,,fasteners
+"4.5 x 40 chipboard screw, countersunk",30,,fasteners
+4.8 x 16 self-drilling wafer-head screw 10-16,3,,fasteners
+4.8 x 19 self-drilling wafer-head screw 10-16,7,,fasteners
+4.8 x 45 self-drilling wafer-head screw 10-16,42,,fasteners
+M10 x 70 ISO 4762 socket head cap screw,8,,fasteners
+M10 x 90 ISO 4762 socket head cap screw,4,,fasteners
+M12 x 297 ISO 4017 hex bolt,1,,fasteners
+"M12 x 539 threaded rod, 2 nuts and washers, nut and washer",2,,fasteners
+"M12 x 55 ISO 4017 hex bolt, nut and washer",1,,fasteners
+M4 x 12 ISO 4762 socket head cap screw,6,,fasteners
+"M4 x 12 ISO 4762 socket head cap screw, nut",31,,fasteners
+"M4 x 16 ISO 4762 socket head cap screw, nut",5,,fasteners
+"M4 x 40 ISO 4762 socket head cap screw, nut",4,,fasteners
+M5 x 10 ISO 10642 countersunk screw,16,,fasteners
+"M5 x 10 ISO 4026 set screw, cup point",4,,fasteners
+M5 x 10 ISO 4762 socket head cap screw,6,,fasteners
+"M5 x 100 ISO 4762 socket head cap screw, nut and washer",2,,fasteners
+"M5 x 110 ISO 4762 socket head cap screw, nut and washer",2,,fasteners
+M5 x 12 ISO 4762 socket head cap screw,5,,fasteners
+"M5 x 12 ISO 4762 socket head cap screw, nut",4,,fasteners
+M5 x 16 ISO 10642 countersunk screw,7,,fasteners
+M5 x 16 ISO 4762 socket head cap screw,6,,fasteners
+"M5 x 25 ISO 4762 socket head cap screw, nut and washer",12,,fasteners
+"M5 x 4 ISO 4026 set screw, cup point",2,,fasteners
+"M5 x 6 ISO 4026 set screw, cup point",4,,fasteners
+M6 x 10 ISO 4762 socket head cap screw,6,,fasteners
+M6 x 12 ISO 4762 socket head cap screw,10,,fasteners
+M6 x 16 ISO 4762 socket head cap screw,19,,fasteners
+M6 x 20 ISO 4762 socket head cap screw,225,,fasteners
+M6 x 25 ISO 4762 socket head cap screw,61,,fasteners
+M6 x 30 ISO 4762 socket head cap screw,2,,fasteners
+M6 x 35 ISO 4762 socket head cap screw,4,,fasteners
+M6 x 45 ISO 4762 socket head cap screw,8,,fasteners
+M8 x 16 ISO 4762 socket head cap screw,4,,fasteners
+"M8 x 180 ISO 4017 hex bolt, nut and washer",1,,fasteners
+M8 x 25 ISO 4762 socket head cap screw,1,,fasteners
+M8 x 30 ISO 4762 socket head cap screw,18,,fasteners
+M8 x 35 DIN 7984 low-head cap screw,4,,fasteners
+"M8 x 55 ISO 4017 hex bolt, nut and washer",4,,fasteners
+4G2.5 shielded continuous-flex (cable.spindle_power),9.4 m,0.30/m,spindle.body to cabinet.vfd
+3G0.75 continuous-flex (cable.spindle_fan),9.0 m,0.08/m,spindle.body to cabinet.terminals
+"5 x 0.25 continuous-flex (clamp, unclamp sensors) (cable.spindle_sensors)",9.1 m,0.06/m,spindle.body to cabinet.terminals
+PU 8/6 air (hose.tool_release),9.3 m,0.03/m,spindle.body to air.valves
+PU 6/4 air (hose.taper_blow),9.3 m,0.02/m,spindle.body to air.valves
+4 x 1.0 shielded continuous-flex (cable.z_motor_power),8.8 m,0.10/m,y_carriage.z_motor to cabinet.drv_z
+encoder 6 x 0.14 shielded (cable.z_motor_encoder),8.7 m,0.06/m,y_carriage.z_motor to cabinet.drv_z
+3 x 0.34 PUR (cable.z_home),8.3 m,0.04/m,sensors.z_home to cabinet.terminals
+4 x 1.0 shielded continuous-flex (cable.y_motor_power),7.1 m,0.10/m,gantry_drives.y_motor to cabinet.drv_y
+encoder 6 x 0.14 shielded (cable.y_motor_encoder),7.1 m,0.06/m,gantry_drives.y_motor to cabinet.drv_y
+2 x 0.75 continuous-flex (cable.y_brake),8.1 m,0.05/m,gantry_drives.y_brake to cabinet.terminals
+3 x 0.34 PUR (cable.y_home),8.1 m,0.04/m,sensors.y_home to cabinet.terminals
+4 x 1.0 shielded continuous-flex (cable.x1_motor_power),8.1 m,0.10/m,gantry_drives.x_motor_bottom to cabinet.drv_x1
+encoder 6 x 0.14 shielded (cable.x1_motor_encoder),8.1 m,0.06/m,gantry_drives.x_motor_bottom to cabinet.drv_x1
+4 x 1.0 shielded continuous-flex (cable.x2_motor_power),6.9 m,0.10/m,gantry_drives.x_motor_top to cabinet.drv_x2
+encoder 6 x 0.14 shielded (cable.x2_motor_encoder),7.0 m,0.06/m,gantry_drives.x_motor_top to cabinet.drv_x2
+3 x 0.34 PUR (cable.x1_home),8.0 m,0.04/m,sensors.x_home_bottom to cabinet.terminals
+3 x 0.34 PUR (cable.x2_home),6.8 m,0.04/m,sensors.x_home_top to cabinet.terminals
+4 x 0.75 PUR (cable.estop_front),5.5 m,0.06/m,estop.front_box to cabinet.safety_relay
+"PU 6/4 air, tee to 3 cylinders (hose.popup_pins)",2.8 m,0.02/m,popup.cyl_1 to air.valves
+PU 10/7 air from the compressor's line (hose.supply),0.8 m,0.05/m,air.frl to air.valves
+"3G2.5 H07RN-F, 3 m, 15 A plug (cable.mains)",1.2 m,0.20/m,cabinet.rcd to cabinet.terminals
