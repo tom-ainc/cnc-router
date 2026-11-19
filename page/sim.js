@@ -327,7 +327,7 @@
       M.add(A, { id: "G1", type: "gain", k: G, label: "G", sub: "rad/m", pos: [60, 50], in: ["ref." + A.toLowerCase()], out: [s("th_ref")], units: ["rad"] });
       M.add(A, { id: "G2", type: "gain", k: G, label: "G", sub: "rad/m", pos: [60, 150], in: ["ref.v" + A.toLowerCase()], out: [s("w_ref")], units: ["rad/s"] });
       M.add(A, { id: "e", type: "sum", signs: "+-", pos: [160, 50], in: [s("th_ref"), s("th_m")], out: [s("e")], units: ["rad"] });
-      M.add(A, { id: "ie", type: "int", label: "∫", pos: [230, 100], in: [s("e")], out: [s("ie")], lo: -0.5, hi: 0.5, units: ["rad·s"], x0: () => (a.Td0 || 0) / Ki });
+      M.add(A, { id: "ie", type: "int", label: "∫", pos: [230, 100], in: [s("e")], out: [s("ie")], lo: -0.5, hi: 0.5, units: ["rad·s"], x0: () => (a.Td0 || 0) / Ki });   // at rest the loop's integral alone holds the load
       M.add(A, { id: "ev", type: "sum", signs: "+-", pos: [160, 150], in: [s("w_ref"), s("w_m")], out: [s("ev")], units: ["rad/s"] });
       M.add(A, { id: "kp", type: "gain", k: Kp, label: "Kp", pos: [300, 50], in: [s("e")], out: [s("Tp")], units: ["N·m"] });
       M.add(A, { id: "ki", type: "gain", k: Ki, label: "Ki", pos: [300, 100], in: [s("ie")], out: [s("Ti")], units: ["N·m"] });
@@ -353,16 +353,17 @@
       M.add(A, { id: "msum", type: "sum", signs: "+--", pos: [560, 100], in: [s("T_m"), s("T_r"), s("T_b")], out: [s("T_net")], units: ["N·m"] });
       M.add(A, { id: "invJ", type: "gain", k: 1 / Jm, label: "1/J", sub: "motor", pos: [630, 100], in: [s("T_net")], out: [s("al_m")], units: ["rad/s²"] });
       M.add(A, { id: "wm", type: "int", label: "∫", pos: [700, 100], in: [s("al_m")], out: [s("w_m")], units: ["rad/s"], x0: 0 });
-      M.add(A, { id: "thm", type: "int", label: "∫", pos: [770, 100], in: [s("w_m")], out: [s("th_m")], units: ["rad"], x0: () => G * (a.x0 + (a.Fd0 || 0) / a.k) });
+      M.add(A, { id: "thm", type: "int", label: "∫", pos: [770, 100], in: [s("w_m")], out: [s("th_m")], units: ["rad"], x0: () => G * a.x0 });             // at rest the motor sits on its command
       M.add(A, { id: "bm", type: "fcn", label: "drag", sub: "viscous + detent", pos: [630, 30], in: [s("w_m")], out: [s("T_b")], units: ["N·m"],
         f: ([w], m, b) => a.b_m * w + stick(b, "z", w, m.dt, P.motor.T_det * a.n_mot, 0.01, Jm) });
       // transmission: belt, screw or rack, as one spring and damper between motor and carriage
       M.add(A, { id: "comp", type: "fcn", label: a.trans, sub: `k ${(a.k / 1e6).toFixed(0)} N/µm`, pos: [700, 230], size: [120, 56],
         in: [s("th_m"), s("w_m"), s("x"), s("v")], out: [s("F_d"), s("T_r")], units: ["N", "N·m"],
-        f: ([thm, wm, x, v]) => {
+        f: ([thm, wm, x, v], m, b) => {
           const F = a.k * (thm / G - x) + a.c * (wm / G - v);
-          const fwd = F * wm >= 0;                               // motor driving the load, or the load back-driving the motor
-          return [F, F / G * (fwd ? 1 / a.eta : a.eta)];
+          // the drive's losses (belt, screw or rack, efficiency eta) as friction on the motor side: F/G (1/eta - 1) while it turns, holding
+          // any torque up to that at rest
+          return [F, F / G + stick(b, "z", wm, m.dt, Math.abs(F / G) * (1 / a.eta - 1), 0.002, Jm)];
         } });
       // carriage
       M.add(A, { id: "fric", type: "fcn", label: "friction", sub: "blocks, seals, nut", pos: [560, 330], in: [s("v")], out: [s("F_f")], units: ["N"],
@@ -372,7 +373,7 @@
       M.add(A, { id: "lsum", type: "sum", signs: "+-+" + extra.signs, pos: [700, 360], in: ins, out: [s("F_net")], units: ["N"] });
       M.add(A, { id: "invm", type: "gain", k: 1 / a.m, label: "1/m", sub: `${a.m.toFixed(0)} kg`, pos: [780, 360], in: [s("F_net")], out: [s("a")], units: ["m/s²"] });
       M.add(A, { id: "v", type: "int", label: "∫", pos: [850, 360], in: [s("a")], out: [s("v")], units: ["m/s"] });
-      M.add(A, { id: "x", type: "int", label: "∫", pos: [920, 360], in: [s("v")], out: [s("x")], units: ["m"], x0: () => a.x0 });
+      M.add(A, { id: "x", type: "int", label: "∫", pos: [920, 360], in: [s("v")], out: [s("x")], units: ["m"], x0: () => a.x0 - (a.Fd0 || 0) / a.k });   // and the carriage sags by the drive spring's stretch
       M.add(A, { id: "pw", type: "prod", label: "×", sub: "Tω", pos: [920, 230], in: [s("T_m"), s("w_m")], out: [s("P_shaft")], units: ["W"] });
     };
     // structure: the column bending at the head, x (along the sheet) and z (normal to the bed)
@@ -392,7 +393,7 @@
     M.add("Y", { id: "cwsum", type: "fcn", label: "counterweight", sub: `${CW.m.toFixed(0)} kg`, pos: [230, 400], in: ["cw.T", "cw.v"], out: ["cw.a"], units: ["m/s²"],
       f: ([T, vu]) => (CW.m * g * Math.cos(th) - 2 * T - CW.Fc * Math.tanh(vu / 0.002)) / CW.m });
     M.add("Y", { id: "cwv", type: "int", label: "∫", pos: [100, 330], in: ["cw.a"], out: ["cw.v"], units: ["m/s"] });
-    M.add("Y", { id: "cwu", type: "int", label: "∫", pos: [100, 400], in: ["cw.v"], out: ["cw.u"], units: ["m"], x0: () => P.axes.Y.x0 / 2 });
+    M.add("Y", { id: "cwu", type: "int", label: "∫", pos: [100, 400], in: ["cw.v"], out: ["cw.u"], units: ["m"], x0: () => (P.axes.Y.x0 - (P.axes.Y.Fd0 || 0) / P.axes.Y.k) / 2 });
     axis("Z", "Z axis: ballscrew, 1:2 belt", { forces: ["st.Fz", "cut.Fz"], signs: "--" });
 
     // cutting force along the feed, split onto the axes
@@ -405,7 +406,7 @@
     M.add("struct", { id: "kz", type: "fcn", label: "k_z(y)", sub: "column + blocks", pos: [60, 260], in: ["Y.x"], out: ["st.kz"], units: ["N/m"],
       f: ([y]) => 1 / (1 / kcol(S.Iz, y) + 1 / S.k_blocks_z) });
     M.add("struct", { id: "fx", type: "fcn", label: "spring + damper", sub: "head on the column", pos: [230, 60], in: ["st.dx", "st.vx", "st.kx"], out: ["st.Fx"], units: ["N"],
-      f: ([d, v, k]) => k * d + 2 * S.zeta * Math.sqrt(k * S.mx) * v });
+      f: ([d, v, k]) => S.off ? 0 : k * d + 2 * S.zeta * Math.sqrt(k * S.mx) * v });
     M.add("struct", { id: "ax", type: "fcn", label: "head, x", sub: `${S.mx.toFixed(0)} kg`, pos: [420, 60], in: ["st.Fx", "X.a"], out: ["st.ax"], units: ["m/s²"],
       f: ([F, aX]) => -F / S.mx - aX });
     M.add("struct", { id: "vx", type: "int", label: "∫", pos: [560, 60], in: ["st.ax"], out: ["st.vx"], units: ["m/s"] });
@@ -419,7 +420,7 @@
       x0: () => -(P.axes.Z.Fd0 || 0) / (1 / (1 / kcol(S.Iz, P.axes.Y.x0) + 1 / S.k_blocks_z)) });
     // the Z carriage rides on the head: its base accelerates with the head's z-deflection
     M.add("struct", { id: "fzb", type: "fcn", label: "base force", sub: "−m_z a_head", pos: [760, 260], in: ["st.az"], out: ["st.Fz"], units: ["N"],
-      f: ([az]) => P.axes.Z.m * az });
+      f: ([az]) => S.off ? 0 : P.axes.Z.m * az });
 
     // tool tip: where the cutter is, against where the program wants it
     M.sys("tip", "Tool tip error", "top", [760, 300]);
@@ -513,8 +514,8 @@
     for (const A of ["X", "Y", "Z"]) {
       const a = P.axes[A];
       a.x0 = start["XYZ".indexOf(A)] / 1000;
-      a.Fd0 = -(a.grav + (A === "Y" ? a.cw.T0 : 0));
-      a.Td0 = a.Fd0 / a.G / a.eta;
+      a.Fd0 = a.Fd0_test ?? -(a.grav + (A === "Y" ? a.cw.T0 : 0));
+      a.Td0 = a.Td0_test ?? a.Fd0 / a.G;
     }
     const M = build(P);
     M.planner.plan = plan(P, job.prog, start, opt);
@@ -583,9 +584,9 @@
     if (Ia > r.mains_1s) r.mains_1s = Ia; if (I > r.mains_peak) r.mains_peak = I;
     r.mains_sum += I; r.n++; r.t = t;
   }
-  function runAll(P) {                                       // under Node: every job to its end, the measures
+  function runAll(P, keys) {                                 // under Node: every job to its end, the measures
     const out = {};
-    for (const k of Object.keys(jobs(P))) {
+    for (const k of keys || Object.keys(jobs(P))) {
       const R = Run(P, k, {}), me = Meter(P);
       const steps = Math.ceil(R.T / P.dt);
       for (let i = 0; i < steps; i++) { R.M.step(); measure(R.M, me, P); }
@@ -612,15 +613,138 @@
     return out;
   }
 
-  const api = { build, jobs, plan, sample, Run, Meter, measure, runAll, modes, interp };
+  // ------------------------------------------------------------------ verification: the model against answers known without it
+  const clone = (o) => JSON.parse(JSON.stringify(o));
+  function idle(P, T) { return { label: "idle", prog: [{ op: "dwell", t: T }] }; }
+  // a drive alone, lossless and loop open, released with its spring loaded: it should ring at the two-mass frequency and keep its energy
+  function freeDrive(P, A) {
+    const Q = clone(P);
+    for (const B of ["X", "Y", "Z"]) { const b = Q.axes[B]; b.Fc = 0; b.bv = 0; b.b_m = 0; b.grav = 0; b.eta = 1; b.c = 0; b.Fd0_test = 0; b.Td0_test = 0; }
+    Q.axes.Y.cw.k = 0; Q.axes.Y.cw.T0 = 0; Q.axes.Y.cw.c = 0; Q.motor.T_det = 0; Q.servo.f_bw = 1e-9; Q.struct.off = true;
+    const a = Q.axes[A]; a.Fd0_test = 1000; a.Td0_test = 0;
+    const R = Run(Q, null, { custom: idle(Q, 1.2) }), M = R.M, ix = (n) => M.index.get(n);
+    const iF = ix(A + ".F_d"), iv = ix(A + ".v"), iw = ix(A + ".w_m"), ith = ix(A + ".th_m"), ixx = ix(A + ".x");
+    const E = () => { const v = M.v, d = v[ith] / a.G - v[ixx]; return 0.5 * a.m * v[iv] ** 2 + 0.5 * a.J_m * v[iw] ** 2 + 0.5 * a.k * d * d; };
+    const cross = [], e = [];
+    let prev = M.v[iF];
+    const n = Math.round(1.0 / Q.dt);
+    for (let i = 0; i < n; i++) { M.step(); const F = M.v[iF]; if (prev > 0 && F <= 0) cross.push(M.t - Q.dt * F / (F - prev)); prev = F; e.push(E()); }
+    const f = (cross.length - 1) / (cross[cross.length - 1] - cross[0]);
+    const want = Math.sqrt(a.k * (1 / a.m + 1 / (a.J_m * a.G * a.G))) / (2 * Math.PI);
+    const tenth = Math.floor(e.length / 10), avg = (q) => q.reduce((s, x) => s + x, 0) / q.length;
+    const e0 = avg(e.slice(0, tenth)), e1 = avg(e.slice(-tenth));
+    return { f, want, freq_err: Math.abs(f / want - 1) * 100, energy_drift: Math.abs(e1 / e0 - 1) * 100, E0: e0 };
+  }
+  // one axis at a steady speed: the motor torque should be the load force through the drive plus the motor's own drag
+  function steadyTorque(P, A) {
+    const Q = clone(P), a = Q.axes[A], i = "XYZ".indexOf(A), lim = Q.job.lim[i];
+    const start = Q.job.park.slice(); start[i] = lim[0] + 20;
+    const to = start.slice(); to[i] = lim[1] - 20;
+    const R = Run(Q, null, { custom: { label: "steady", prog: [{ op: "rapid", to }] }, start }), M = R.M, ix = (n) => M.v[M.index.get(n)];
+    const v = a.v_rapid, tAcc = v / a.acc + 0.4, tEnd = R.M.planner.plan.T - v / a.acc - 0.05;
+    let sum = 0, n = 0;
+    while (M.t < tEnd) { M.step(); if (M.t > tAcc) { sum += ix(A + ".T_m"); n++; } }
+    const F = a.Fc + a.bv * v - a.grav - (A === "Y" ? a.cw.T0 - a.cw.Fc / 2 : 0);
+    const want = F / a.G / a.eta + a.b_m * a.G * v + Q.motor.T_det * a.n_mot;
+    const got = sum / n;
+    return { got, want, err: Math.abs(got / want - 1) * 100 };
+  }
+  // left alone where it starts, nothing should move: the model starts in equilibrium
+  function atRest(P) {
+    const Q = clone(P), R = Run(Q, null, { custom: idle(Q, 0.5) }), M = R.M, ix = (n) => M.v[M.index.get(n)];
+    M.step();
+    const p0 = [ix("tip.x"), ix("tip.y"), ix("tip.z")];      // where it sits, sag under its own weight included
+    let worst = 0;
+    while (M.t < 0.5) { M.step(); worst = Math.max(worst, ...[ix("tip.x"), ix("tip.y"), ix("tip.z")].map((x, i) => Math.abs(x - p0[i]) * 1e6)); }
+    return { worst_um: worst, sag_um: Math.abs(ix("tip.ez")) };
+  }
+  // halving the step should not change the answers
+  function convergence(P, base) {
+    const Q = clone(P); Q.dt = P.dt / 2;
+    const keys = ["rapids", "pocket", "pfail_drop"], half = runAll(Q, keys), out = {};
+    const pick = { contour: (r) => r.contour, util: (r) => r.fail ? null : Math.max(...Object.values(r.util)) * 100, vbus: (r) => r.vbus,
+                   rope_min: (r) => r.rope_min, x_run: (r) => r.fail ? r.fail.run[0] * 1000 : null };
+    for (const k of keys) for (const [m, f] of Object.entries(pick)) {
+      const a = f(base[k]), b = f(half[k]);
+      if (a == null || b == null || Math.abs(a) < 1e-6) continue;
+      out[`${k}: ${m}`] = { dt: a, half: b, change: Math.abs(b / a - 1) * 100 };
+    }
+    return out;
+  }
+  function verify(P, base) {
+    const out = { drive: {}, steady: {}, rest: atRest(P), conv: convergence(P, base) };
+    for (const A of ["X", "Y", "Z"]) { out.drive[A] = freeDrive(P, A); out.steady[A] = steadyTorque(P, A); }
+    return out;
+  }
+
+  // ------------------------------------------------------------------ the requirements' worst cases, for the sensitivity sweep
+  function checks(P, R) {
+    const L = P.limits, run = Object.keys(R).filter(k => !k.startsWith("pfail") && !k.startsWith("_")), all = Object.keys(R).filter(k => !k.startsWith("_"));
+    const fails = all.filter(k => k.startsWith("pfail")), cut = ["profile", "pocket"].filter(k => R[k]);
+    const mx = (ks, f) => Math.max(...ks.map(f)), mn = (ks, f) => Math.min(...ks.map(f));
+    const c = {};
+    c.R69 = { v: mx(cut, k => R[k].contour), lim: L.contour, op: "<=" };
+    c.R70 = { v: mx(run, k => Math.max(...Object.values(R[k].util)) * 100), lim: 80, op: "<=" };
+    c.R71 = { v: mx(all, k => Math.max(...Object.values(R[k].psu))), lim: P.power.psu_w, op: "<=" };
+    c.R72 = { v: mx(all, k => R[k].vbus), lim: 0.9 * P.power.V_max, op: "<=" };
+    c.R73 = { v: mx(all, k => R[k].mains_1s), lim: L.mains, op: "<=" };
+    c.R74 = { v: mx(cut, k => R[k].droop * 100), lim: 10, op: "<=" };
+    const md = R[all[0]].modes;
+    c.R75 = { v: Math.min(...Object.entries(md).filter(([k]) => k !== "counterweight rope").map(([, f]) => f / P.servo.f_bw)), lim: 2.5, op: ">=" };
+    c.R76 = { v: mn(run, k => R[k].rope_min / P.axes.Y.cw.T0 * 100), lim: 50, op: ">=" };
+    const over = (F, i) => { const A = "XYZ"[i], v = Math.abs(F.v0[i]); return L.overrun[A] - Math.max(0, F.run[i] - v * v / (2 * P.axes[A].acc)) * 1000; };
+    ["X", "Y", "Z"].forEach((A, i) => { c["R77 " + A] = { v: mn(fails, k => over(R[k].fail, i)), lim: 0, op: ">=", unit: "mm to spare" }; });
+    c.R78 = { v: mn(fails, k => L.rope_mbl / Math.max(1, R[k].fail.rope_max)), lim: 5, op: ">=" };
+    c.R79 = { v: mx(fails, k => Math.max(...[0, 1, 2].map(i => R[k].fail.x2 ? Math.abs(R[k].fail.xs[i] - R[k].fail.x2[i]) * 1000 : 0))), lim: 0.01, op: "<=" };
+    for (const q of Object.values(c)) q.ok = q.op === "<=" ? q.v <= q.lim : q.v >= q.lim;
+    return c;
+  }
+  // the guesses, each run at half and double
+  const VARIATIONS = [
+    ["drive stiffness (belts, rack, screws)", (Q, f) => { for (const a of Object.values(Q.axes)) { a.k *= f; a.c *= Math.sqrt(f); } }],
+    ["drive damping", (Q, f) => { for (const a of Object.values(Q.axes)) a.c *= f; }],
+    ["carriage friction (blocks, seals, nuts)", (Q, f) => { for (const a of Object.values(Q.axes)) a.Fc *= f; }],
+    ["viscous drag", (Q, f) => { for (const a of Object.values(Q.axes)) a.bv *= f; }],
+    ["drivers' position-loop bandwidth", (Q, f) => { Q.servo.f_bw *= f; }],
+    ["motor detent torque", (Q, f) => { Q.motor.T_det *= f; }],
+    ["bus capacitance", (Q, f) => { Q.power.C *= f; }],
+    ["drivers' undervoltage trip", (Q, f) => { Q.power.V_uv *= f; }],
+    ["Y brake delay", (Q, f) => { Q.fail.brake_delay *= f; }],
+    ["counterweight rope stiffness", (Q, f) => { Q.axes.Y.cw.k *= f; Q.axes.Y.cw.c *= Math.sqrt(f); }],
+    ["column damping", (Q, f) => { Q.struct.zeta *= f; }],
+    ["bearing blocks' stiffness, normal to the bed", (Q, f) => { Q.struct.k_blocks_z *= f; }],
+    ["spindle inertia", (Q, f) => { Q.spindle.J *= f; }],
+    ["spindle bearing and windage losses", (Q, f) => { Q.spindle.P_loss *= f; }],
+    ["cutting feed force", (Q, f) => { Q.cut.k_feed *= f; }],
+  ];
+  function sweep(P, which) {
+    const out = [];
+    for (const i of which) {
+      const [name, fn] = VARIATIONS[Math.floor(i / 2)], f = i % 2 ? 2 : 0.5, Q = clone(P);
+      fn(Q, f);
+      out.push({ i, name, f, checks: checks(Q, runAll(Q)) });
+    }
+    return out;
+  }
+
+  const api = { build, jobs, plan, sample, Run, Meter, measure, runAll, modes, interp, verify, checks, sweep, VARIATIONS };
   if (typeof module !== "undefined" && module.exports) module.exports = api; else root.CNCSIM = api;
 })(typeof self !== "undefined" ? self : this);
 
 // under Node: node sim.js params.json -> the measures of every job, as JSON
 if (typeof require !== "undefined" && typeof module !== "undefined" && require.main === module) {
   const P = JSON.parse(require("fs").readFileSync(process.argv[2], "utf8"));
-  const t0 = Date.now();
-  const out = module.exports.runAll(P);
-  out._ms = Date.now() - t0;
-  process.stdout.write(JSON.stringify(out));
+  const t0 = Date.now(), S = module.exports;
+  if (process.argv[3] === "sweep") {                          // node sim.js P.json sweep 0,1,2 -> those variations' worst cases
+    process.stdout.write(JSON.stringify(S.sweep(P, process.argv[4].split(",").map(Number))));
+  } else if (process.argv[3] === "base") {                    // node sim.js P.json base -> the unvaried worst cases
+    process.stdout.write(JSON.stringify(S.checks(P, S.runAll(P))));
+  } else {
+    const out = S.runAll(P);
+    out._ms = Date.now() - t0;
+    out._verify = S.verify(P, out);
+    out._checks = S.checks(P, out);
+    out._ms_verify = Date.now() - t0 - out._ms;
+    process.stdout.write(JSON.stringify(out));
+  }
 }

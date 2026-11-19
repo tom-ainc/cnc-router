@@ -2,7 +2,7 @@
 
 The model itself is page/sim.js: one implementation, run live in the page and here under Node, so the requirements are
 checked on exactly the model the page shows. Parameters not set by the design are assumptions, each named below."""
-import json, math, os, subprocess, tempfile
+import hashlib, json, math, os, subprocess, tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SIM_JS = os.path.join(HERE, "page", "sim.js")
@@ -114,6 +114,9 @@ def params(g):
                   "aux_w": 150 + 60 + 20, "pf_aux": g["AUX_PF"], "pf_vfd": g["VFD_PF"], "mains_v": g["SUPPLY_V"]},
         "cut": {"u": g["U_WOOD"], "r": g["TOOL_D"] / 2000, "k_feed": 0.6},
         "plan": {"jd": 2e-5},
+        "limits": {"contour": 100.0, "mains": g["SUPPLY_A"], "rope_mbl": g["ROPE_MBL"],
+                   "overrun": {"X": (g["X_TRAVEL"][0] - g["SP_OFF"] - g["COL_W"] / 2 - 45 - g["BLK_L"] / 2) - g["X_BED"][0],
+                               "Y": min(g["Y_WORK"][0] - (g["Y_RAIL"][0] + g["YCH"]), (g["Y_RAIL"][1] - g["YCH"]) - g["Y_WORK"][1]), "Z": 10.0}},
         "job": {"park": [g["X_TRAVEL"][0], g["Y_WORK"][0], tip_up], "x": list(g["X_TRAVEL"]), "y": list(g["Y_WORK"]),
                 "lim": [list(g["X_TRAVEL"]), list(g["Y_WORK"]), [g["TIP_MIN"], tip_up]], "stock_t": g["STOCK_T"], "tool_d": g["TOOL_D"],
                 "feed": g["F_FEED"], "plunge": 1.0, "rpm": 18000, "spinup": 6.0,
@@ -134,3 +137,8 @@ def run(P):
     if out.returncode:
         raise RuntimeError(out.stderr[-2000:])
     return json.loads(out.stdout)
+
+
+def digest(P):
+    """A short fingerprint of the parameters, so a sensitivity sweep can tell whether it is stale."""
+    return hashlib.sha1(json.dumps(P, sort_keys=True).encode()).hexdigest()[:12]

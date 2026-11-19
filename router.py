@@ -1165,6 +1165,26 @@ for _j in ("pfail", "pfail_drop"):
             evidence=ev_pf, of=["GAN", "YC"])
 print("simulation", {j: {k: SIM_R[j][k] for k in ("contour", "vbus", "mains_1s", "droop", "rope_min")} for j in SIM_JOBS}, f"{SIM_R['_ms']} ms")
 print("power failure", {j: SIM_R[j]["fail"] for j in ("pfail", "pfail_drop")}, OVERRUN_OK)
+# ---- the model checked against answers known without it (sim.js verify()): it is the model that the results above rest on
+SIM_V = SIM_R["_verify"]
+ev_v = {"tool": "page/sim.js verify(): lossless free vibration, steady-speed force balance, idle start, half time step",
+        "leaves_out": "it checks the model is solved right, not that its parameters are right; see sensitivity.py for those"}
+for _a, _q in SIM_V["drive"].items():
+    require("R80", "Each drive's simulated natural frequency shall match the two-mass formula sqrt(k (1/m + 1/J G^2)) / 2 pi within 1 %",
+            _q["freq_err"], "<=", 1.0, "%", case=f"{_a}: {_q['f']:.1f} Hz against {_q['want']:.1f} Hz", evidence=ev_v, of=["GAN", "YC", "ZA"])
+    require("R81", "With losses and the loop off, a ringing drive's energy shall drift no more than 0.1 % over a second (the solver adds or loses none)",
+            _q["energy_drift"], "<=", 0.1, "%", case=_a, evidence=ev_v, of=["GAN", "YC", "ZA"])
+for _a, _q in SIM_V["steady"].items():
+    require("R82", "At a steady rapid, each motor's simulated torque shall equal the force balance (friction, drag, gravity, counterweight, detent) within 1 %",
+            _q["err"], "<=", 1.0, "%", case=f"{_a}: {_q['got']:.3f} against {_q['want']:.3f} N m", evidence=ev_v, of=["GAN", "YC", "ZA"])
+require("R83", "Left alone where it starts, the simulated tool tip shall move no more than 0.1 um (the model starts in equilibrium)",
+        SIM_V["rest"]["worst_um"], "<=", 0.1, "um", case=f"static sag under its own weight {SIM_V['rest']['sag_um']:.2f} um", evidence=ev_v, of=["P"])
+for _k, _q in SIM_V["conv"].items():
+    require("R84", "Halving the solver's time step shall change no simulated result by more than 2 %",
+            _q["change"], "<=", 2.0, "%", case=f"{_k}: {_q['dt']:.4g} to {_q['half']:.4g}", evidence=ev_v, of=["P"])
+import json
+json.dump(SIM_P, open("sim_params.json", "w"))
+print("verification", json.dumps(SIM_V)[:600], f"{SIM_R['_ms_verify']} ms")
 
 # ================================================================== the build, step by step (assembly.py)
 import assembly as A
@@ -1338,10 +1358,11 @@ viz["R51"] = {"pose": list(POSE), "parts": ["y_carriage", "z_axis", "spindle"]}
 viz["R52"] = {"pose": [ATC_XC, ATC_YC[2], z_nose_atc - TIP_TO_NOSE], "parts": ["atc_rack", "spindle", "z_axis"], "view": "front"}
 viz["R53"] = {"pose": list(POSE), "sweep": "y", "parts": ["counterweight"]}
 viz["R54"] = {"pose": [ATC_SLIDE0, ATC_YC[2], z_nose_atc - TIP_TO_NOSE], "parts": ["atc_rack", "spindle"]}
-for _rid in ("R69", "R70", "R71", "R72", "R73", "R74", "R75", "R76", "R77", "R78", "R79"):
+for _rid in ("R69", "R70", "R71", "R72", "R73", "R74", "R75", "R76", "R77", "R78", "R79", "R80", "R81", "R82", "R83", "R84"):
     viz[_rid] = {"pose": list(POSE), "parts": [], "sim": True}
 V["viz"] = viz
-V["sim"] = {"params": SIM_P, "results": {j: {k: v for k, v in SIM_R[j].items() if k != "steady"} for j in SIM_JOBS}, "overrun_ok": OVERRUN_OK}
+V["sim"] = {"params": SIM_P, "results": {j: {k: v for k, v in SIM_R[j].items() if k != "steady"} for j in SIM_JOBS}, "overrun_ok": OVERRUN_OK,
+            "verify": SIM_V, "digest": SIM.digest(SIM_P)}
 # what each requirement is about, for grouping the list on the page
 V["req_topics"] = {
     "Sheet and travel": ["R1", "R2", "R3", "R4", "R5", "R14"],
@@ -1354,6 +1375,7 @@ V["req_topics"] = {
     "Fabrication and build": ["R48", "R49", "R57", "R58", "R59", "R60", "R61", "R62", "R64", "R65"],
     "Use and safety": ["R28", "R29"],
     "Dynamics (simulation)": ["R69", "R70", "R71", "R72", "R73", "R74", "R75", "R76", "R77", "R78", "R79"],
+    "Simulation model checks": ["R80", "R81", "R82", "R83", "R84"],
 }
 # ---- the build, for the page to play back
 _shown = set(V["parts"]) | {c["name"] for c in V["chains"]}

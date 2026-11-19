@@ -266,6 +266,8 @@ body.sim-mode .ctl, body.sim-mode .stats { display: none; }
 .sim-meas th { text-align: left; font-weight: 500; color: var(--muted); padding: 4px 8px; border-bottom: 1px solid var(--line); }
 .sim-meas td { padding: 4px 8px; border-bottom: 1px solid var(--line); }
 .sim-meas td.num { text-align: right; font-family: var(--font-mono); white-space: nowrap; }
+.sim-meas .muted { color: var(--muted); font-size: 11.5px; }
+.sim-meas table.sens td:first-child { width: 38%; }
 .sim-foot { padding: 6px 12px 12px; font-size: 11px; color: var(--muted); }
 #err { display: none; padding: 16px; color: var(--fail); }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
@@ -1850,6 +1852,45 @@ body.sim-mode .ctl, body.sim-mode .stats { display: none; }
       $("row-" + id)?.scrollIntoView({ block: "nearest", behavior: "smooth" });
     });
   }
+  // how far to trust the model: its own checks, and how the requirements move when each guessed parameter is halved or doubled
+  let SENS = null;
+  if (SIMP) fetch("sensitivity.json").then(r => r.ok ? r.json() : null).then(j => { SENS = j; simTrust(); }).catch(() => {});
+  function simTrust() {
+    const el = $("sim-trust"); if (!el || !V.sim) return;
+    const v = V.sim.verify, f3 = (x) => (+x.toPrecision(3)).toString();
+    let h = "";
+    if (v) {
+      const conv = Object.values(v.conv).reduce((a, q) => Math.max(a, q.change), 0);
+      const rows = [
+        ["R80", "Drive frequencies against the two-mass formula", Object.entries(v.drive).map(([a, q]) => `${a} ${f3(q.freq_err)} %`).join(", "), "≤ 1 %"],
+        ["R81", "Energy drift, losses off, 1 s", Object.entries(v.drive).map(([a, q]) => `${a} ${f3(q.energy_drift)} %`).join(", "), "≤ 0.1 %"],
+        ["R82", "Steady torque against the force balance", Object.entries(v.steady).map(([a, q]) => `${a} ${f3(q.err)} %`).join(", "), "≤ 1 %"],
+        ["R83", "Movement when left alone", `${f3(v.rest.worst_um)} µm`, "≤ 0.1 µm"],
+        ["R84", "Largest change at half the time step", `${f3(conv)} %`, "≤ 2 %"],
+      ];
+      h += `<table><thead><tr><th></th><th>check: is the model solved right?</th><th>result</th><th>limit</th></tr></thead><tbody>` +
+        rows.map(([id, t, r, l]) => `<tr><td><span class="chip ${status(id)}">${id}</span></td><td>${t}</td><td class="num">${r}</td><td class="num">${l}</td></tr>`).join("") + `</tbody></table>`;
+    }
+    if (!SENS) { el.innerHTML = h + `<div class="sim-foot">No sensitivity sweep yet: run <code>python3 sensitivity.py</code> after router.py.</div>`; return; }
+    const B = SENS.base, margin = (c) => c.op === "<=" ? c.lim - c.v : c.v - c.lim;
+    const scale = (k) => Math.max(Math.abs(B[k].lim), Math.abs(margin(B[k])), 1e-9);
+    const cell = (r) => {
+      const fails = Object.entries(r.checks).filter(([, c]) => !c.ok);
+      if (fails.length) return fails.map(([k, c]) => `<span class="chip fail" title="${k}: ${f3(c.v)} against ${c.op} ${f3(c.lim)}">${k} ${f3(c.v)}</span>`).join(" ");
+      let worst = null, loss = 0;
+      for (const [k, c] of Object.entries(r.checks)) { const d = (margin(B[k]) - margin(c)) / scale(k); if (d > loss) { loss = d; worst = k; } }
+      return worst && loss > 0.02 ? `<span class="muted">pass · ${worst} ${f3(B[worst].v)} → ${f3(r.checks[worst].v)}</span>` : `<span class="muted">pass, little change</span>`;
+    };
+    const by = {}; SENS.rows.forEach(r => { (by[r.name] ||= {})[r.f] = r; });
+    const fragile = {};
+    SENS.rows.forEach(r => Object.entries(r.checks).forEach(([k, c]) => { if (!c.ok) (fragile[k] ||= []).push(`${r.name} ×${r.f}`); }));
+    const stale = SENS.digest !== V.sim.digest;
+    h += `<table class="sens"><thead><tr><th>guessed parameter</th><th>at ½×</th><th>at 2×</th></tr></thead><tbody>` +
+      Object.entries(by).map(([n, q]) => `<tr><td>${n}</td><td>${q[0.5] ? cell(q[0.5]) : "–"}</td><td>${q[2] ? cell(q[2]) : "–"}</td></tr>`).join("") + `</tbody></table>
+      <div class="sim-foot">${stale ? "<b>This sweep is stale:</b> the parameters have changed since it ran. " : ""}Each row reruns every job with one guess halved or doubled
+      (${SENS.rows.length} runs, ${Math.round(SENS.seconds / 60)} min). ${Object.keys(fragile).length ? "Fragile: " + Object.entries(fragile).map(([k, w]) => `<b>${k}</b> fails with ${w.join(", ")}`).join("; ") + "." : "No requirement fails under any of these."}</div>`;
+    el.innerHTML = h;
+  }
   function renderSim() {
     if (!SIMP) { $("p-sim").innerHTML = `<div class="empty">No simulation in this build.</div>`; return; }
     $("p-sim").innerHTML = `<div class="sim-bar">
@@ -1868,7 +1909,9 @@ body.sim-mode .ctl, body.sim-mode .stats { display: none; }
       <div class="scope-sel" id="scope-sel" hidden></div>
       <div class="scope-pick" id="scope-pick" aria-label="Scopes to show"></div>
       <div class="scopes" id="scopes" aria-label="Scopes"></div>
-      <div class="section-h">Measures</div><div id="sim-meas" class="sim-meas"></div>`;
+      <div class="section-h">Measures</div><div id="sim-meas" class="sim-meas"></div>
+      <div class="section-h">Model checks and sensitivity</div><div id="sim-trust" class="sim-meas"></div>`;
+    simTrust();
     $("sim-job").onchange = (e) => { simLoad(e.target.value); };
     $("sim-play").onclick = () => {
       if (!SR || simSeeking) return;
