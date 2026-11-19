@@ -1,8 +1,15 @@
-// build.js: the build tab of the assembly-procedure skill, a component of the page framework (core.js).
-// It plays the build back in the 3D view from V.assembly {steps, stage, units, pose}: each step's parts arrive
-// along their approach path, bench-built units wait at their staging offset and are then fitted, fasteners drive
-// in. A requirement whose V.viz entry has build: true opens at the step its worst case names ("S12 ...").
-// Fasteners (V.fasteners) are drawn here too, instanced, one mesh per joint.
+// build.js: the Build tab of the assembly-procedure skill, a component of the page framework (core.js).
+// It plays the build back in the 3D view: each step's parts arrive along their approach path, bench-built units
+// wait at their staging offset and are then fitted, fasteners drive in. A requirement whose V.viz entry has
+// build: true opens at the step its worst case names ("S12 ..."). Data in viewer_data.json:
+//   V.assembly = {pose: [...], stage: {unit: [dx, dy, dz]}, units: {unit: [parts]},
+//                 steps: [{id, title, phase, text, adds: [mesh names], tools: [...], fixture, why, pose,
+//                          path: [[dir, mm, "local" | "world"], ...]   the approach of the step's parts, last leg seats them
+//                          legs_of: {part: path}                      a part with its own approach
+//                          unit: name    built on the bench, staged at stage[unit]; moves: unit   fits that unit
+//                          lift: {what, kg, how, force}, fasteners: [{n, label, tool, torque}], welds: [{a, b, how}]}]}
+//   V.fasteners = [{name, step, type: SHCS | HEX | CSK | SET | WOOD | TEK | ROD, d, L, head: [D, k], nut: [s, m, z] | null,
+//                   pts: [[x, y, z]], dir: [x, y, z], group, label, ok, draw}]   drawn instanced, one mesh per joint
 (function () {
   const comp = { id: "build", tab: "Build", pane: "p-asm", tabId: "t-asm", after: "p-req", drives: true };
   Page.component(comp);

@@ -376,6 +376,57 @@ class PageView(dict):
         z = {k: v for k, v in dict(pose=pose, parts=parts, view=view, dims=dims, marks=marks, sweep=sweep).items() if v is not None}
         self["viz"][req] = {**self["viz"].get(req, {}), **z, **flags}
 
+    # ---- data for the companion skills' components (each component's file says how it shows it)
+    def bom_line(self, item, node, qty, price, kind="bought", unit="", supplier="", part_no="", link="", date="",
+                 estimated=False, basis="", parts=None):
+        """A line of the bill of materials for cost.js. price is per unit; kind is bought, made, owned (salvaged or
+        already owned: price 0) or stock; estimated prices give their basis (a rate per kg, per hour)."""
+        b = self.setdefault("bom", {"lines": []})
+        b["lines"].append(dict(item=item, node=node, qty=qty, unit=unit, price=price, kind=kind, supplier=supplier,
+                               part_no=part_no, link=link, date=date, estimated=estimated, basis=basis, parts=parts or []))
+
+    def bom_total(self):
+        return sum((l["price"] or 0) * (l["qty"] or 1) for l in self.get("bom", {}).get("lines", []))
+
+    def bom_setup(self, currency, basis="", budget=None, req=None, today=None):
+        """The bill's currency and basis ("incl. GST, excl. shipping"), and the budget with its requirement."""
+        b = self.setdefault("bom", {"lines": []})
+        b.update(currency=currency, basis=basis, **({"budget": {"limit": budget, "req": req}} if budget is not None else {}),
+                 **({"today": today} if today else {}))
+
+    def hazard(self, id, mode, S, L, node="P", kind="hazard", D=None, energy="", who="", function="", effect="",
+               cause="", detect="", mitigation="", reqs=(), parts=None, iface="", residual=""):
+        """A hazard (kind="hazard": an energy that can reach someone) or a failure mode (kind="failure": FMEA) for
+        hazards.js, rated severity S, likelihood L and, for failure modes, detection D on the scales set with
+        hazard_scales. reqs are the requirements that check its mitigation."""
+        h = self.setdefault("hazards", {"items": []})
+        h["items"].append({k: v for k, v in dict(id=id, kind=kind, mode=mode, S=S, L=L, D=D, node=node, iface=iface,
+                           energy=energy, who=who, function=function, effect=effect, cause=cause, detect=detect,
+                           mitigation=mitigation, reqs=list(reqs), parts=parts, residual=residual).items() if v not in (None, "")})
+
+    def hazard_scales(self, S, L, D=None, threshold=None, agreed=False):
+        """Labels for each rating, lowest first (S=["negligible", ..., "fatal"]); threshold: the risk (S x L, x D for
+        failure modes) at and above which a requirement must check the mitigation; agreed: the user has agreed them."""
+        h = self.setdefault("hazards", {"items": []})
+        h.update(scales={k: list(v) for k, v in dict(S=S, L=L, D=D).items() if v}, threshold=threshold, agreed=agreed)
+
+    def test(self, id, title, shows=(), params=(), why="", method="", equipment=(), procedure=(), pass_="", record="",
+             group="", order=None, before="", status="planned", result=""):
+        """A test of the real thing for tests.js: the requirements it validates (shows) or the parameters it measures,
+        how, what passes, and its place in the order. status: planned, passed or failed."""
+        t = self.setdefault("tests", {"plan": [], "calibration": []})
+        t["plan"].append(dict(id=id, title=title, shows=list(shows), params=list(params), why=why, method=method,
+                              equipment=list(equipment), procedure=list(procedure), pass_=pass_, record=record, group=group,
+                              order=len(t["plan"]) if order is None else order, before=before, status=status, result=result))
+        t["plan"][-1]["pass"] = t["plan"][-1].pop("pass_")
+
+    def calibration(self, param, measured, unit="", guess=None, uncertainty=None, method="", date="", predicted=None, changed=()):
+        """A measured parameter for tests.js: the old guess, what the model predicted for the test, the measurement
+        with its uncertainty, and the requirements whose standing changed [(id, before, after)]."""
+        t = self.setdefault("tests", {"plan": [], "calibration": []})
+        t["calibration"].append(dict(param=param, unit=unit, guess=guess, measured=measured, uncertainty=uncertainty, method=method,
+                                     date=date, predicted=predicted, changed=[dict(req=c[0], before=c[1], after=c[2]) for c in changed]))
+
     def write(self, path="page/viewer_data.json"):
         import json
         import os

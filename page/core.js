@@ -47,7 +47,7 @@
   V.parts ||= {}; V.viz ||= {};
   if (V.title) { document.title = V.title; $("title").textContent = V.title; }
   $("subtitle").textContent = V.subtitle || "";
-  Page.style("#panes { display: contents; }");
+  Page.style("#panes { display: contents; } .tabs { flex-wrap: wrap; } .tabs button { white-space: nowrap; }");
   // ------------------------------------------------------------- systems data
   const reqs = S.requirements;
   const res = Object.fromEntries(S.results.map(r => [r.requirement, r]));
@@ -728,6 +728,11 @@
     highlight, accent, clearAnnot, addDim, addLabel, addCG, setView, resize, view,
     showTab, selectReq, selectNode, openGroupOf, setFocus, focusParts, applyFocusView, updateFilterBar, renderReqs,
     linkOf: (key) => DG_LINKS.find(l => linkKey(l) === key),
+    // a requirement's chip, coloured by status; bindReqChips(el) makes every chip in el open its requirement
+    reqChip: (id, text) => `<span class="chip ${status(id)}" data-req="${id}" title="${(reqs.find(r => r.id === id) || {}).text || id}">${text || id}</span>`,
+    bindReqChips(el) { el.querySelectorAll("[data-req]").forEach(c => c.addEventListener("click", (e) => { e.stopPropagation(); showTab("p-req"); selectReq(c.dataset.req, true); })); },
+    // the diagram-level blocks a product-tree node is in or under (for filtering by the diagram's focus)
+    inFocus(nodeId) { if (!focus) return true; let n = nodeId; while (n) { if (focus.nodes.has(n)) return true; n = (nodes[n] || {}).parent; } return false; },
     note(html) { if (html) { $("note").innerHTML = html; $("note").classList.add("show"); } else $("note").classList.remove("show"); },
   });
   Object.defineProperty(Page, "focus", { get: () => focus });

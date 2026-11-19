@@ -1253,7 +1253,7 @@ def mesh_of(p, chord=0.05, angle=10.0):
 _c1 = REF[0] - SP_OFF
 V = PageView("Tilted-bed CNC router · 2400 × 1200",
              "Concept design, bed 10° from vertical, salvaged 9 kW ISO30 spindle on a 240 V 15 A circuit",
-             components=["sim.js", "sim-page.js", "sim-ui.js", "build.js", "flex.js"], whole="whole machine", bought_word="salvaged")
+             components=["sim.js", "sim-page.js", "sim-ui.js", "build.js", "flex.js", "confirm.js"], whole="whole machine", bought_word="salvaged")
 V.update({"tilt": TILT, "h0": H0, "parts": {}, "ranges": {
         "x": [X_TRAVEL[0], X_TRAVEL[1]], "x_work": list(X_WORK), "y": list(Y_WORK), "tip": [TIP_MIN, ZN_MAX - TIP_TO_NOSE]},
      "reeve": REEVE, "cw_ref": REF[1], "pose": list(POSE), "park": [X_TRAVEL[0], Y_WORK[0], ZN_MAX - TIP_TO_NOSE], "viz": {}})
