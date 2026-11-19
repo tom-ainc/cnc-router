@@ -38,6 +38,8 @@ __all__ = [
     "require_no_overlap",
     "require_one_solid",
     "require_true",
+    "PageView",
+    "mesh",
 ]
 
 _model = None
@@ -287,3 +289,96 @@ def report(baseline=None):
         print(f"  Fragile (fail under a plausible change of a guess): {' '.join(weak)}")
     print("  Nothing is done until it is tested on the real thing: record tests with validate().")
     return True
+
+
+
+# ================================================================== the page's data
+def mesh(solid, chord=0.05, angle=10.0):
+    """Triangles of a solid for the page: {"p": flat xyz, "t": flat triangle indices}. Works with any solid that has
+    .mesh(chord, angle) returning .points() and .triangles() (golf's do); `angle` is in degrees."""
+    m = solid.mesh(chord, angle)
+    return {"p": [round(c, 2) for pt in m.points() for c in pt], "t": [i for tr in m.triangles() for i in tr]}
+
+
+class PageView(dict):
+    """What the page (page/index.html and core.js, copied from this skill) shows: the 3D model, how it moves, and how
+    the page lays out its tiles and block diagram. A dict, so anything the components read can be added as a key.
+
+        V = PageView("Rain tank on a stand", "2 m stand, 500 L tank", components=["build.js"])
+        V.frame(translate=(0, 0, 0))
+        V.axis("lift", "Lift height", (0, 800))                   # a slider, and a pose value
+        V.group("lifted", ("lift", (0, 0, 1)))                    # parts in "lifted" move up with it
+        V.part("tank", tank_solid, group="lifted", colour="#3b7dd8", info="PE, 500 L")
+        V.tile("Height", height, "mm", req="R3", note="/ 2000")
+        V.show("R3", pose=[800], parts=["tank", "stand"], dims=[[a, b, "1960 mm"]])
+        V.write()                                                # page/viewer_data.json
+
+    Parts in a group move with it; "fixed" parts sit in the model's frame, "world" ones in the scene. A pose is a dict
+    of axis values, or a list in the order the axes were added."""
+
+    def __init__(self, title, subtitle="", components=(), whole="whole system", **extra):
+        super().__init__(title=title, subtitle=subtitle, components=list(components), whole=whole,
+                         parts={}, viz={}, axes=[], groups={}, **extra)
+
+    def frame(self, translate=(0, 0, 0), rotate=(0, 0, 0)):
+        """Where the model's own frame sits in the world (z up, mm): a move, then rotations about x, y, z in degrees."""
+        self["frame"] = {"translate": list(translate), "rotate": list(rotate)}
+
+    def axis(self, id, label, range, unit="mm", start=None, step=1):
+        self["axes"].append(dict(id=id, label=label, range=list(range), unit=unit, step=step,
+                                 start=range[0] if start is None else start))
+
+    def group(self, name, *terms):
+        """A moving group. Each term is (axis, direction, scale=1, ref=0): the group moves direction * scale *
+        (pose[axis] - ref), summed over the terms. A counterweight on a 2:1 rope: ("y", (0, 1, 0), -0.5, y0)."""
+        self["groups"][name] = [[t[0], list(t[1]), t[2] if len(t) > 2 else 1, t[3] if len(t) > 3 else 0] for t in terms]
+
+    def part(self, name, solid=None, group="fixed", colour="#a0a4a8", info="", kind="made", chord=0.05, angle=10.0, **fields):
+        """A part to draw. Give the solid (meshed here), or mesh= a mesh dict, or shared= a key of self["shared"] with
+        loc= its 4x4 row-major placement. Names with dots group under their prefix ("frame.leg_1" is in "frame")."""
+        d = dict(group=group, colour=colour, info=info, kind=kind, **fields)
+        if solid is not None:
+            d.update(mesh(solid, chord, angle))
+        elif "mesh" in d:
+            d.update(d.pop("mesh"))
+        self["parts"][name] = d
+
+    def button(self, label, pose=None, ms=1200, seq=None):
+        """A button under the sliders: go to a pose, or play a sequence [(pose, ms), ...]."""
+        self.setdefault("buttons", []).append(dict(label=label, seq=[[p, t] for p, t in seq]) if seq else dict(label=label, pose=pose, ms=ms))
+
+    def sweep(self, name, *legs):
+        """Travel a requirement's view can play: legs (axis, value or None for where it started, ms)."""
+        self.setdefault("sweeps", {})[name] = [list(l) for l in legs]
+
+    def view(self, name, dir, height, target, label=None):
+        """A camera view: looking along -dir at target, showing height mm of the world. Without any, the page fits
+        iso, side and front views to the model."""
+        self.setdefault("views", {})[name] = dict(dir=list(dir), height=height, target=list(target), **({"label": label} if label else {}))
+
+    def floor(self, x, y, step=100, major=1000):
+        self["floor"] = dict(x=list(x), y=list(y), step=step, major=major)
+
+    def tile(self, label, value, unit="", req="", note="", digits=None):
+        """A headline number above the diagram; clicking it opens its requirement."""
+        self.setdefault("tiles", []).append(dict(label=label, value=value, unit=unit, req=req, note=note, digits=digits))
+
+    def diagram(self, nodes, ext=None, W=128, H=54, w=76, h=24, frame=None, size=None):
+        """The block diagram's layout: nodes {id: (x, y)}, ext {outside thing: (x, y, [blocks it touches])}. Without
+        one, the page puts the top-level blocks in a grid."""
+        self["diagram"] = dict(nodes={k: list(v) for k, v in nodes.items()}, ext={k: [v[0], v[1], list(v[2])] for k, v in (ext or {}).items()},
+                               W=W, H=H, w=w, h=h, **({"frame": list(frame)} if frame else {}), **({"size": list(size)} if size else {}))
+
+    def show(self, req, pose=None, parts=None, view=None, dims=None, marks=None, sweep=None, **flags):
+        """How selecting a requirement looks: the pose, the parts lit, a view, dimension lines [[a, b, text]],
+        marks [[point, text]], a sweep to play. Flags for components: build=True opens it at its build step,
+        sim=True in the simulation."""
+        z = {k: v for k, v in dict(pose=pose, parts=parts, view=view, dims=dims, marks=marks, sweep=sweep).items() if v is not None}
+        self["viz"][req] = {**self["viz"].get(req, {}), **z, **flags}
+
+    def write(self, path="page/viewer_data.json"):
+        import json
+        import os
+        os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+        with open(path, "w") as f:
+            f.write(json.dumps(self))

@@ -1251,9 +1251,12 @@ def mesh_of(p, chord=0.05, angle=10.0):
 
 
 _c1 = REF[0] - SP_OFF
-V = {"tilt": TILT, "h0": H0, "parts": {}, "ranges": {
+V = PageView("Tilted-bed CNC router · 2400 × 1200",
+             "Concept design, bed 10° from vertical, salvaged 9 kW ISO30 spindle on a 240 V 15 A circuit",
+             components=["sim.js", "sim-page.js", "sim-ui.js", "build.js", "flex.js"], whole="whole machine", bought_word="salvaged")
+V.update({"tilt": TILT, "h0": H0, "parts": {}, "ranges": {
         "x": [X_TRAVEL[0], X_TRAVEL[1]], "x_work": list(X_WORK), "y": list(Y_WORK), "tip": [TIP_MIN, ZN_MAX - TIP_TO_NOSE]},
-     "reeve": REEVE, "cw_ref": REF[1], "pose": list(POSE), "park": [X_TRAVEL[0], Y_WORK[0], ZN_MAX - TIP_TO_NOSE], "viz": {}}
+     "reeve": REEVE, "cw_ref": REF[1], "pose": list(POSE), "park": [X_TRAVEL[0], Y_WORK[0], ZN_MAX - TIP_TO_NOSE], "viz": {}})
 # golf cannot mesh this STEP in reasonable time, so it is meshed once by gmsh (tools/step_mesh.py) and placed here
 V["shared"] = {"motor": json.load(open("parts/34E1K-120_mesh.json"))}
 
@@ -1267,7 +1270,8 @@ V["chains"] = [dict(name=nm, **{k: v for k, v in sp.items() if k != "part"}, inf
 V["cables"] = [dict(name=c["name"], od=c["od"], info=f"{c['what']}: {c['dev']} to {c['term']}, {CABLE_M[c['name']]:.1f} m",
                     pts=[["chain", EL.CH[w[1]]] if w[0] == "chain" else [*[round(v, 1) for v in w[0]], w[1]] for w in c["pts"]])
                 for c in CABLE_ROUTES.values()]
-V["rope"] = {"r": 2.5, "pts": [[*p, grp] for p, grp in ROPE_PTS], "info": [it for it in items if it["name"] == "gantry_frame.rope"][0]["note"]}
+V["ropes"] = [{"name": "gantry_frame.rope", "r": 2.5, "pts": [[*p, grp] for p, grp in ROPE_PTS],
+                "info": [it for it in items if it["name"] == "gantry_frame.rope"][0]["note"]}]
 for _it in items:
     if _it["name"] in CHAIN_SPECS or _it["name"] == "gantry_frame.rope":
         continue
@@ -1460,6 +1464,8 @@ V["assembly"] = {"steps": _asm, "stage": A.STAGE, "units": {u: d["parts"] for u,
 require("R64", "Every step of the build shall play back in the 3D viewer with all of its parts (parts a step names that the viewer lacks)",
         len(_missing), "<=", 0, "", case=f"{len(_asm)} steps" + (f"; missing {', '.join(_missing[:4])}" if _missing else ""))
 viz["R57"] = viz["R58"] = viz["R59"] = viz["R64"] = {"pose": V["assembly"]["pose"], "parts": []}
+for _r in ("R57", "R58", "R59", "R61", "R62", "R64"):        # these open at their build step
+    viz.setdefault(_r, {})["build"] = True
 cgs = []
 for ys, tip in ((Y_WORK[0], tip_up), (Y_WORK[1], tip_dn), (POSE[1], POSE[2])):
     car, za, sp_, _ = head(POSE[0], ys, tip)
@@ -1470,6 +1476,40 @@ V["cg"] = cgs
 V["stats"] = {"height": zmax, "floor_depth": floor_b.max()[1] - floor_b.min()[1], "parked_depth": fixed_depth,
               "envelope_depth": ymax_all - ymin_all, "length": fb.max()[0] - fb.min()[0], "mass": m_total,
               "sheet_edge_height": wpt(0, 0, 0)[2], "spindle_power": p_shaft, "circuit_a": i_total}
+# ---- how the page shows this machine (page/core.js reads these; see the systems-engineering skill's page.md)
+V.frame(translate=(0, 0, H0), rotate=(90 - TILT, 0, 0))
+V.axis("x", "X, along the sheet", (X_TRAVEL[0], X_TRAVEL[1]), start=POSE[0])
+V.axis("y", "Y, up the bed", Y_WORK, start=POSE[1])
+V.axis("tip", "Z, tool tip off the spoilboard", (TIP_MIN, tip_up), start=POSE[2])
+V.group("x", ("x", (1, 0, 0)))
+V.group("xy", ("x", (1, 0, 0)), ("y", (0, 1, 0)))
+V.group("xyz", ("x", (1, 0, 0)), ("y", (0, 1, 0)), ("tip", (0, 0, 1), 1, TIP_MIN))
+V.group("cw", ("x", (1, 0, 0)), ("y", (0, 1, 0), -1 / REEVE, REF[1]))       # the counterweight: half the head's travel, the other way
+V.button("Park for loading", V["park"], ms=1600)
+V.button("Run all axes", seq=[([X_WORK[0], Y_WORK[0], tip_up], 1200), ([X_WORK[0], Y_WORK[0], TIP_MIN], 700), ([X_WORK[1], Y_WORK[0], TIP_MIN], 2400),
+                              ([X_WORK[1], Y_WORK[1], TIP_MIN], 1500), ([X_WORK[0], Y_WORK[1], TIP_MIN], 2400), ([X_WORK[0], Y_WORK[1], tip_up], 700),
+                              (list(POSE), 1400)])
+V.sweep("x", ("x", X_TRAVEL[0], 900), ("x", X_TRAVEL[1], 2600), ("x", None, 1400))
+V.sweep("xwork", ("x", X_WORK[0], 600), ("x", X_WORK[1], 2400), ("x", X_WORK[0], 2400))
+V.sweep("y", ("y", Y_WORK[0], 700), ("y", Y_WORK[1], 1800), ("y", None, 1000))
+V.sweep("z", ("tip", TIP_MIN, 500), ("tip", tip_up, 1200), ("tip", None, 800))
+V.view("iso", (-0.5, -0.72, 0.45), 3200, (1100, -150, 850))
+V.view("side", (-1, 0, 0), 2500, (1300, -50, 950))
+V.view("front", (0, -1, 0), 3400, (1300, 0, 950))
+V.floor((-1000, 3500), (-1500, 1000))
+_st = V["stats"]
+V.tile("Height", _st["height"], "mm", "R6", "/ 1800")
+V.tile("Depth parked", _st["parked_depth"], "mm", "R8", "/ 1000")
+V.tile("Depth cutting", _st["envelope_depth"], "mm", "R8")
+V.tile("Spindle power", _st["spindle_power"] / 1000, "kW", "R26", "on 15 A", digits=2)
+V.tile("Circuit draw", _st["circuit_a"], "A", "R25", "/ 12 cont.", digits=1)
+V.tile("Mass", _st["mass"], "kg", "R15", "with sheet")
+V.diagram({"ZA": (290, 14), "SP": (470, 14), "YC": (290, 90), "ELEC": (104, 112), "GAN": (290, 166), "ATC": (470, 152), "BASE": (104, 248), "BED": (290, 248)},
+          {"dust": (8, 24, ["ZA"]), "supply": (8, 84, ["ELEC"]), "air": (8, 140, ["ELEC"]), "operator": (8, 190, ["BED", "ELEC"]),
+           "floor": (8, 274, ["BASE"]), "sheet": (480, 262, ["BED"])}, frame=(96, 4, 508, 306), size=(700, 314))
+for _z in viz.values():                                     # centres of gravity: head low and head high
+    if _z.pop("cg", None):
+        _z["marks"] = [[cgs[0], "CG, head low"], [cgs[1], "CG, head high"]]
 open("viewer_data.json", "w").write(json.dumps(V))
 # ---- how far each result can be trusted (se.report): who set each requirement, what its check rests on
 import se as _se
