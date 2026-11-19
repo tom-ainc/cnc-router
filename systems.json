@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "name": "Tilted-bed CNC router, 2400 x 1200",
-  "written": "2026-11-19 16:43:56",
+  "written": "2026-11-20 10:27:11",
   "task": {
     "kind": "new_design"
   },
@@ -411,6 +411,9 @@
       "limit": 0,
       "unit": "mm",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -425,6 +428,9 @@
       "limit": 0,
       "unit": "mm",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -439,6 +445,9 @@
       "limit": 300.0,
       "unit": "mm",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -453,6 +462,9 @@
       "limit": 10.0,
       "unit": "deg",
       "tolerance": 0.01,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -462,12 +474,15 @@
         "ZA",
         "SP"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "measure",
       "kind": "max",
       "limit": -2.0,
       "unit": "mm",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -482,6 +497,9 @@
       "limit": 1800.0,
       "unit": "mm",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -491,12 +509,15 @@
         "BED",
         "GAN"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "measure",
       "kind": "max",
       "limit": 2300.0,
       "unit": "mm",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -511,6 +532,9 @@
       "limit": 1000.0,
       "unit": "mm",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -526,6 +550,9 @@
       "limit": 1000.0,
       "unit": "mm",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -534,12 +561,15 @@
       "applies_to": [
         "P"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "measure",
       "kind": "max",
       "limit": 0,
       "unit": "mm^3",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -548,12 +578,15 @@
       "applies_to": [
         "P"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "measure",
       "kind": "max",
       "limit": 0,
       "unit": "mm^3",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -565,12 +598,15 @@
         "ZA",
         "SP"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "measure",
       "kind": "max",
       "limit": 0,
       "unit": "mm^3",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -582,12 +618,15 @@
         "ZA",
         "SP"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "measure",
       "kind": "max",
       "limit": 0,
       "unit": "mm^3",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -598,12 +637,15 @@
         "ZA",
         "SP"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "measure",
       "kind": "max",
       "limit": 0,
       "unit": "mm^3",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -613,12 +655,15 @@
         "GAN",
         "ATC"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "measure",
       "kind": "min",
       "limit": 20,
       "unit": "mm",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -627,12 +672,15 @@
       "applies_to": [
         "BASE"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "min",
       "limit": 150,
       "unit": "mm",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -641,12 +689,15 @@
       "applies_to": [
         "BASE"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "min",
       "limit": 300,
       "unit": "N",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -656,12 +707,15 @@
         "GAN",
         "YC"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "measure",
       "kind": "min",
       "limit": 0.999,
       "unit": "",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -670,12 +724,15 @@
       "applies_to": [
         "GAN"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "min",
       "limit": 1.5,
       "unit": "",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -684,12 +741,15 @@
       "applies_to": [
         "YC"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "min",
       "limit": 1.5,
       "unit": "",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -698,12 +758,15 @@
       "applies_to": [
         "ZA"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "min",
       "limit": 1.5,
       "unit": "",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -712,12 +775,15 @@
       "applies_to": [
         "YC"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "min",
       "limit": 1.25,
       "unit": "",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -726,12 +792,15 @@
       "applies_to": [
         "YC"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "min",
       "limit": 2.0,
       "unit": "",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -740,12 +809,15 @@
       "applies_to": [
         "YC"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "min",
       "limit": 1.25,
       "unit": "",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -754,12 +826,15 @@
       "applies_to": [
         "GAN"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "min",
       "limit": 5.0,
       "unit": "",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -768,12 +843,15 @@
       "applies_to": [
         "GAN"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "measure",
       "kind": "min",
       "limit": 20.0,
       "unit": "",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -782,12 +860,15 @@
       "applies_to": [
         "GAN"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "measure",
       "kind": "max",
       "limit": 0,
       "unit": "mm^3",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -797,12 +878,15 @@
         "GAN",
         "YC"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "measure",
       "kind": "max",
       "limit": 0,
       "unit": "mm^3",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -812,12 +896,15 @@
         "ZA",
         "YC"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "measure",
       "kind": "max",
       "limit": 0,
       "unit": "mm^3",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -827,12 +914,15 @@
         "YC",
         "ZA"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "measure",
       "kind": "min",
       "limit": 3.0,
       "unit": "mm",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -843,12 +933,15 @@
         "YC",
         "ELEC"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "measure",
       "kind": "min",
       "limit": 0,
       "unit": "mm",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -857,12 +950,15 @@
       "applies_to": [
         "ELEC"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "min",
       "limit": 7.5,
       "unit": "",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -871,12 +967,15 @@
       "applies_to": [
         "ELEC"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "max",
       "limit": 60,
       "unit": "",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -885,12 +984,15 @@
       "applies_to": [
         "ELEC"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "measure",
       "kind": "min",
       "limit": 0,
       "unit": "mm",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -899,12 +1001,15 @@
       "applies_to": [
         "ELEC"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "simulate",
       "kind": "max",
       "limit": 350.0,
       "unit": "W",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -913,12 +1018,15 @@
       "applies_to": [
         "GAN"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "max",
       "limit": 0.02,
       "unit": "mm",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -927,12 +1035,15 @@
       "applies_to": [
         "BED"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "max",
       "limit": 0.02,
       "unit": "mm",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -941,12 +1052,15 @@
       "applies_to": [
         "BED"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "max",
       "limit": 0.05,
       "unit": "mm",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -955,12 +1069,15 @@
       "applies_to": [
         "GAN"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "max",
       "limit": 0.01,
       "unit": "mm",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -970,12 +1087,15 @@
         "GAN",
         "BED"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "max",
       "limit": 0.05,
       "unit": "mm",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -985,12 +1105,15 @@
         "BED",
         "GAN"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "outside",
       "kind": null,
       "limit": null,
       "unit": "",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {
         "why": "a fabrication and inspection step: check with a straightedge and dial gauge"
       }
@@ -1003,12 +1126,15 @@
         "GAN",
         "BASE"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "outside",
       "kind": null,
       "limit": null,
       "unit": "",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {
         "why": "a fabrication process"
       }
@@ -1020,12 +1146,15 @@
         "ELEC",
         "SP"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "measure",
       "kind": "min",
       "limit": 800.0,
       "unit": "Hz",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1035,12 +1164,15 @@
         "ELEC",
         "SP"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "simulate",
       "kind": "max",
       "limit": 11.0,
       "unit": "A",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1049,12 +1181,15 @@
       "applies_to": [
         "SP"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "simulate",
       "kind": "max",
       "limit": 17.8,
       "unit": "A",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1063,12 +1198,15 @@
       "applies_to": [
         "ELEC"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "simulate",
       "kind": "max",
       "limit": 12.0,
       "unit": "A",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1077,12 +1215,15 @@
       "applies_to": [
         "SP"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "min",
       "limit": 864.0,
       "unit": "W",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1091,12 +1232,15 @@
       "applies_to": [
         "ELEC"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "outside",
       "kind": null,
       "limit": null,
       "unit": "",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {
         "why": "wiring, not geometry; for an electrician"
       }
@@ -1107,12 +1251,15 @@
       "applies_to": [
         "BED"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "outside",
       "kind": null,
       "limit": null,
       "unit": "",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {
         "why": "workholding test"
       }
@@ -1123,12 +1270,15 @@
       "applies_to": [
         "SP"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "outside",
       "kind": null,
       "limit": null,
       "unit": "",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {
         "why": "not on the listing"
       }
@@ -1142,12 +1292,15 @@
         "ZA",
         "SP"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "outside",
       "kind": null,
       "limit": null,
       "unit": "",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {
         "why": "a safety review of the installed machine"
       }
@@ -1161,12 +1314,15 @@
         "SP",
         "GAN"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "measure",
       "kind": "max",
       "limit": 1.0,
       "unit": "",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1175,12 +1331,15 @@
       "applies_to": [
         "GAN"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "simulate",
       "kind": "max",
       "limit": 5.0,
       "unit": "",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1189,12 +1348,15 @@
       "applies_to": [
         "P"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "measure",
       "kind": "max",
       "limit": 1.0,
       "unit": "mm^3",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1204,12 +1366,15 @@
         "ATC",
         "SP"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "measure",
       "kind": "max",
       "limit": 0,
       "unit": "mm^3",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1218,12 +1383,15 @@
       "applies_to": [
         "ATC"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "measure",
       "kind": "max",
       "limit": 0,
       "unit": "mm^3",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1234,12 +1402,22 @@
         "YC",
         "ZA"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "max",
       "limit": 100.0,
       "unit": "um",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [
+        "sim"
+      ],
+      "fragile": [
+        "drive stiffness (belts, rack, screws) is x0.5",
+        "carriage friction (blocks, seals, nuts) is x2",
+        "drivers' position-loop bandwidth is x0.5",
+        "motor detent torque is x2"
+      ],
       "extra": {}
     },
     {
@@ -1248,12 +1426,17 @@
       "applies_to": [
         "GAN"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "max",
       "limit": 80,
       "unit": "%",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [
+        "sim"
+      ],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1262,12 +1445,17 @@
       "applies_to": [
         "ELEC"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "simulate",
       "kind": "max",
       "limit": 350.0,
       "unit": "W",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [
+        "sim"
+      ],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1277,12 +1465,19 @@
         "ELEC",
         "GAN"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "max",
       "limit": 90.0,
       "unit": "V",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [
+        "sim"
+      ],
+      "fragile": [
+        "bus capacitance is x0.5"
+      ],
       "extra": {}
     },
     {
@@ -1292,12 +1487,17 @@
         "ELEC",
         "SP"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "simulate",
       "kind": "max",
       "limit": 15.0,
       "unit": "A",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [
+        "sim"
+      ],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1307,12 +1507,17 @@
         "GAN",
         "YC"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "min",
       "limit": 50,
       "unit": "%",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [
+        "sim"
+      ],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1322,12 +1527,17 @@
         "SP",
         "ELEC"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "max",
       "limit": 10,
       "unit": "%",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [
+        "sim"
+      ],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1338,12 +1548,17 @@
         "YC",
         "ZA"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "min",
       "limit": 2.5,
       "unit": "",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [
+        "sim"
+      ],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1352,12 +1567,21 @@
       "applies_to": [
         "GAN"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "min",
       "limit": 0,
       "unit": "mm",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [
+        "sim"
+      ],
+      "fragile": [
+        "carriage friction (blocks, seals, nuts) is x0.5",
+        "motor detent torque is x0.5",
+        "Y brake delay is x2"
+      ],
       "extra": {}
     },
     {
@@ -1366,12 +1590,17 @@
       "applies_to": [
         "GAN"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "max",
       "limit": 0.01,
       "unit": "mm",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [
+        "sim"
+      ],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1381,12 +1610,17 @@
         "GAN",
         "YC"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "min",
       "limit": 5.0,
       "unit": "",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [
+        "sim"
+      ],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1397,12 +1631,15 @@
         "YC",
         "ZA"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "max",
       "limit": 1.0,
       "unit": "%",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1413,12 +1650,15 @@
         "YC",
         "ZA"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "max",
       "limit": 0.1,
       "unit": "%",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1429,12 +1669,15 @@
         "YC",
         "ZA"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "max",
       "limit": 1.0,
       "unit": "%",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1443,12 +1686,15 @@
       "applies_to": [
         "P"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "max",
       "limit": 0.1,
       "unit": "um",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1457,12 +1703,15 @@
       "applies_to": [
         "P"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "max",
       "limit": 2.0,
       "unit": "%",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1471,12 +1720,15 @@
       "applies_to": [
         "ELEC"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "measure",
       "kind": "max",
       "limit": 0,
       "unit": "",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1485,12 +1737,15 @@
       "applies_to": [
         "ELEC"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "simulate",
       "kind": "max",
       "limit": 70.0,
       "unit": "m3/h",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1505,6 +1760,9 @@
       "limit": 0,
       "unit": "",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1513,12 +1771,15 @@
       "applies_to": [
         "P"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "measure",
       "kind": "max",
       "limit": 0,
       "unit": "",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1533,6 +1794,9 @@
       "limit": 25.0,
       "unit": "kg",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1541,12 +1805,15 @@
       "applies_to": [
         "P"
       ],
-      "source": "stated",
+      "source": "assumed",
       "method": "measure",
       "kind": "max",
       "limit": 0,
       "unit": "",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1555,12 +1822,15 @@
       "applies_to": [
         "P"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "measure",
       "kind": "max",
       "limit": 0,
       "unit": "",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1569,12 +1839,15 @@
       "applies_to": [
         "P"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "measure",
       "kind": "max",
       "limit": 1.0,
       "unit": "mm^3",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1583,12 +1856,15 @@
       "applies_to": [
         "P"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "measure",
       "kind": "max",
       "limit": 1.0,
       "unit": "mm^3",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1597,12 +1873,15 @@
       "applies_to": [
         "P"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "measure",
       "kind": "max",
       "limit": 1.0,
       "unit": "mm^3",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1611,12 +1890,15 @@
       "applies_to": [
         "P"
       ],
-      "source": "stated",
+      "source": "implied",
       "method": "measure",
       "kind": "max",
       "limit": 1.0,
       "unit": "mm^3",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     },
     {
@@ -1631,6 +1913,9 @@
       "limit": 0,
       "unit": "",
       "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
       "extra": {}
     }
   ],
@@ -1639,15 +1924,19 @@
       "id": "A1",
       "text": "Bed tilt is 10 deg from vertical",
       "reason": "answer to a question; the sketch shows 20 deg (110 deg)",
-      "affects": [],
-      "confirmed": false,
+      "affects": [
+        "R4"
+      ],
+      "confirmed": true,
       "extra": {}
     },
     {
       "id": "A2",
       "text": "The 300 on the sketch is the Z travel",
       "reason": "it is labelled '(Z-travel) 300'",
-      "affects": [],
+      "affects": [
+        "R3"
+      ],
       "confirmed": false,
       "extra": {}
     },
@@ -1655,7 +1944,15 @@
       "id": "A3",
       "text": "Stock up to 25 mm, cutter up to 12 mm, workholding no taller than 40 mm",
       "reason": "not given",
-      "affects": [],
+      "affects": [
+        "R1",
+        "R2",
+        "R5",
+        "R12",
+        "R14",
+        "R26",
+        "R69"
+      ],
       "confirmed": false,
       "extra": {}
     },
@@ -1671,7 +1968,13 @@
       "id": "A5",
       "text": "Motor torque follows the published 48 V DM860T pull-out curve",
       "reason": "the 60 V supplies and the closed-loop drivers differ from the test",
-      "affects": [],
+      "affects": [
+        "R17",
+        "R18",
+        "R19",
+        "R33",
+        "R70"
+      ],
       "confirmed": false,
       "extra": {}
     },
@@ -1679,7 +1982,14 @@
       "id": "A6",
       "text": "Spindle is the 380 V version: 17.8 A rated, 29 kg, no-load current 35 % of rated",
       "reason": "user's correction; figures from the same-body GDZ143x133-9",
-      "affects": [],
+      "affects": [
+        "R24",
+        "R25",
+        "R26",
+        "R30",
+        "R73",
+        "R74"
+      ],
       "confirmed": false,
       "extra": {}
     },
@@ -1687,7 +1997,12 @@
       "id": "A7",
       "text": "On a future 3-phase supply the largest cut is a 25 mm cutter, 25 mm deep, at 10 m/min and 12 000 rpm",
       "reason": "the steppers' speed, not the spindle, caps it",
-      "affects": [],
+      "affects": [
+        "R17",
+        "R22",
+        "R46",
+        "R47"
+      ],
       "confirmed": false,
       "extra": {}
     },
@@ -1695,7 +2010,10 @@
       "id": "A8",
       "text": "Dust collector and compressor run on other circuits",
       "reason": "the 15 A circuit cannot also carry them",
-      "affects": [],
+      "affects": [
+        "R25",
+        "R73"
+      ],
       "confirmed": false,
       "extra": {}
     },
@@ -1703,7 +2021,27 @@
       "id": "A9",
       "text": "Rapids X 15, Y 10, Z 5 m/min; 1 m/s^2; 300 N cutting force at 6 m/min",
       "reason": "hobby router targets, not given",
-      "affects": [],
+      "affects": [
+        "R17",
+        "R18",
+        "R19",
+        "R22",
+        "R33",
+        "R44",
+        "R46",
+        "R47",
+        "R69",
+        "R70",
+        "R71",
+        "R72",
+        "R73",
+        "R74",
+        "R75",
+        "R76",
+        "R77",
+        "R78",
+        "R79"
+      ],
       "confirmed": false,
       "extra": {}
     },
@@ -1712,14 +2050,16 @@
       "text": "The X and Z cable chains may stand above 1800 mm; the ceiling is 2400 mm",
       "reason": "user: the 1800 mm limit is for assembly and operating ergonomics; Y can be jogged down to work on the Z chain. Ceiling not given",
       "affects": [],
-      "confirmed": false,
+      "confirmed": true,
       "extra": {}
     },
     {
       "id": "A11",
       "text": "The head may overhang the floor frame while cutting; parked at the left end it sits in the room's corner",
       "reason": "user accepted the 1342 mm cutting envelope",
-      "affects": [],
+      "affects": [
+        "R8"
+      ],
       "confirmed": false,
       "extra": {}
     },
@@ -1735,7 +2075,19 @@
       "id": "A13",
       "text": "Drive stiffness from catalogue orders of magnitude: HTD 5M belt EA 120 kN, rack mesh 100 N/um, ball nut 200 N/um",
       "reason": "no stiffness data for the salvaged parts; the simulation's vibration results scale with them",
-      "affects": [],
+      "affects": [
+        "R69",
+        "R70",
+        "R71",
+        "R72",
+        "R73",
+        "R74",
+        "R75",
+        "R76",
+        "R77",
+        "R78",
+        "R79"
+      ],
       "confirmed": false,
       "extra": {}
     },
@@ -1743,7 +2095,19 @@
       "id": "A14",
       "text": "Each 60 V bus has 2200 uF and the supplies cannot sink current; the drivers trip above 100 V DC",
       "reason": "typical for open-frame supplies and closed-loop stepper drivers; measure the salvaged ones",
-      "affects": [],
+      "affects": [
+        "R69",
+        "R70",
+        "R71",
+        "R72",
+        "R73",
+        "R74",
+        "R75",
+        "R76",
+        "R77",
+        "R78",
+        "R79"
+      ],
       "confirmed": false,
       "extra": {}
     },
@@ -1751,7 +2115,19 @@
       "id": "A15",
       "text": "Spindle rotor 0.003 kg m^2, 400 W of bearing and windage loss at 24 000 rpm",
       "reason": "same-body spindles' catalogues",
-      "affects": [],
+      "affects": [
+        "R69",
+        "R70",
+        "R71",
+        "R72",
+        "R73",
+        "R74",
+        "R75",
+        "R76",
+        "R77",
+        "R78",
+        "R79"
+      ],
       "confirmed": false,
       "extra": {}
     },
@@ -1759,7 +2135,19 @@
       "id": "A16",
       "text": "The drivers' position loop closes at 20 Hz on the motor encoder",
       "reason": "a closed-loop stepper driver's usual tuning",
-      "affects": [],
+      "affects": [
+        "R69",
+        "R70",
+        "R71",
+        "R72",
+        "R73",
+        "R74",
+        "R75",
+        "R76",
+        "R77",
+        "R78",
+        "R79"
+      ],
       "confirmed": false,
       "extra": {}
     },
@@ -1767,7 +2155,19 @@
       "id": "A17",
       "text": "On a power failure the controller stops at once; the drivers trip below 20 V or at one turn of position error; the Y brake holds 50 ms after the mains goes; unpowered motors give 0.15 N m of detent torque",
       "reason": "closed-loop stepper drivers' and spring brakes' usual behaviour; measure them",
-      "affects": [],
+      "affects": [
+        "R69",
+        "R70",
+        "R71",
+        "R72",
+        "R73",
+        "R74",
+        "R75",
+        "R76",
+        "R77",
+        "R78",
+        "R79"
+      ],
       "confirmed": false,
       "extra": {}
     }
@@ -2111,6 +2511,11 @@
           "extra": {}
         }
       ],
+      "standing": "provisional",
+      "why": [
+        "rests on A3, not confirmed: Stock up to 25 mm, cutter up to 12 mm, workholding no taller than 40 mm"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 95.0,
@@ -2138,6 +2543,11 @@
           "extra": {}
         }
       ],
+      "standing": "provisional",
+      "why": [
+        "rests on A3, not confirmed: Stock up to 25 mm, cutter up to 12 mm, workholding no taller than 40 mm"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 0.0,
@@ -2165,6 +2575,11 @@
           "extra": {}
         }
       ],
+      "standing": "provisional",
+      "why": [
+        "rests on A2, not confirmed: The 300 on the sketch is the Z travel"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 300.0,
@@ -2192,6 +2607,11 @@
           "extra": {}
         }
       ],
+      "standing": "credible",
+      "why": [
+        "predicted to pass, with its requirement, model and inputs confirmed; not yet tested"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 10.000000000001892,
@@ -2219,6 +2639,12 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user",
+        "rests on A3, not confirmed: Stock up to 25 mm, cutter up to 12 mm, workholding no taller than 40 mm"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": -2.0,
@@ -2246,6 +2672,11 @@
           "extra": {}
         }
       ],
+      "standing": "credible",
+      "why": [
+        "predicted to pass, with its requirement, model and inputs confirmed; not yet tested"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 1793.897845942455,
@@ -2272,7 +2703,12 @@
           "evidence": {},
           "extra": {}
         }
-      ]
+      ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user"
+      ],
+      "validations": []
     },
     {
       "requirement": "R7",
@@ -2294,6 +2730,11 @@
           "extra": {}
         }
       ],
+      "standing": "credible",
+      "why": [
+        "predicted to pass, with its requirement, model and inputs confirmed; not yet tested"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 798.8218743857867,
@@ -2321,6 +2762,11 @@
           "extra": {}
         }
       ],
+      "standing": "provisional",
+      "why": [
+        "rests on A11, not confirmed: The head may overhang the floor frame while cutting; parked at the left end it sits in the room's corner"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 856.682859871639,
@@ -3410,6 +3856,11 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 0.0,
@@ -3446,6 +3897,11 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 0.0,
@@ -5084,6 +5540,11 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 0.0,
@@ -6560,6 +7021,12 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user",
+        "rests on A3, not confirmed: Stock up to 25 mm, cutter up to 12 mm, workholding no taller than 40 mm"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 0.0,
@@ -7388,6 +7855,11 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 0.0,
@@ -7415,6 +7887,12 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user",
+        "rests on A3, not confirmed: Stock up to 25 mm, cutter up to 12 mm, workholding no taller than 40 mm"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 39.99999999999999,
@@ -7448,6 +7926,11 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 348.3393762364821,
@@ -7481,6 +7964,11 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 2267.0189645583473,
@@ -7508,6 +7996,11 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 0.9998361634952307,
@@ -7541,6 +8034,14 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user",
+        "rests on A5, not confirmed: Motor torque follows the published 48 V DM860T pull-out curve",
+        "rests on A7, not confirmed: On a future 3-phase supply the largest cut is a 25 mm cutter, 25 mm deep, at 10 m/min and 12 000 rpm",
+        "rests on A9, not confirmed: Rapids X 15, Y 10, Z 5 m/min; 1 m/s^2; 300 N cutting force at 6 m/min"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 2.4154932832266596,
@@ -7574,6 +8075,13 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user",
+        "rests on A5, not confirmed: Motor torque follows the published 48 V DM860T pull-out curve",
+        "rests on A9, not confirmed: Rapids X 15, Y 10, Z 5 m/min; 1 m/s^2; 300 N cutting force at 6 m/min"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 1.631159594357929,
@@ -7607,6 +8115,13 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user",
+        "rests on A5, not confirmed: Motor torque follows the published 48 V DM860T pull-out curve",
+        "rests on A9, not confirmed: Rapids X 15, Y 10, Z 5 m/min; 1 m/s^2; 300 N cutting force at 6 m/min"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 1.6858655976466366,
@@ -7640,6 +8155,11 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 2.595414451881944,
@@ -7673,6 +8193,11 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 19.530581248893135,
@@ -7706,6 +8231,11 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 1.9530581248893115,
@@ -7739,6 +8269,11 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 17.933010849341663,
@@ -7766,6 +8301,11 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 20.0,
@@ -7811,6 +8351,11 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 0.0,
@@ -7937,6 +8482,11 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 0.0,
@@ -8018,6 +8568,11 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 0.0,
@@ -8072,6 +8627,11 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 5.0,
@@ -8171,6 +8731,11 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 2.5,
@@ -8204,6 +8769,11 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 7.6923076923076925,
@@ -8261,6 +8831,11 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 48.39154999740067,
@@ -8306,6 +8881,11 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 12.0,
@@ -8363,6 +8943,13 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user",
+        "rests on A5, not confirmed: Motor torque follows the published 48 V DM860T pull-out curve",
+        "rests on A9, not confirmed: Rapids X 15, Y 10, Z 5 m/min; 1 m/s^2; 300 N cutting force at 6 m/min"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 171.76837549700357,
@@ -8396,6 +8983,13 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user",
+        "rests on A7, not confirmed: On a future 3-phase supply the largest cut is a 25 mm cutter, 25 mm deep, at 10 m/min and 12 000 rpm",
+        "rests on A9, not confirmed: Rapids X 15, Y 10, Z 5 m/min; 1 m/s^2; 300 N cutting force at 6 m/min"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 0.0033059801145022705,
@@ -8429,6 +9023,12 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user",
+        "rests on A9, not confirmed: Rapids X 15, Y 10, Z 5 m/min; 1 m/s^2; 300 N cutting force at 6 m/min"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 0.012433518366463317,
@@ -8462,6 +9062,11 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 0.00866196146055597,
@@ -8495,6 +9100,13 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user",
+        "rests on A7, not confirmed: On a future 3-phase supply the largest cut is a 25 mm cutter, 25 mm deep, at 10 m/min and 12 000 rpm",
+        "rests on A9, not confirmed: Rapids X 15, Y 10, Z 5 m/min; 1 m/s^2; 300 N cutting force at 6 m/min"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 0.0030298588820606162,
@@ -8528,6 +9140,13 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user",
+        "rests on A7, not confirmed: On a future 3-phase supply the largest cut is a 25 mm cutter, 25 mm deep, at 10 m/min and 12 000 rpm",
+        "rests on A9, not confirmed: Rapids X 15, Y 10, Z 5 m/min; 1 m/s^2; 300 N cutting force at 6 m/min"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 0.013152598179794545,
@@ -8545,6 +9164,11 @@
       "evidence": {},
       "extra": {},
       "cases": [],
+      "standing": "not_checked",
+      "why": [
+        "only a person can check it: test or inspect the real thing"
+      ],
+      "validations": [],
       "before": {
         "status": "cannot_verify",
         "measured": null,
@@ -8562,6 +9186,11 @@
       "evidence": {},
       "extra": {},
       "cases": [],
+      "standing": "not_checked",
+      "why": [
+        "only a person can check it: test or inspect the real thing"
+      ],
+      "validations": [],
       "before": {
         "status": "cannot_verify",
         "measured": null,
@@ -8589,6 +9218,11 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 1500.0,
@@ -8658,6 +9292,12 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user",
+        "rests on A6, not confirmed: Spindle is the 380 V version: 17.8 A rated, 29 kg, no-load current 35 % of rated"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 7.697885614653422,
@@ -8727,6 +9367,12 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user",
+        "rests on A6, not confirmed: Spindle is the 380 V version: 17.8 A rated, 29 kg, no-load current 35 % of rated"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 7.697885614653422,
@@ -8760,6 +9406,13 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user",
+        "rests on A6, not confirmed: Spindle is the 380 V version: 17.8 A rated, 29 kg, no-load current 35 % of rated",
+        "rests on A8, not confirmed: Dust collector and compressor run on other circuits"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 11.67989417989418,
@@ -8793,6 +9446,13 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user",
+        "rests on A3, not confirmed: Stock up to 25 mm, cutter up to 12 mm, workholding no taller than 40 mm",
+        "rests on A6, not confirmed: Spindle is the 380 V version: 17.8 A rated, 29 kg, no-load current 35 % of rated"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 1190.4,
@@ -8810,6 +9470,11 @@
       "evidence": {},
       "extra": {},
       "cases": [],
+      "standing": "not_checked",
+      "why": [
+        "only a person can check it: test or inspect the real thing"
+      ],
+      "validations": [],
       "before": {
         "status": "cannot_verify",
         "measured": null,
@@ -8827,6 +9492,11 @@
       "evidence": {},
       "extra": {},
       "cases": [],
+      "standing": "not_checked",
+      "why": [
+        "only a person can check it: test or inspect the real thing"
+      ],
+      "validations": [],
       "before": {
         "status": "cannot_verify",
         "measured": null,
@@ -8844,6 +9514,11 @@
       "evidence": {},
       "extra": {},
       "cases": [],
+      "standing": "not_checked",
+      "why": [
+        "only a person can check it: test or inspect the real thing"
+      ],
+      "validations": [],
       "before": {
         "status": "cannot_verify",
         "measured": null,
@@ -8861,6 +9536,11 @@
       "evidence": {},
       "extra": {},
       "cases": [],
+      "standing": "not_checked",
+      "why": [
+        "only a person can check it: test or inspect the real thing"
+      ],
+      "validations": [],
       "before": {
         "status": "cannot_verify",
         "measured": null,
@@ -8906,6 +9586,11 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 0.9985755176421361,
@@ -8939,6 +9624,11 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 1.2718685828387404,
@@ -10721,6 +11411,11 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 0.0,
@@ -10901,6 +11596,11 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 0.0,
@@ -11243,6 +11943,11 @@
           "extra": {}
         }
       ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user"
+      ],
+      "validations": [],
       "before": {
         "status": "pass",
         "measured": 0.0,
@@ -11287,7 +11992,23 @@
           },
           "extra": {}
         }
-      ]
+      ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user",
+        "rests on A3, not confirmed: Stock up to 25 mm, cutter up to 12 mm, workholding no taller than 40 mm",
+        "rests on A9, not confirmed: Rapids X 15, Y 10, Z 5 m/min; 1 m/s^2; 300 N cutting force at 6 m/min",
+        "rests on A13, not confirmed: Drive stiffness from catalogue orders of magnitude: HTD 5M belt EA 120 kN, rack mesh 100 N/um, ball nut 200 N/um",
+        "rests on A14, not confirmed: Each 60 V bus has 2200 uF and the supplies cannot sink current; the drivers trip above 100 V DC",
+        "rests on A15, not confirmed: Spindle rotor 0.003 kg m^2, 400 W of bearing and windage loss at 24 000 rpm",
+        "rests on A16, not confirmed: The drivers' position loop closes at 20 Hz on the motor encoder",
+        "rests on A17, not confirmed: On a power failure the controller stops at once; the drivers trip below 20 V or at one turn of position error; the Y brake holds 50 ms after the mains goes; unpowered motors give 0.15 N m of detent torque",
+        "fails if drive stiffness (belts, rack, screws) is x0.5",
+        "fails if carriage friction (blocks, seals, nuts) is x2",
+        "fails if drivers' position-loop bandwidth is x0.5",
+        "fails if motor detent torque is x2"
+      ],
+      "validations": []
     },
     {
       "requirement": "R70",
@@ -11446,7 +12167,19 @@
           },
           "extra": {}
         }
-      ]
+      ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user",
+        "rests on A5, not confirmed: Motor torque follows the published 48 V DM860T pull-out curve",
+        "rests on A9, not confirmed: Rapids X 15, Y 10, Z 5 m/min; 1 m/s^2; 300 N cutting force at 6 m/min",
+        "rests on A13, not confirmed: Drive stiffness from catalogue orders of magnitude: HTD 5M belt EA 120 kN, rack mesh 100 N/um, ball nut 200 N/um",
+        "rests on A14, not confirmed: Each 60 V bus has 2200 uF and the supplies cannot sink current; the drivers trip above 100 V DC",
+        "rests on A15, not confirmed: Spindle rotor 0.003 kg m^2, 400 W of bearing and windage loss at 24 000 rpm",
+        "rests on A16, not confirmed: The drivers' position loop closes at 20 Hz on the motor encoder",
+        "rests on A17, not confirmed: On a power failure the controller stops at once; the drivers trip below 20 V or at one turn of position error; the Y brake holds 50 ms after the mains goes; unpowered motors give 0.15 N m of detent torque"
+      ],
+      "validations": []
     },
     {
       "requirement": "R71",
@@ -11509,7 +12242,18 @@
           },
           "extra": {}
         }
-      ]
+      ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user",
+        "rests on A9, not confirmed: Rapids X 15, Y 10, Z 5 m/min; 1 m/s^2; 300 N cutting force at 6 m/min",
+        "rests on A13, not confirmed: Drive stiffness from catalogue orders of magnitude: HTD 5M belt EA 120 kN, rack mesh 100 N/um, ball nut 200 N/um",
+        "rests on A14, not confirmed: Each 60 V bus has 2200 uF and the supplies cannot sink current; the drivers trip above 100 V DC",
+        "rests on A15, not confirmed: Spindle rotor 0.003 kg m^2, 400 W of bearing and windage loss at 24 000 rpm",
+        "rests on A16, not confirmed: The drivers' position loop closes at 20 Hz on the motor encoder",
+        "rests on A17, not confirmed: On a power failure the controller stops at once; the drivers trip below 20 V or at one turn of position error; the Y brake holds 50 ms after the mains goes; unpowered motors give 0.15 N m of detent torque"
+      ],
+      "validations": []
     },
     {
       "requirement": "R72",
@@ -11596,7 +12340,19 @@
           },
           "extra": {}
         }
-      ]
+      ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user",
+        "rests on A9, not confirmed: Rapids X 15, Y 10, Z 5 m/min; 1 m/s^2; 300 N cutting force at 6 m/min",
+        "rests on A13, not confirmed: Drive stiffness from catalogue orders of magnitude: HTD 5M belt EA 120 kN, rack mesh 100 N/um, ball nut 200 N/um",
+        "rests on A14, not confirmed: Each 60 V bus has 2200 uF and the supplies cannot sink current; the drivers trip above 100 V DC",
+        "rests on A15, not confirmed: Spindle rotor 0.003 kg m^2, 400 W of bearing and windage loss at 24 000 rpm",
+        "rests on A16, not confirmed: The drivers' position loop closes at 20 Hz on the motor encoder",
+        "rests on A17, not confirmed: On a power failure the controller stops at once; the drivers trip below 20 V or at one turn of position error; the Y brake holds 50 ms after the mains goes; unpowered motors give 0.15 N m of detent torque",
+        "fails if bus capacitance is x0.5"
+      ],
+      "validations": []
     },
     {
       "requirement": "R73",
@@ -11683,7 +12439,20 @@
           },
           "extra": {}
         }
-      ]
+      ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user",
+        "rests on A6, not confirmed: Spindle is the 380 V version: 17.8 A rated, 29 kg, no-load current 35 % of rated",
+        "rests on A8, not confirmed: Dust collector and compressor run on other circuits",
+        "rests on A9, not confirmed: Rapids X 15, Y 10, Z 5 m/min; 1 m/s^2; 300 N cutting force at 6 m/min",
+        "rests on A13, not confirmed: Drive stiffness from catalogue orders of magnitude: HTD 5M belt EA 120 kN, rack mesh 100 N/um, ball nut 200 N/um",
+        "rests on A14, not confirmed: Each 60 V bus has 2200 uF and the supplies cannot sink current; the drivers trip above 100 V DC",
+        "rests on A15, not confirmed: Spindle rotor 0.003 kg m^2, 400 W of bearing and windage loss at 24 000 rpm",
+        "rests on A16, not confirmed: The drivers' position loop closes at 20 Hz on the motor encoder",
+        "rests on A17, not confirmed: On a power failure the controller stops at once; the drivers trip below 20 V or at one turn of position error; the Y brake holds 50 ms after the mains goes; unpowered motors give 0.15 N m of detent torque"
+      ],
+      "validations": []
     },
     {
       "requirement": "R76",
@@ -11746,7 +12515,18 @@
           },
           "extra": {}
         }
-      ]
+      ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user",
+        "rests on A9, not confirmed: Rapids X 15, Y 10, Z 5 m/min; 1 m/s^2; 300 N cutting force at 6 m/min",
+        "rests on A13, not confirmed: Drive stiffness from catalogue orders of magnitude: HTD 5M belt EA 120 kN, rack mesh 100 N/um, ball nut 200 N/um",
+        "rests on A14, not confirmed: Each 60 V bus has 2200 uF and the supplies cannot sink current; the drivers trip above 100 V DC",
+        "rests on A15, not confirmed: Spindle rotor 0.003 kg m^2, 400 W of bearing and windage loss at 24 000 rpm",
+        "rests on A16, not confirmed: The drivers' position loop closes at 20 Hz on the motor encoder",
+        "rests on A17, not confirmed: On a power failure the controller stops at once; the drivers trip below 20 V or at one turn of position error; the Y brake holds 50 ms after the mains goes; unpowered motors give 0.15 N m of detent torque"
+      ],
+      "validations": []
     },
     {
       "requirement": "R74",
@@ -11785,7 +12565,19 @@
           },
           "extra": {}
         }
-      ]
+      ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user",
+        "rests on A6, not confirmed: Spindle is the 380 V version: 17.8 A rated, 29 kg, no-load current 35 % of rated",
+        "rests on A9, not confirmed: Rapids X 15, Y 10, Z 5 m/min; 1 m/s^2; 300 N cutting force at 6 m/min",
+        "rests on A13, not confirmed: Drive stiffness from catalogue orders of magnitude: HTD 5M belt EA 120 kN, rack mesh 100 N/um, ball nut 200 N/um",
+        "rests on A14, not confirmed: Each 60 V bus has 2200 uF and the supplies cannot sink current; the drivers trip above 100 V DC",
+        "rests on A15, not confirmed: Spindle rotor 0.003 kg m^2, 400 W of bearing and windage loss at 24 000 rpm",
+        "rests on A16, not confirmed: The drivers' position loop closes at 20 Hz on the motor encoder",
+        "rests on A17, not confirmed: On a power failure the controller stops at once; the drivers trip below 20 V or at one turn of position error; the Y brake holds 50 ms after the mains goes; unpowered motors give 0.15 N m of detent torque"
+      ],
+      "validations": []
     },
     {
       "requirement": "R75",
@@ -11860,7 +12652,18 @@
           },
           "extra": {}
         }
-      ]
+      ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user",
+        "rests on A9, not confirmed: Rapids X 15, Y 10, Z 5 m/min; 1 m/s^2; 300 N cutting force at 6 m/min",
+        "rests on A13, not confirmed: Drive stiffness from catalogue orders of magnitude: HTD 5M belt EA 120 kN, rack mesh 100 N/um, ball nut 200 N/um",
+        "rests on A14, not confirmed: Each 60 V bus has 2200 uF and the supplies cannot sink current; the drivers trip above 100 V DC",
+        "rests on A15, not confirmed: Spindle rotor 0.003 kg m^2, 400 W of bearing and windage loss at 24 000 rpm",
+        "rests on A16, not confirmed: The drivers' position loop closes at 20 Hz on the motor encoder",
+        "rests on A17, not confirmed: On a power failure the controller stops at once; the drivers trip below 20 V or at one turn of position error; the Y brake holds 50 ms after the mains goes; unpowered motors give 0.15 N m of detent torque"
+      ],
+      "validations": []
     },
     {
       "requirement": "R77",
@@ -11947,7 +12750,21 @@
           },
           "extra": {}
         }
-      ]
+      ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user",
+        "rests on A9, not confirmed: Rapids X 15, Y 10, Z 5 m/min; 1 m/s^2; 300 N cutting force at 6 m/min",
+        "rests on A13, not confirmed: Drive stiffness from catalogue orders of magnitude: HTD 5M belt EA 120 kN, rack mesh 100 N/um, ball nut 200 N/um",
+        "rests on A14, not confirmed: Each 60 V bus has 2200 uF and the supplies cannot sink current; the drivers trip above 100 V DC",
+        "rests on A15, not confirmed: Spindle rotor 0.003 kg m^2, 400 W of bearing and windage loss at 24 000 rpm",
+        "rests on A16, not confirmed: The drivers' position loop closes at 20 Hz on the motor encoder",
+        "rests on A17, not confirmed: On a power failure the controller stops at once; the drivers trip below 20 V or at one turn of position error; the Y brake holds 50 ms after the mains goes; unpowered motors give 0.15 N m of detent torque",
+        "fails if carriage friction (blocks, seals, nuts) is x0.5",
+        "fails if motor detent torque is x0.5",
+        "fails if Y brake delay is x2"
+      ],
+      "validations": []
     },
     {
       "requirement": "R79",
@@ -12034,7 +12851,18 @@
           },
           "extra": {}
         }
-      ]
+      ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user",
+        "rests on A9, not confirmed: Rapids X 15, Y 10, Z 5 m/min; 1 m/s^2; 300 N cutting force at 6 m/min",
+        "rests on A13, not confirmed: Drive stiffness from catalogue orders of magnitude: HTD 5M belt EA 120 kN, rack mesh 100 N/um, ball nut 200 N/um",
+        "rests on A14, not confirmed: Each 60 V bus has 2200 uF and the supplies cannot sink current; the drivers trip above 100 V DC",
+        "rests on A15, not confirmed: Spindle rotor 0.003 kg m^2, 400 W of bearing and windage loss at 24 000 rpm",
+        "rests on A16, not confirmed: The drivers' position loop closes at 20 Hz on the motor encoder",
+        "rests on A17, not confirmed: On a power failure the controller stops at once; the drivers trip below 20 V or at one turn of position error; the Y brake holds 50 ms after the mains goes; unpowered motors give 0.15 N m of detent torque"
+      ],
+      "validations": []
     },
     {
       "requirement": "R78",
@@ -12073,7 +12901,18 @@
           },
           "extra": {}
         }
-      ]
+      ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user",
+        "rests on A9, not confirmed: Rapids X 15, Y 10, Z 5 m/min; 1 m/s^2; 300 N cutting force at 6 m/min",
+        "rests on A13, not confirmed: Drive stiffness from catalogue orders of magnitude: HTD 5M belt EA 120 kN, rack mesh 100 N/um, ball nut 200 N/um",
+        "rests on A14, not confirmed: Each 60 V bus has 2200 uF and the supplies cannot sink current; the drivers trip above 100 V DC",
+        "rests on A15, not confirmed: Spindle rotor 0.003 kg m^2, 400 W of bearing and windage loss at 24 000 rpm",
+        "rests on A16, not confirmed: The drivers' position loop closes at 20 Hz on the motor encoder",
+        "rests on A17, not confirmed: On a power failure the controller stops at once; the drivers trip below 20 V or at one turn of position error; the Y brake holds 50 ms after the mains goes; unpowered motors give 0.15 N m of detent torque"
+      ],
+      "validations": []
     },
     {
       "requirement": "R80",
@@ -12124,7 +12963,12 @@
           },
           "extra": {}
         }
-      ]
+      ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user"
+      ],
+      "validations": []
     },
     {
       "requirement": "R81",
@@ -12175,7 +13019,12 @@
           },
           "extra": {}
         }
-      ]
+      ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user"
+      ],
+      "validations": []
     },
     {
       "requirement": "R82",
@@ -12226,7 +13075,12 @@
           },
           "extra": {}
         }
-      ]
+      ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user"
+      ],
+      "validations": []
     },
     {
       "requirement": "R83",
@@ -12253,7 +13107,12 @@
           },
           "extra": {}
         }
-      ]
+      ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user"
+      ],
+      "validations": []
     },
     {
       "requirement": "R84",
@@ -12388,7 +13247,12 @@
           },
           "extra": {}
         }
-      ]
+      ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user"
+      ],
+      "validations": []
     },
     {
       "requirement": "R63",
@@ -12922,7 +13786,12 @@
           "evidence": {},
           "extra": {}
         }
-      ]
+      ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user"
+      ],
+      "validations": []
     },
     {
       "requirement": "R67",
@@ -12949,7 +13818,12 @@
           },
           "extra": {}
         }
-      ]
+      ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user"
+      ],
+      "validations": []
     },
     {
       "requirement": "R57",
@@ -13159,7 +14033,12 @@
           "evidence": {},
           "extra": {}
         }
-      ]
+      ],
+      "standing": "credible",
+      "why": [
+        "predicted to pass, with its requirement, model and inputs confirmed; not yet tested"
+      ],
+      "validations": []
     },
     {
       "requirement": "R59",
@@ -13243,7 +14122,12 @@
           "evidence": {},
           "extra": {}
         }
-      ]
+      ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user"
+      ],
+      "validations": []
     },
     {
       "requirement": "R58",
@@ -13768,7 +14652,12 @@
           "evidence": {},
           "extra": {}
         }
-      ]
+      ],
+      "standing": "credible",
+      "why": [
+        "predicted to pass, with its requirement, model and inputs confirmed; not yet tested"
+      ],
+      "validations": []
     },
     {
       "requirement": "R60",
@@ -15229,7 +16118,12 @@
           "evidence": {},
           "extra": {}
         }
-      ]
+      ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is assumed, not confirmed by the user"
+      ],
+      "validations": []
     },
     {
       "requirement": "R65",
@@ -15763,7 +16657,12 @@
           "evidence": {},
           "extra": {}
         }
-      ]
+      ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user"
+      ],
+      "validations": []
     },
     {
       "requirement": "R66",
@@ -15937,7 +16836,12 @@
           "evidence": {},
           "extra": {}
         }
-      ]
+      ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user"
+      ],
+      "validations": []
     },
     {
       "requirement": "R68",
@@ -16012,7 +16916,12 @@
           "evidence": {},
           "extra": {}
         }
-      ]
+      ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user"
+      ],
+      "validations": []
     },
     {
       "requirement": "R61",
@@ -16609,7 +17518,12 @@
           "evidence": {},
           "extra": {}
         }
-      ]
+      ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user"
+      ],
+      "validations": []
     },
     {
       "requirement": "R62",
@@ -18052,7 +18966,12 @@
           "evidence": {},
           "extra": {}
         }
-      ]
+      ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user"
+      ],
+      "validations": []
     },
     {
       "requirement": "R64",
@@ -18073,9 +18992,27 @@
           "evidence": {},
           "extra": {}
         }
-      ]
+      ],
+      "standing": "credible",
+      "why": [
+        "predicted to pass, with its requirement, model and inputs confirmed; not yet tested"
+      ],
+      "validations": []
     }
   ],
   "simulations": [],
+  "models": [
+    {
+      "id": "sim",
+      "text": "time-domain simulation, page/sim.js",
+      "checked_by": [
+        "R80",
+        "R81",
+        "R82",
+        "R83",
+        "R84"
+      ]
+    }
+  ],
   "problems": []
 }

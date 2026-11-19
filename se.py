@@ -21,6 +21,10 @@ from systems import DENSITY, Model, convert, mass_kg  # noqa: F401
 __all__ = [
     "assume",
     "cannot_check",
+    "confirm",
+    "fragile",
+    "model",
+    "validate",
     "flow",
     "mass_kg",
     "meets",
@@ -106,8 +110,13 @@ def require(
     source="stated",
     tolerance=0.0,
     evidence=None,
+    depends=(),
 ):
     """A requirement with a number, and its measured value: require("R1", "...", mass, "<=", 60, "g").
+
+    `source` says who set it: "stated" (the user, a drawing, a standard), "implied" (follows from what the thing is
+    for), or "assumed" (a limit the agent chose). Only stated ones count as right until the user confirms them.
+    `depends` lists the assumptions and models (see `model`) its check rests on.
 
     `value` comes from the design; None means it is not built yet, which fails. Call it again with
     `case=` for each position, load or mode. `evidence={"tool": ..., "leaves_out": ...}` says how a
@@ -116,8 +125,12 @@ def require(
     if id not in m.requirements:
         method = "simulate" if evidence else "measure"
         m.requirement(
-            id, text, of, kind=_KINDS[op], limit=limit, unit=unit, source=source, tolerance=tolerance, method=method
+            id, text, of, kind=_KINDS[op], limit=limit, unit=unit, source=source, tolerance=tolerance, method=method,
+            depends=list(depends),
         )
+    else:
+        r = m.requirements[id]
+        r.depends += [d for d in depends if d not in r.depends]
     if value is None:
         m._failed(id, case, "no value yet: the design does not give one")
     else:
@@ -136,6 +149,35 @@ def cannot_check(id, text, why, of="P", source="stated"):
     """A requirement the model cannot show, such as a load test or a finish."""
     m = _m()
     m.requirement(id, text, of, method="outside", source=source, extra={"why": why})
+
+
+def confirm(*ids):
+    """The user has confirmed these requirements (as right) or assumptions (as true)."""
+    m = _m()
+    for id in ids:
+        item = m.requirements.get(id) or m.assumptions.get(id)
+        if item is None:
+            raise ValueError(f"nothing has the id {id!r}")
+        item.confirmed = True
+
+
+def model(id, text, checked_by=()):
+    """A model checks rest on (`depends=[id]`): checked only when its own tests against known answers
+    (`checked_by`, requirement ids) all pass. model("sim", "time-domain simulation", checked_by=["R80", "R81"])."""
+    return _m().model(id, text, checked_by)
+
+
+def fragile(id, why):
+    """The check passes, but would fail if `why` (from a sensitivity sweep: "friction is doubled")."""
+    r = _m().requirements[id]
+    if why not in r.fragile:
+        r.fragile.append(why)
+
+
+def validate(id, measured, unit="", how="", date="", case=""):
+    """A test or measurement of the real thing: validate("R3", 302, "mm", "dial gauge over the Z stroke", "2026-12-01").
+    Only this makes a requirement VALIDATED; one that fails makes it FAILS IN TEST, whatever the model says."""
+    return _m().validation(id, measured, unit, how, date, case)
 
 
 def _shared(a, b):
@@ -207,18 +249,41 @@ def require_clear_travel(
 
 
 def report(baseline=None):
-    """Prints the results, writes the page, and says whether the work is done. Call it last."""
+    """Prints the results, writes the page, and says how far they go. Call it last.
+
+    The last line is never "done": a check that passes says the model predicts a pass. It counts the passes by how
+    far they can be trusted (draft: the requirement is not confirmed; provisional: it rests on something not
+    confirmed or checked, or fails under a plausible change of a guess; credible: none of those; validated: a test of
+    the real thing agrees), and lists what would raise them. Returns True when no check fails."""
+    from systems import STANDING_TEXT
     m = _m()
-    for model in ("assumptions", "interfaces", "blocks"):
-        if not getattr(m, model) and model not in m.skipped:
-            m.skip(model, "none written")
+    for model_ in ("assumptions", "interfaces", "blocks"):
+        if not getattr(m, model_) and model_ not in m.skipped:
+            m.skip(model_, "none written")
     m.write(baseline=baseline)
     results = [m.result(id) for id in m.requirements]
-    failing = [r["requirement"] for r in results if r["status"] in ("fail", "not_verified")]
+    by = {}
+    for r in results:
+        by.setdefault(r["standing"], []).append(r["requirement"])
+    failing = by.get("fail", []) + by.get("test_fail", []) + by.get("not_verified", [])
+    if not results:
+        print("FAILING: no requirements are written.")
+        return False
     if failing:
-        print(f"NOT DONE: {', '.join(failing)} failing. Change the design and run again.")
-    elif not results:
-        print("NOT DONE: no requirements are written.")
-    else:
-        print("DONE: every requirement that can be checked passes.")
-    return not failing
+        print(f"FAILING: {', '.join(failing)}. Change the design and run again.")
+        return False
+    passing = sum(len(by.get(k, [])) for k in ("draft", "provisional", "credible"))
+    parts = ", ".join(f"{len(by[k])} {k}" for k in ("draft", "provisional", "credible") if by.get(k))
+    print(f"NO FAILING CHECKS: {passing} pass ({parts}), {len(by.get('validated', []))} validated, "
+          f"{len(by.get('not_checked', []))} for a person to check.")
+    confirm_r = by.get("draft", [])
+    confirm_a = [a.id for a in m.assumptions.values() if not a.confirmed]
+    if confirm_r:
+        print(f"  Confirm these requirements with the user: {' '.join(confirm_r)}")
+    if confirm_a:
+        print(f"  Confirm these assumptions: {' '.join(confirm_a)}")
+    weak = [id for id in by.get("provisional", []) + by.get("draft", []) if m.requirements[id].fragile]
+    if weak:
+        print(f"  Fragile (fail under a plausible change of a guess): {' '.join(weak)}")
+    print("  Nothing is done until it is tested on the real thing: record tests with validate().")
+    return True

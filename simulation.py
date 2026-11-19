@@ -140,5 +140,7 @@ def run(P):
 
 
 def digest(P):
-    """A short fingerprint of the parameters, so a sensitivity sweep can tell whether it is stale."""
-    return hashlib.sha1(json.dumps(P, sort_keys=True).encode()).hexdigest()[:12]
+    """A short fingerprint of the parameters and of the model's code, so a sensitivity sweep can tell whether it is stale."""
+    h = hashlib.sha1(json.dumps(P, sort_keys=True).encode())
+    h.update(open(SIM_JS, "rb").read())
+    return h.hexdigest()[:12]

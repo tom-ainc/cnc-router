@@ -25,6 +25,12 @@ TASKS = ("new_design", "change_review", "optimization", "problem_solving", "othe
 MODELS = ("nodes", "requirements", "assumptions", "interfaces", "blocks")
 # What the evidence of a simulated result must say.
 SIMULATION_EVIDENCE = ("tool", "leaves_out")
+# How far a requirement's result can be trusted, from least to most. A check that passes says only that the model
+# predicts it: whether the requirement is right, whether the model is good enough and whether reality agrees are
+# separate questions, and only a test on the real thing answers the last.
+STANDINGS = ("fail", "test_fail", "not_verified", "not_checked", "draft", "provisional", "credible", "validated")
+STANDING_TEXT = {"fail": "FAIL", "test_fail": "FAILS IN TEST", "not_verified": "not verified", "not_checked": "for a person",
+                 "draft": "pass, draft", "provisional": "pass, provisional", "credible": "pass, credible", "validated": "VALIDATED"}
 
 # Densities in g/cm^3, for mass from a part's volume.
 DENSITY = {
@@ -111,6 +117,9 @@ class Requirement:
     limit: float | None = None
     unit: str = ""
     tolerance: float = 0.0
+    confirmed: bool = False
+    depends: list = field(default_factory=list)
+    fragile: list = field(default_factory=list)
     extra: dict = field(default_factory=dict)
 
 
@@ -190,6 +199,8 @@ class Model:
         self.results = {}
         self.skipped = {}
         self.simulations = []
+        self.models = {}
+        self.validations = {}
         self._functions = {}
         self._tests = {}
 
@@ -330,6 +341,67 @@ class Model:
         """Records a test that gave no value as a failed case."""
         self.results.setdefault(id, {})[case] = Result(case, "fail", note=note)
 
+    def model(self, id, text, checked_by=()):
+        """A model a requirement's check rests on (a simulation, a formula set): it counts as checked only when the
+        requirements in `checked_by`, its own tests against known answers, all pass."""
+        self.models[id] = {"id": id, "text": text, "checked_by": list(checked_by)}
+        return self.models[id]
+
+    def validation(self, id, measured, unit, how, date="", case=""):
+        """A measurement or test of the real thing against a requirement: the only result that can validate it."""
+        r = self.requirements[id]
+        v = {"case": case, "measured": measured, "unit": unit, "how": how, "date": date, "passed": None, "margin": None}
+        if r.kind is not None:
+            m = convert(measured, unit, r.unit)
+            v["measured"], v["unit"] = m, r.unit
+            v["margin"] = {"max": r.limit - m, "min": m - r.limit, "equal": r.tolerance - abs(m - r.limit)}[r.kind]
+            v["passed"] = v["margin"] >= 0
+        else:
+            v["passed"] = bool(measured)
+        self.validations.setdefault(id, []).append(v)
+        return v
+
+    def standing(self, id, status):
+        """How far a result can be trusted, and why it is not trusted further."""
+        r, why = self.requirements[id], []
+        tests = self.validations.get(id, [])
+        if tests and not all(t["passed"] for t in tests):
+            return "test_fail", ["a test of the real thing fails it"]
+        if status == "fail":
+            return "fail", []
+        if status == "not_verified":
+            return "not_verified", ["no check has run"]
+        if tests:
+            return "validated", []
+        if status == "cannot_verify":
+            return "not_checked", ["only a person can check it: test or inspect the real thing"]
+        if r.source != "stated" and not r.confirmed:
+            why.append(f"the requirement or its limit is {r.source}, not confirmed by the user")
+        on = list(r.depends) + [a.id for a in self.assumptions.values() if id in a.affects]
+        for d in dict.fromkeys(on):
+            if d in self.assumptions and not self.assumptions[d].confirmed:
+                why.append(f"rests on {d}, not confirmed: {self.assumptions[d].text}")
+            elif d in self.models:
+                checks = self.models[d]["checked_by"]
+                bad = [c for c in checks if c not in self.requirements or self._status(c) != "pass"]
+                if not checks:
+                    why.append(f"the {d} model has no checks against known answers")
+                elif bad:
+                    why.append(f"the {d} model fails its own checks: {', '.join(bad)}")
+        for f in r.fragile:
+            why.append(f"fails if {f}")
+        if any(w.startswith("the requirement") for w in why):
+            return "draft", why
+        if why:
+            return "provisional", why
+        return "credible", ["predicted to pass, with its requirement, model and inputs confirmed; not yet tested"]
+
+    def _status(self, id):
+        cases = list(self.results.get(id, {}).values())
+        if not cases:
+            return "cannot_verify" if self.requirements[id].method == "outside" else "not_verified"
+        return "pass" if all(c.status == "pass" for c in cases) else "fail"
+
     def children(self, id):
         return [n for n in self.nodes.values() if n.parent == id]
 
@@ -385,9 +457,13 @@ class Model:
         cases = list(self.results.get(id, {}).values())
         if not cases:
             status = "cannot_verify" if r.method == "outside" else "not_verified"
-            return {"requirement": id, **asdict(Result("", status)), "cases": []}
-        worst = min(cases, key=lambda c: (c.status == "pass", math.inf if c.margin is None else c.margin))
-        return {"requirement": id, **asdict(worst), "cases": [asdict(c) for c in cases]}
+            out = {"requirement": id, **asdict(Result("", status)), "cases": []}
+        else:
+            worst = min(cases, key=lambda c: (c.status == "pass", math.inf if c.margin is None else c.margin))
+            out = {"requirement": id, **asdict(worst), "cases": [asdict(c) for c in cases]}
+        out["standing"], out["why"] = self.standing(id, out["status"])
+        out["validations"] = self.validations.get(id, [])
+        return out
 
     def to_dict(self, baseline=None):
         """Everything as JSON values. With `baseline`, an earlier `to_dict`, each result that the
@@ -424,6 +500,7 @@ class Model:
             "totals": totals,
             "results": results,
             "simulations": self.simulations,
+            "models": list(self.models.values()),
             "problems": self.problems(),
         }
 
@@ -446,10 +523,10 @@ class Model:
                 tool += f"  margin before: {result['before']['margin']:g}"
             if result.get("regressed"):
                 tool += "  PASSED BEFORE"
-            lines.append(f"{result['status']:13} {r.id:8} {r.text}{numbers}{tool}")
+            lines.append(f"{STANDING_TEXT[result['standing']]:17} {r.id:8} {r.text}{numbers}{tool}")
         for a in self.assumptions.values():
             if not a.confirmed:
-                lines.append(f"{'assumed':13} {a.id:8} {a.text}")
+                lines.append(f"{'assumed':17} {a.id:8} {a.text}")
         return "\n".join(lines + data["problems"])
 
     def write(self, path="systems.json", baseline=None):

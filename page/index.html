@@ -115,6 +115,7 @@ aside { display: flex; flex-direction: column; min-height: 0; background: var(--
 .req.sel .detail { display: block; }
 .detail dt { font-weight: 600; color: var(--ink); margin-top: 4px; }
 .detail dd { margin: 0; }
+.detail ul.why { margin: 2px 0; padding-left: 16px; }
 .detail table { border-collapse: collapse; width: 100%; margin-top: 4px; font-size: 12px; }
 .detail td { padding: 2px 4px; border-top: 1px solid var(--line); }
 .detail td.num { text-align: right; }
@@ -354,18 +355,23 @@ body.sim-mode .ctl, body.sim-mode .stats { display: none; }
   const nodes = Object.fromEntries(S.nodes.map(n => [n.id, n]));
   const status = (id) => { const s = (res[id] || {}).status; return s === "pass" ? "pass" : s === "fail" ? "fail" : "open"; };
   const statusWord = { pass: "Pass", fail: "Fail", open: "Not checked by model" };
+  // how far a result can be trusted: a pass is the model's prediction; only a test of the real thing validates
+  const STANDING = { fail: ["FAIL", "fail"], test_fail: ["Fails in test", "fail"], not_verified: ["Not verified", "fail"], draft: ["Pass, draft", "open"],
+                     provisional: ["Pass, provisional", "open"], not_checked: ["For a person", "neutral"], credible: ["Pass, credible", "pass"], validated: ["Validated", "pass"] };
+  const standing = (id) => (res[id] || {}).standing || (status(id) === "pass" ? "draft" : status(id) === "fail" ? "fail" : "not_checked");
   const partToNode = {};
   S.nodes.forEach(n => (n.shows || []).forEach(p => { partToNode[p] = n.id; }));
   const nodeParts = (id) => id === "P" ? [] : (nodes[id]?.shows || []);
   const reqsOfNode = (nid) => reqs.filter(r => r.applies_to.includes(nid));
 
   // tally
-  const counts = { pass: 0, fail: 0, open: 0 };
-  reqs.forEach(r => counts[status(r.id)]++);
-  $("tally").innerHTML = `<span class="pill pass">${counts.pass} pass</span>` +
-    (counts.fail ? `<span class="pill fail">${counts.fail} fail</span>` : "") +
-    `<span class="pill open">${counts.open} not checked by model</span>` +
-    `<span class="pill neutral">${S.assumptions.length} assumptions</span>`;
+  const counts = { pass: 0, fail: 0, open: 0 }, sc = {};
+  reqs.forEach(r => { counts[status(r.id)]++; sc[standing(r.id)] = (sc[standing(r.id)] || 0) + 1; });
+  const unconf = S.assumptions.filter(a => !a.confirmed).length;
+  $("tally").innerHTML = ["fail", "test_fail", "not_verified", "draft", "provisional", "credible", "validated", "not_checked"].filter(k => sc[k])
+      .map(k => `<span class="pill ${STANDING[k][1]}" title="${k === "draft" ? "the requirement or its limit is not confirmed by you" : k === "provisional" ? "rests on something not confirmed, a model not checked, or a guess that could flip it" : ""}">${sc[k]} ${STANDING[k][0].toLowerCase()}</span>`).join("") +
+    `<span class="pill neutral" title="nothing is done until it is tested on the real thing">${sc.validated || 0} validated</span>` +
+    `<span class="pill neutral">${unconf} of ${S.assumptions.length} assumptions unconfirmed</span>`;
 
   // stat tiles: each opens the requirement behind it
   const st = V.stats;
@@ -386,8 +392,8 @@ body.sim-mode .ctl, body.sim-mode .stats { display: none; }
 
   // requirements list
   function reqRow(r) {
-    const x = res[r.id] || {}, s = status(r.id);
-    let meta = `<span class="pill ${s}">${statusWord[s]}</span>`;
+    const x = res[r.id] || {}, s = status(r.id), sd = standing(r.id);
+    let meta = `<span class="pill ${STANDING[sd][1]}">${STANDING[sd][0]}</span>`;
     let bar = "";
     if (r.method === "outside") {
       meta += `<span>${(r.extra && r.extra.why) || ""}</span>`;
@@ -413,7 +419,9 @@ body.sim-mode .ctl, body.sim-mode .stats { display: none; }
     return `<div class="req" tabindex="0" data-req="${r.id}" id="row-${r.id}">
       <div class="id">${r.id}</div><div class="txt">${r.text}</div>
       <div class="meta">${meta}</div>${bar}
-      <dl class="detail"><dt>About</dt><dd>${parts}</dd><dt>Source</dt><dd>${r.source}, verified by ${r.method}</dd>${ev}${before}${cases}</dl>
+      <dl class="detail"><dt>About</dt><dd>${parts}</dd><dt>Source</dt><dd>${{ stated: "stated by you", implied: "implied by what it is for (not confirmed)", assumed: "a limit I chose (not confirmed)" }[r.source] || r.source}, checked by ${r.method}</dd>
+      ${(x.why || []).length && sd !== "credible" ? `<dt>Not trusted further because</dt><dd><ul class="why">${x.why.map(w => `<li>${w}</li>`).join("")}</ul></dd>` : ""}
+      ${(x.validations || []).length ? `<dt>Tested</dt><dd>${x.validations.map(v => `${v.how} ${v.date}: ${fmt(v.measured)} ${v.unit}`).join("<br>")}</dd>` : ""}${ev}${before}${cases}</dl>
     </div>`;
   }
   function worstCases(cs, r) {
@@ -438,7 +446,7 @@ body.sim-mode .ctl, body.sim-mode .stats { display: none; }
     topic: { label: "Topic", groups: (r) => [topicOf[r.id] || "Other"], order: [...Object.keys(V.req_topics || {}), "Other"] },
     tree: { label: "Product tree", groups: (r) => r.applies_to, order: treeOrder.map(([id]) => id),
             name: (id) => { const d = (treeOrder.find(t => t[0] === id) || [id, 0])[1]; return "\u2003".repeat(d) + (id === "P" ? "Whole machine" : `${id} · ${nodes[id]?.name || ""}`); } },
-    status: { label: "Status", groups: (r) => [statusWord[status(r.id)]], order: ["Fail", "Pass", "Not checked by model"] },
+    status: { label: "Standing", groups: (r) => [STANDING[standing(r.id)][0]], order: ["FAIL", "Fails in test", "Not verified", "Pass, draft", "Pass, provisional", "Pass, credible", "Validated", "For a person"] },
     method: { label: "How it's verified", groups: (r) => [{ measure: "Measured on the model", simulate: "Calculated", outside: "Needs a person (test, inspection)" }[r.method] || r.method],
               order: ["Measured on the model", "Calculated", "Needs a person (test, inspection)"] },
     margin: { label: "Margin", groups: (r) => {
@@ -888,7 +896,7 @@ body.sim-mode .ctl, body.sim-mode .stats { display: none; }
     if (z.view) setView(z.view);
     if (z.pose) animateTo({ x: z.pose[0], y: z.pose[1], tip: z.pose[2] }, 900, z.sweep ? () => sweep(z.sweep) : null);
     const x = res[id] || {}, s = status(id);
-    $("note").innerHTML = `<b>${id}</b> · <span class="pill ${s}">${statusWord[s]}</span> ${r.text}` +
+    $("note").innerHTML = `<b>${id}</b> · <span class="pill ${STANDING[standing(id)][1]}">${STANDING[standing(id)][0]}</span> ${r.text}` +
       (z.sweep ? ` <br><span style="color:var(--muted)">Showing the travel the check covers.</span>` : "") +
       (x.case ? `<br><span style="color:var(--muted)">Worst case: ${x.case}</span>` : "");
     $("note").classList.add("show");

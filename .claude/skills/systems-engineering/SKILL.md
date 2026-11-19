@@ -1,13 +1,15 @@
 ---
 name: systems-engineering
-description: Has the agent write what a thing must do, what it meets and a check for each requirement into the design's own script before it designs, changes or analyses anything, then work until the checks pass. Use at the start of any engineering task, whatever the tools or the field, and before reporting its result.
+description: Has the agent write what a thing must do, what it meets and a check for each requirement into the design's own script before it designs, changes or analyses anything, then work until no check fails, saying how far each pass can be trusted. Use at the start of any engineering task, whatever the tools or the field, and before reporting its result.
 ---
 
 # Working as a systems engineer
 
 Write down what the thing must do and how each requirement is checked before you design or change
-it. Put that in the same script as the design, so that every run tests it. Then work until the run
-says `DONE`.
+it. Put that in the same script as the design, so that every run tests it. Then work until no check
+fails, and say how far each pass can be trusted: a check that passes says the model predicts a pass,
+not that the thing works. All models are wrong; some are useful. Nothing is done until it has been
+tested on the real thing.
 
 ## Steps
 
@@ -17,13 +19,17 @@ says `DONE`.
    `cp .claude/skills/systems-engineering/*.py .`
 3. In the design's script (a golf script, or a plain Python file where there is no CAD), write the
    models at the top and a `require` line for each requirement at the bottom, as below.
-4. Run it before the design is right. It prints `NOT DONE` and the failing requirements. For a
+4. Run it before the design is right. It prints `FAILING` and the failing requirements. For a
    design that exists, this first run is on the design unchanged.
-5. Change the design and run again. **Repeat until the last line says `DONE`.** One run is never
-   enough: expect five or more. Do not write your report while the last line says `NOT DONE`, unless
+5. Change the design and run again. **Repeat until the last line says `NO FAILING CHECKS`.** One run
+   is never enough: expect five or more. Do not write your report while it says `FAILING`, unless
    five different changes have failed to move the same requirement; then say so.
-6. Report each requirement with its measured value, limit and margin, then the assumptions not
-   confirmed and what the user still has to test. Give the path of `systems.html`, and the link to
+6. Ask the user to confirm, in one batch, the requirements the run lists as draft (limits you chose
+   or inferred) and the assumptions it lists. Record each answer with `confirm()`, and change any
+   requirement the user corrects; then run again.
+7. Report each requirement with its measured value, limit, margin and standing, leading with what
+   is draft or provisional and what would raise it (a confirmation, a check of the model, a
+   measurement), then what the user still has to test. Give the path of `systems.html`, and the link to
    the page (below) when there is one.
 
 A question that one measurement or lookup answers needs none of this: answer it with the tools, as
@@ -60,6 +66,32 @@ report()
 - `cannot_check(id, text, why)` is for what the model cannot show. Never use it for something that
   can be measured or computed.
 - `report()` goes last. It writes `systems.html`, the page for the user.
+
+## How far a pass goes
+
+Every result has a standing, worked out by `report()`:
+
+| Standing | Meaning |
+| --- | --- |
+| `FAIL` | the check fails |
+| `pass, draft` | the check passes, but the requirement or its limit came from you, not the user |
+| `pass, provisional` | the requirement is confirmed, but the check rests on an assumption not confirmed, a model not checked, or a guess that would fail it when halved or doubled |
+| `pass, credible` | none of those; still a prediction |
+| `VALIDATED` | a test or measurement of the real thing agrees (`FAILS IN TEST` when it does not) |
+| `for a person` | `cannot_check`: only a test or inspection can show it |
+
+- `source=` on `require`: `"stated"` for the user's words, drawings, answers and standards they name;
+  `"implied"` for what follows from what the thing is for; `"assumed"` for a limit you chose. Never
+  mark your own limit as stated.
+- `depends=["A3", "sim"]` names the assumptions and models a check rests on; `assume(..., affects=[ids])`
+  does the same from the assumption's side.
+- `model("sim", "what it is", checked_by=[ids])`: a model counts as checked only when its own tests
+  against known answers (frequency against a formula, a balance, a convergence check) pass.
+- `fragile("R7", "friction is doubled")` records a sensitivity result that would fail the check.
+- `confirm("R7", "A3")` records the user's confirmation; `validate("R7", 0.08, "mm", "dial gauge", date)`
+  records a test of the real thing.
+- Say "the model predicts it passes" until a requirement is validated. Do not call a design done,
+  verified or proven on the strength of passing checks.
 
 Checks that take one line, for solids made with golf:
 
@@ -116,25 +148,26 @@ click with dispatched DOM events rather than waiting for the page to settle.
   ends. The worst case decides.
 - **A change is modelled before it is proposed.** Apply it in the model, check every pair of parts
   for overlap, and run every check. Propose only what passes.
-- **Never change a check or a limit to make a design pass.**
+- **Never change a check or a limit to make a design pass.** A limit the user corrects is a new
+  requirement from the user; record it as stated.
 
 ## By kind of task
 
-- **Something new:** the first run fails. Build, run, change, until `DONE`. Use `require_one_solid`
+- **Something new:** the first run fails. Build, run, change, until no check fails. Use `require_one_solid`
   on each part, and `require_held` for anything the product holds, with the held thing modelled as a
   solid in its place.
 - **A change to something that exists:** do not reason about where things are. Build or import the
   design and run `require_no_overlap` on all its parts. Then model the changed part in place of the
   old one and run again: each failing pair is what the change breaks. A part that connects to
   something not in the files stays where it is. Model each fix and run again; propose the smallest
-  one that gives `DONE`.
+  one with no failing check.
 - **Making something better:** the thing to improve is one measured value; every limit is a
   `require`, computed by a formula where no tool gives it. Change one variable at a time, running
   each time, and stop when the next step would fail a limit.
 - **Something does not work:** the fault is a requirement that is not met. Write the check that
   fails on the unchanged design as the user reports; for a part that moves, that is
   `require_clear_travel` against every fixed part. The failing case names the cause: fix that, and
-  nothing that passes. The fix is done at `DONE`, with every part still on its seat.
+  nothing that passes. The fix is ready when no check fails, with every part still on its seat; it is done when the real thing works.
 
 ## With golf
 

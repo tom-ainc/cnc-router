@@ -28,7 +28,7 @@ th { color: var(--dim); font-weight: 500; font-size: 13px; }
 td.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
 code { font: 13px ui-monospace, monospace; }
 .status { font-weight: 600; white-space: nowrap; }
-.pass { color: var(--pass); } .fail { color: var(--fail); }
+.pass { color: var(--pass); } .fail { color: var(--fail); } .warn { color: var(--warn); } .none { color: var(--none); }
 .not_verified { color: var(--warn); } .cannot_verify { color: var(--none); }
 .counts span { margin-right: 16px; }
 ul.tree, ul.tree ul { list-style: none; margin: 0; padding-left: 20px; border-left: 1px solid var(--line); }
@@ -40,6 +40,11 @@ details summary { cursor: pointer; color: var(--dim); }
 """
 
 STATUS_TEXT = {"pass": "pass", "fail": "FAIL", "not_verified": "not verified", "cannot_verify": "cannot verify"}
+STANDING_TEXT = {"fail": "FAIL", "test_fail": "FAILS IN TEST", "not_verified": "not verified", "not_checked": "for a person",
+                 "draft": "pass, draft", "provisional": "pass, provisional", "credible": "pass, credible", "validated": "VALIDATED"}
+STANDING_ORDER = ("fail", "test_fail", "not_verified", "draft", "provisional", "not_checked", "credible", "validated")
+STANDING_CLASS = {"fail": "fail", "test_fail": "fail", "not_verified": "fail", "not_checked": "none", "draft": "warn",
+                  "provisional": "warn", "credible": "pass", "validated": "pass"}
 # Rows the user must read first come first.
 STATUS_ORDER = ("fail", "not_verified", "cannot_verify", "pass")
 
@@ -90,15 +95,18 @@ def _before(result):
 
 def _results(data):
     requirements = {r["id"]: r for r in data["requirements"]}
-    results = sorted(data["results"], key=lambda r: STATUS_ORDER.index(r["status"]))
-    counts = {s: sum(r["status"] == s for r in results) for s in STATUS_ORDER}
+    results = sorted(data["results"], key=lambda r: STANDING_ORDER.index(r["standing"]))
+    counts = {s: sum(r["standing"] == s for r in results) for s in STANDING_ORDER}
     compared = any("before" in r for r in results)
     rows = []
     for result in results:
         r = requirements[result["requirement"]]
         limit = f"{escape(r['kind'])} {_number(r['limit'])} {escape(r['unit'])}" if r["kind"] else ""
         detail = [escape(r["text"])]
-        for label, text in (("note", escape(result["note"])), ("evidence", _evidence(result["evidence"]))):
+        for label, text in (("note", escape(result["note"])), ("evidence", _evidence(result["evidence"])),
+                            ("not trusted further because", "; ".join(escape(w) for w in result.get("why", []))),
+                            ("tested", "; ".join(f"{escape(v['how'])} {v['date']}: {_number(v['measured'])} {escape(v['unit'])}"
+                                                 for v in result.get("validations", [])))):
             if text:
                 detail.append(f'<span class="dim">{label}: {text}</span>')
         if len(result["cases"]) > 1:
@@ -113,7 +121,7 @@ def _results(data):
             )
         rows.append(
             _row(
-                f'<span class="status {result["status"]}">{STATUS_TEXT[result["status"]]}</span>',
+                f'<span class="status {STANDING_CLASS[result["standing"]]}">{STANDING_TEXT[result["standing"]]}</span>',
                 f"<code>{escape(r['id'])}</code>",
                 "<br>".join(detail),
                 _ids(r["applies_to"]),
@@ -124,8 +132,9 @@ def _results(data):
                 f'<span class="dim">{escape(r["source"])}, {escape(r["method"])}</span>',
             )
         )
-    summary = "".join(f'<span class="status {s}">{n} {STATUS_TEXT[s]}</span>' for s, n in counts.items() if n)
-    head = ["Status", "Id", "Requirement", "Applies to", "Measured", "Limit", "Margin", "Source, method"]
+    summary = "".join(f'<span class="status {STANDING_CLASS[s]}">{n} {STANDING_TEXT[s]}</span>' for s, n in counts.items() if n)
+    summary += '<span class="dim"> A pass is the model\'s prediction; only a test of the real thing validates.</span>'
+    head = ["Standing", "Id", "Requirement", "Applies to", "Measured", "Limit", "Margin", "Source, method"]
     if compared:
         head.insert(7, "Margin before")
     return f'<p class="counts">{summary}</p>' + _table(head, rows) if rows else ""
