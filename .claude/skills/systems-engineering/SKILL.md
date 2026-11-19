@@ -23,7 +23,8 @@ says `DONE`.
    enough: expect five or more. Do not write your report while the last line says `NOT DONE`, unless
    five different changes have failed to move the same requirement; then say so.
 6. Report each requirement with its measured value, limit and margin, then the assumptions not
-   confirmed and what the user still has to test. Give the path of `systems.html`.
+   confirmed and what the user still has to test. Give the path of `systems.html`, and the link to
+   the page (below) when there is one.
 
 A question that one measurement or lookup answers needs none of this: answer it with the tools, as
 their own guidance says, and state anything assumed.
@@ -71,6 +72,34 @@ Checks that take one line, for solids made with golf:
 
 `place=lambda t: Location.translation(t * 80, 0, 0)` moves the part from where it is now (`t` = 0)
 to the end of its travel (`t` = 1).
+
+## The page
+
+`systems.html` is the report. When the user will look at the design, as with most new designs and
+changes, also build one interactive page from the same run, and republish it after every change:
+
+- **The model in 3D.** Every part, meshed from the tool and coloured by material, in groups by what
+  moves with what. An orthographic camera (true proportions) with iso, side and front views; a
+  slider for each axis or joint moves its group, and everything carried by it.
+- **The requirements beside it.** Grouped by topic, product tree, status, method or margin, with a
+  search. Clicking one poses the model at its worst case, shows the parts it is about (the rest
+  faint), draws its dimensions, and gives its value, limit, margin, cases and evidence. Tiles for
+  the headline numbers open their requirements.
+- **A block diagram above the tabs, always shown.** A block for each part of the product tree, with
+  its mass and the status of its requirements; a dashed block for each thing outside; a line for
+  each interface, coloured by kind (mechanical, electrical, fluid, data), with its count.
+  - Clicking a block, a line or an outside thing filters every tab to it (requirements, product
+    tree, interfaces, and any tab the task adds) and shows its parts in 3D, the rest faint.
+  - Picking a part in 3D selects its block. Selecting from a tab selects in the diagram.
+  - The diagram shows what the 3D view shows: a block whose parts are faint or hidden is faint.
+- **Tabs** for the product tree, interfaces and assumptions, and for what the task adds: a build
+  (assembly-procedure skill), a simulation (systems-simulation skill).
+- **Its data comes from the design script**, beside `systems.json`: each part's mesh, group, colour
+  and note; the moving groups and their ranges; for each requirement, the pose, parts and dimension
+  lines that show it.
+
+Look at each view in a screenshot before saying it works. A headless browser renders WebGL slowly:
+click with dispatched DOM events rather than waiting for the page to settle.
 
 ## Rules
 
