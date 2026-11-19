@@ -202,6 +202,71 @@ aside { display: flex; flex-direction: column; min-height: 0; background: var(--
 .req { scroll-margin-top: 50px; }
 .lk { color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; text-transform: none; letter-spacing: 0; }
 .section-h { padding: 12px 14px 4px; font: 600 12px var(--font-display); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.sim-diag { display: none; }
+body.sim-mode .sim-diag { display: flex; flex-direction: column; height: 42vh; min-height: 260px; border-top: 1px solid var(--line); background: var(--panel); }
+.sim-diag .sd-wrap { flex: 1; min-height: 0; }
+.scope-sel { padding: 6px 12px; font-size: 12px; color: var(--muted); background: var(--accent-soft); border-bottom: 1px solid var(--line); }
+.scope-sel button { background: none; border: 0; padding: 0; font: inherit; margin-left: 6px; }
+.scope-sel[hidden], .scope-pick[hidden] { display: none; }
+#sd-svg .sblk.sel .sb { stroke: var(--accent); stroke-width: 2.6; }
+#sd-svg .sblk:not(.open) { cursor: pointer; }
+.scopes { display: grid; grid-template-columns: minmax(0, 1fr); grid-auto-rows: 200px; gap: 1px; background: var(--line); border-bottom: 1px solid var(--line); }
+body.sim-mode .ctl, body.sim-mode .stats { display: none; }
+.scope-pick { display: flex; flex-wrap: wrap; gap: 4px; padding: 6px 12px; border-bottom: 1px solid var(--line); font-size: 11px; }
+.scope-pick label { display: inline-flex; align-items: center; gap: 3px; padding: 1px 7px 1px 4px; border: 1px solid var(--line); border-radius: 999px; cursor: pointer; color: var(--muted); }
+.scope-pick label.on { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.scope-pick input { margin: 0; accent-color: var(--accent); }
+.scope { background: var(--panel); display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+.sc-h { display: flex; gap: 8px; align-items: baseline; padding: 3px 8px 0; font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; }
+.sc-h b { font: 600 12px var(--font-display); color: var(--ink); }
+.sc-k { margin-left: auto; display: flex; gap: 8px; font-weight: 500; overflow: hidden; }
+.scope canvas { flex: 1; min-height: 0; width: 100%; display: block; }
+.sim-bar { position: sticky; top: 0; z-index: 2; background: var(--panel); border-bottom: 1px solid var(--line); padding: 8px 12px; display: grid; gap: 6px; font-size: 12px; color: var(--muted); }
+.sim-bar .row2 { display: flex; gap: 6px 10px; align-items: center; flex-wrap: wrap; }
+.sim-bar button, .sim-bar select { font: inherit; font-size: 12px; color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 2px 8px; cursor: pointer; }
+.sim-bar button:hover { border-color: var(--accent); color: var(--accent); }
+.sim-bar #sim-play { background: var(--accent); color: #fff; border-color: var(--accent); min-width: 72px; }
+.sim-bar label { display: inline-flex; gap: 4px; align-items: center; }
+.sim-bar input[type=range] { width: 80px; accent-color: var(--accent); }
+.sim-bar .jog button { padding: 1px 7px; font-family: var(--font-mono); }
+.sim-bar .vals { margin-left: auto; }
+#sim-t.buf { color: var(--open); }
+.sim-note { font-size: 12px; color: var(--muted); }
+.sd-crumb { padding: 6px 12px 0; font-size: 12px; color: var(--muted); display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.sd-crumb button { background: none; border: 0; padding: 0; font: inherit; }
+.sd-crumb b { color: var(--ink); font-family: var(--font-display); }
+.sd-wrap { padding: 4px 6px; }
+#sd-svg { width: 100%; height: 100%; display: block; background: color-mix(in srgb, var(--bg) 55%, var(--panel)); border: 1px solid var(--line); border-radius: 6px; cursor: grab; font-family: var(--font-body); user-select: none; touch-action: none; }
+#sd-svg .sb { fill: var(--panel); stroke: var(--ink); stroke-width: 1.1; }
+#sd-svg .sb.sub { stroke-width: 2.2; }
+#sd-svg .sblk.open { cursor: pointer; }
+#sd-svg .sblk.open:hover .sb, #sd-svg .sblk.open:focus .sb { stroke: var(--accent); fill: var(--accent-soft); }
+#sd-svg .sblk.on .sb { fill: var(--fail-bg); stroke: var(--fail); }
+#sd-svg .sl { fill: none; stroke: var(--ink); stroke-width: 1.1; }
+#sd-svg .scr { fill: var(--bg); stroke: var(--muted); }
+#sd-svg .st { font-size: 10px; fill: var(--ink); }
+#sd-svg .st.c { text-anchor: middle; }
+#sd-svg .st.bold { font-weight: 600; font-size: 10.5px; }
+#sd-svg .st.sm { font-size: 8.5px; fill: var(--muted); }
+#sd-svg .st.live { fill: var(--accent); font-family: var(--font-mono); }
+#sd-svg .st.sg { font-size: 9px; font-family: var(--font-mono); }
+#sd-svg .st.pl { font-size: 8px; fill: var(--muted); }
+#sd-svg .st.pr { font-size: 8px; fill: var(--muted); text-anchor: end; }
+#sd-svg .st.val { font-size: 8.5px; font-family: var(--font-mono); fill: var(--accent); }
+#sd-svg .sp rect { fill: var(--panel); stroke: var(--ink); }
+#sd-svg .sp.out rect { fill: var(--bg); }
+#sd-svg .sw { cursor: pointer; }
+#sd-svg .sw .hit { fill: none; stroke: transparent; stroke-width: 9; }
+#sd-svg .sw .ln { fill: none; stroke: var(--muted); stroke-width: 1.1; }
+#sd-svg .sw:hover .ln { stroke: var(--accent); stroke-width: 1.8; }
+#sd-svg .sw.pr .ln { stroke: var(--accent); stroke-width: 2.2; }
+#sd-svg .arr { fill: var(--muted); }
+.sd-hint { padding: 0 12px 4px; font-size: 11px; color: var(--muted); }
+.sim-meas table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.sim-meas th { text-align: left; font-weight: 500; color: var(--muted); padding: 4px 8px; border-bottom: 1px solid var(--line); }
+.sim-meas td { padding: 4px 8px; border-bottom: 1px solid var(--line); }
+.sim-meas td.num { text-align: right; font-family: var(--font-mono); white-space: nowrap; }
+.sim-foot { padding: 6px 12px 12px; font-size: 11px; color: var(--muted); }
 #err { display: none; padding: 16px; color: var(--fail); }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
@@ -227,6 +292,10 @@ aside { display: flex; flex-direction: column; min-height: 0; background: var(--
       </div>
       <div class="focus-note" id="note"></div>
     </div>
+    <div class="sim-diag" id="sim-diag" aria-label="Simulation block diagram">
+      <div class="sd-crumb" id="sd-crumb"></div><div class="sd-wrap" id="sd-wrap"></div>
+      <div class="sd-hint">Click a block to show its scopes; double-click a heavy-bordered block to open it. Click a wire to plot it in the probe scope. Scroll to zoom, drag to pan, double-click the background to fit.</div>
+    </div>
     <div class="ctl">
       <label for="ax-x"><span class="row">X, along the sheet <span class="num" id="ax-x-v"></span></span><input id="ax-x" type="range" step="1"></label>
       <label for="ax-y"><span class="row">Y, up the bed <span class="num" id="ax-y-v"></span></span><input id="ax-y" type="range" step="1"></label>
@@ -249,6 +318,7 @@ aside { display: flex; flex-direction: column; min-height: 0; background: var(--
       <button role="tab" aria-selected="false" data-pane="p-tree" id="t-tree">Product tree</button>
       <button role="tab" aria-selected="false" data-pane="p-if" id="t-if">Interfaces</button>
       <button role="tab" aria-selected="false" data-pane="p-as" id="t-as">Assumptions</button>
+      <button role="tab" aria-selected="false" data-pane="p-sim" id="t-sim">Simulation</button>
     </div>
     <div class="filter" id="filter"><span id="filter-t"></span><button type="button" id="filter-x">Show all</button></div>
     <div class="pane" id="p-req" role="tabpanel"></div>
@@ -256,11 +326,13 @@ aside { display: flex; flex-direction: column; min-height: 0; background: var(--
     <div class="pane" id="p-tree" role="tabpanel" hidden></div>
     <div class="pane" id="p-if" role="tabpanel" hidden></div>
     <div class="pane" id="p-as" role="tabpanel" hidden></div>
+    <div class="pane" id="p-sim" role="tabpanel" hidden></div>
     <div id="err"></div>
   </aside>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
+<script src="sim.js"></script>
 <script>
 (async function () {
   const $ = (id) => document.getElementById(id);
@@ -447,6 +519,7 @@ aside { display: flex; flex-direction: column; min-height: 0; background: var(--
   function showTab(id) {
     document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.pane === id));
     document.querySelectorAll(".pane").forEach(p => p.hidden = p.id !== id);
+    if (id === "p-sim") enterSim(); else exitSim();
     if (id === "p-asm") { enterBuild(); if (focus) buildToFocus(); } else if (building) { exitBuild(); applyFocusView(); }
     updateFilterBar();
   }
@@ -790,6 +863,7 @@ aside { display: flex; flex-direction: column; min-height: 0; background: var(--
     if (changed) renderReqs();
   }
   function selectReq(id, scroll) {
+    if (id && V.viz[id] && V.viz[id].sim && SIMP) { showTab("p-sim"); simFocusReq(id); return; }
     if (id) openGroupOf(id);
     if (["R57", "R58", "R59", "R61", "R62", "R64"].includes(id)) {
       const c = (res[id] || {}).case || "";
@@ -1242,6 +1316,639 @@ aside { display: flex; flex-direction: column; min-height: 0; background: var(--
     });
   }
 
+  // ------------------------------------------------------------- simulation: Simulink-style diagrams, scopes, and the 3D view, all driven by one run
+  const SIMP = V.sim && V.sim.params, SIMRES = V.sim && V.sim.results;
+  const SIM_JOBS = SIMP && window.CNCSIM ? CNCSIM.jobs(SIMP) : {};
+  let SR = null, simOn = false, simRun = false, simSpeed = 1, simDiag = "top", simJob = "profile", simErr = 1, simWin = 20;
+  let simTOff = 0, simLastReal = 0, simMeter = null, simSeeking = false, simShowVals = false;
+  const simProbe = [];
+  let simFeed = 1, simAcc = 1;
+  const fmtSig = (v, u) => {
+    if (!isFinite(v)) return "–";
+    if (u === "m") return (v * 1000).toFixed(2) + " mm";
+    if (u === "m/s") return (v * 1000).toFixed(1) + " mm/s";
+    const a = Math.abs(v), s = a >= 1000 ? v.toFixed(0) : a >= 100 ? v.toFixed(1) : a >= 1 ? v.toFixed(2) : a >= 0.01 ? v.toFixed(3) : v.toExponential(1);
+    return s + (u ? " " + u : "");
+  };
+  const sigScale = (u) => u === "m" ? 1000 : u === "m/s" ? 1000 : 1;
+  const sigUnit = (u) => u === "m" ? "mm" : u === "m/s" ? "mm/s" : u;
+
+  // ---- recording: every signal, min and max per 10 ms, so a wire probed after the fact still has its history
+  const REC = { dt: 0.01, n: 0, cap: 0, ns: 0 };
+  function recReset(ns) {
+    REC.ns = ns; REC.n = 0; REC.cap = 8192;
+    REC.min = new Float32Array(REC.cap * ns); REC.max = new Float32Array(REC.cap * ns); REC.t = new Float64Array(REC.cap);
+    REC.bmin = new Float64Array(ns).fill(Infinity); REC.bmax = new Float64Array(ns).fill(-Infinity); REC.next = REC.dt;
+  }
+  function recStep(v, t) {
+    const bmin = REC.bmin, bmax = REC.bmax, ns = REC.ns;
+    for (let i = 0; i < ns; i++) { const x = v[i]; if (x < bmin[i]) bmin[i] = x; if (x > bmax[i]) bmax[i] = x; }
+    if (t < REC.next) return;
+    if (REC.n >= REC.cap) {
+      const c2 = REC.cap * 2, mn = new Float32Array(c2 * ns), mx = new Float32Array(c2 * ns), tt = new Float64Array(c2);
+      mn.set(REC.min); mx.set(REC.max); tt.set(REC.t); REC.min = mn; REC.max = mx; REC.t = tt; REC.cap = c2;
+    }
+    const o = REC.n * ns;
+    for (let i = 0; i < ns; i++) { REC.min[o + i] = bmin[i]; REC.max[o + i] = bmax[i]; bmin[i] = Infinity; bmax[i] = -Infinity; }
+    REC.t[REC.n++] = t; REC.next = t + REC.dt;
+  }
+
+  // ---- the path in 3D: what the program asks for (faint) and where the tool tip went (cutting moves bright)
+  const trace = { max: 60000 };
+  function traceLines() {
+    const mk = (col, op, dashed) => {
+      const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.BufferAttribute(new Float32Array(trace.max * 6), 3)); g.setDrawRange(0, 0);
+      const m = dashed ? new THREE.LineDashedMaterial({ color: col, transparent: true, opacity: op, dashSize: 12, gapSize: 8, depthTest: false })
+                       : new THREE.LineBasicMaterial({ color: col, transparent: true, opacity: op, depthTest: false });
+      const L = new THREE.LineSegments(g, m); L.renderOrder = 998; L.frustumCulled = false; L.visible = false; local.add(L); return L;
+    };
+    trace.cut = mk("#d0402b", 1); trace.move = mk("#4b5560", 0.7); trace.plan = mk("#1f6fb2", 0.35);
+    trace.n = { cut: 0, move: 0 }; trace.tt = { cut: new Float64Array(trace.max), move: new Float64Array(trace.max) };
+  }
+  function tracePush(kind, a, b, t) {
+    const L = trace[kind], n = trace.n[kind]; if (n >= trace.max) return;
+    const arr = L.geometry.attributes.position.array, o = n * 6;
+    arr[o] = a[0]; arr[o + 1] = a[1]; arr[o + 2] = a[2]; arr[o + 3] = b[0]; arr[o + 4] = b[1]; arr[o + 5] = b[2];
+    trace.tt[kind][n] = t; trace.n[kind] = n + 1; L.geometry.attributes.position.needsUpdate = true;
+  }
+  function traceShowTo(t) {                     // draw the track up to the playback time
+    for (const k of ["cut", "move"]) {
+      const tt = trace.tt[k]; let lo = 0, hi = trace.n[k];
+      while (lo < hi) { const m = (lo + hi) >> 1; if (tt[m] <= t) lo = m + 1; else hi = m; }
+      trace[k].geometry.setDrawRange(0, lo * 2);
+    }
+  }
+  function traceReset(plan) {
+    for (const k of ["cut", "move"]) { trace.n[k] = 0; trace[k].geometry.setDrawRange(0, 0); }
+    const segs = plan.segs.filter(s => s.L), arr = trace.plan.geometry.attributes.position.array;
+    let n = 0;
+    for (const s of segs) { if (n >= trace.max) break; arr.set([...s.p0, ...s.p1], n * 6); n++; }
+    trace.plan.geometry.setDrawRange(0, n * 2); trace.plan.geometry.attributes.position.needsUpdate = true;
+    trace.last = null;
+  }
+  const traceShow = (on) => ["cut", "move", "plan"].forEach(k => { if (trace[k]) trace[k].visible = on; });
+
+  // ---- a run
+  function simLoad(job, opt) {
+    opt = opt || {};
+    if (!SIMP) return;
+    simJob = job || simJob; simRun = false; simSeeking = false; simBuffering = false;
+    const P = JSON.parse(JSON.stringify(SIMP));
+    SR = CNCSIM.Run(P, opt.custom ? null : simJob, { feed: simFeed, acc: simAcc, custom: opt.custom, start: opt.start });
+    SR.P = P;
+    if (!opt.keep) { recReset(SR.M.names.length); simTOff = 0; simTp = 0; simMeter = CNCSIM.Meter(P); traceReset(SR.M.planner.plan); }
+    else { simTOff = REC.n ? REC.t[REC.n - 1] : 0; REC.next = simTOff + REC.dt; traceAppendPlan(SR.M.planner.plan); }
+    SR.M.step();
+    simUI(); simPose(true);
+  }
+  function traceAppendPlan(plan) {
+    const arr = trace.plan.geometry.attributes.position.array;
+    let n = trace.plan.geometry.drawRange.count / 2;
+    for (const s of plan.segs.filter(s => s.L)) { if (n >= trace.max) break; arr.set([...s.p0, ...s.p1], n * 6); n++; }
+    trace.plan.geometry.setDrawRange(0, n * 2); trace.plan.geometry.attributes.position.needsUpdate = true;
+  }
+  // the computation runs ahead of the playback into the recording; playback starts (and resumes) only once the
+  // computation can stay ahead of it to the end of the job at the chosen speed
+  let simTp = 0, simBuffering = false, simCs = 0, simFrameMs = 16, simFrames = 0;
+  const PLAY_MS = 12, BUF_MS = 30;                    // computing per frame while playing, and while waiting
+  const tcNow = () => SR ? SR.M.t + simTOff : 0, tEnd = () => SR ? SR.T + simTOff : 0, simDone = () => SR && SR.M.t >= SR.T - 1e-9;
+  function simCompute(ms) {
+    if (!SR || simDone()) return;
+    const M = SR.M, P = SR.P, t0 = performance.now(), m0 = M.t;
+    while (M.t < SR.T) {
+      for (let i = 0; i < 50 && M.t < SR.T; i++) { M.step(); CNCSIM.measure(M, simMeter, P); recStep(M.v, M.t + simTOff); traceStep(M); }
+      if (performance.now() - t0 > ms) break;
+    }
+    const el = performance.now() - t0;
+    if (el > 1) simCs = simCs ? 0.85 * simCs + 0.15 * (M.t - m0) / el : (M.t - m0) / el;     // simulated s per ms of computing
+  }
+  const playRate = () => simCs * PLAY_MS / Math.max(simFrameMs, 16) * 1000;              // simulated s per real s, while playing
+  function simReady() {
+    if (simDone()) return true;
+    if (simFrames < 10 || !simCs) return false;                                             // not measured yet
+    const r = playRate(), tc = tcNow(), T = tEnd();
+    if (tc - simTp < Math.min(0.3 * simSpeed, T - simTp)) return false;                    // a little lead, for jitter
+    return (T - tc) / Math.max(r, 1e-9) <= 0.85 * (T - simTp) / simSpeed;                   // it finishes before the playback catches up
+  }
+  function simWait() {                                                                        // seconds of real time until playback can start
+    const r = playRate(), rb = simCs * BUF_MS / Math.max(simFrameMs, BUF_MS + 4) * 1000, T = tEnd();
+    const need = T - 0.85 * r * (T - simTp) / simSpeed;
+    return Math.max(0, (Math.max(need, simTp + 0.3 * simSpeed) - tcNow()) / Math.max(rb, 1e-9));
+  }
+  function simAdvance(dtReal) {
+    if (!SR) return;
+    if (dtReal > 0) { simFrameMs = simFrames ? 0.6 * simFrameMs + 0.4 * Math.min(1000, dtReal * 1000) : dtReal * 1000; simFrames++; }
+    simCompute(simRun && !simBuffering ? PLAY_MS : BUF_MS);
+    if (!simRun) return;
+    if (simBuffering) { if (simReady()) simBuffering = false; else return; }
+    simTp = Math.min(simTp + Math.min(dtReal, 0.5) * simSpeed, tcNow());
+    if (simTp >= tEnd() - 1e-9) { simTp = tEnd(); simRun = false; simUI(); }
+    else if (simTp >= tcNow() - 1e-9) { simBuffering = true; simUI(); }                    // it caught up: wait again
+  }
+  // a recorded value at the playback time (the middle of its 10 ms bucket's range)
+  function recK(t) { let lo = 0, hi = REC.n - 1; if (hi < 0) return -1; while (lo < hi) { const m = (lo + hi + 1) >> 1; if (REC.t[m] <= t) lo = m; else hi = m - 1; } return lo; }
+  function recVal(k, i) { if (k < 0) return SR.M.v[i]; const o = k * REC.ns + i; return 0.5 * (REC.min[o] + REC.max[o]); }
+  function traceStep(M) {
+    const ix = (n) => M.v[M.index.get(n)];
+    const p = [ix("tip.x") * 1000, ix("tip.y") * 1000, ix("tip.z") * 1000];
+    const r = M.planner.ref;
+    const kind = r && r.cut ? "cut" : "move";
+    if (!trace.last) { trace.last = p; trace.lastKind = kind; return; }
+    const d = Math.hypot(p[0] - trace.last[0], p[1] - trace.last[1], p[2] - trace.last[2]);
+    if (d > 0.6 || kind !== trace.lastKind) { tracePush(kind, trace.last, p, M.t + simTOff); trace.last = p; trace.lastKind = kind; }
+  }
+  // the machine in 3D where the model has it; errors can be magnified so a 50 µm wobble shows
+  let simPoseTick = 0;
+  function simPose(force) {
+    if (!SR) return;
+    if (!force && (++simPoseTick % 2)) return;
+    const M = SR.M, kb = recK(simTp), ix = (n) => recVal(kb, M.index.get(n)), k = simErr;
+    const r = [ix("ref.x"), ix("ref.y"), ix("ref.z")], a = [ix("tip.x"), ix("tip.y"), ix("tip.z")];
+    const q = r.map((v, i) => 1000 * (v + (a[i] - v) * k));
+    pose.x = q[0]; pose.y = q[1]; pose.tip = q[2];
+    applyPose(); traceShowTo(simTp);
+  }
+  function simSeek(t, then) {                           // compute ahead without drawing, then play from a moment worth looking at
+    if (!SR) return;
+    simSeeking = true; simRun = false;
+    const target = Math.min(t, SR.T) + simTOff;
+    const chunk = () => {
+      if (!simSeeking) return;
+      simCompute(40);
+      $("sim-t").textContent = `computing ahead… ${tcNow().toFixed(1)} of ${target.toFixed(1)} s`;
+      if (tcNow() < target && !simDone()) setTimeout(chunk, 0);
+      else { simSeeking = false; simTp = target; simPose(true); simUI(); if (then) then(); }
+    };
+    chunk();
+  }
+
+  // ---- the diagrams: ports worked out from the wiring, as Simulink draws a subsystem
+  let SD = null;            // the structure, from a model built once
+  function sdBuild() {
+    const M = CNCSIM.build(JSON.parse(JSON.stringify(SIMP)));
+    const desc = {};
+    const walk = (id) => { const sys = M.systems[id]; let bl = sys.blocks.filter(b => b.type !== "sub"); for (const c of sys.children) bl = bl.concat(walk(c)); desc[id] = bl; return bl; };
+    walk("top");
+    const consumers = {};
+    for (const b of M.blocks) if (b.type !== "sub") b.in.forEach(s => (consumers[s] ||= []).push(b));
+    const ports = {};
+    for (const id of Object.keys(M.systems)) {
+      const bl = desc[id], inside = new Set(bl), prod = new Set(), seen = new Set(), ins = [], outs = [];
+      bl.forEach(b => { if (b.type !== "scope") b.out.forEach(s => prod.add(s)); });
+      bl.forEach(b => b.in.forEach(s => { if (!prod.has(s) && !seen.has(s)) { seen.add(s); ins.push(s); } }));
+      bl.forEach(b => { if (b.type === "scope") return; b.out.forEach(s => { if ((consumers[s] || []).some(c => !inside.has(c)) && !outs.includes(s)) outs.push(s); }); });
+      ports[id] = { ins, outs };
+    }
+    SD = { M, ports };
+  }
+  const BSIZE = { gain: [40, 34], sum: [26, 26], prod: [28, 28], int: [36, 36], sat: [44, 36], lookup: [64, 40], const: [80, 30], fcn: [96, 44], src: [120, 60], scope: [70, 50], sub: [120, 64] };
+  const short = (s) => s.split(".").slice(1).join(".") || s;
+  function sdElements(sysId) {
+    const sys = SD.M.systems[sysId], els = [];
+    for (const b of sys.blocks) {
+      const [w, h] = b.size || BSIZE[b.type] || [80, 40];
+      let ins = b.in, outs = b.out;
+      if (b.type === "sub") { ins = SD.ports[b.child].ins; outs = SD.ports[b.child].outs; }
+      if (b.type === "scope") outs = [];
+      els.push({ b, x: b.pos[0], y: b.pos[1], w, h: b.type === "sub" ? Math.max(h, 16 * Math.max(ins.length, outs.length) + 10) : h, ins, outs });
+    }
+    // inports at the left, beside their first user; outports at the right, beside their source
+    const P = SD.ports[sysId];
+    const portY = (el, s, side) => { const list = side === "in" ? el.ins : el.outs, i = list.indexOf(s); return el.y + el.h * (i + 1) / (list.length + 1); };
+    if (sysId !== "top") {
+      const inEls = P.ins.map(s => { const user = els.find(e => e.ins.includes(s)); return { port: "in", sig: s, x: 0, y: user ? portY(user, s, "in") - 9 : 20, w: 46, h: 18, ins: [], outs: [s] }; });
+      inEls.sort((a, b) => a.y - b.y); for (let i = 1; i < inEls.length; i++) inEls[i].y = Math.max(inEls[i].y, inEls[i - 1].y + 22);
+      const maxX = Math.max(...els.map(e => e.x + e.w)) + 50;
+      const outEls = P.outs.map(s => { const src = els.find(e => e.outs.includes(s)); return { port: "out", sig: s, x: maxX, y: src ? portY(src, s, "out") - 9 : 20, w: 46, h: 18, ins: [s], outs: [] }; });
+      outEls.sort((a, b) => a.y - b.y); for (let i = 1; i < outEls.length; i++) outEls[i].y = Math.max(outEls[i].y, outEls[i - 1].y + 22);
+      els.push(...inEls, ...outEls);
+      // inports sit left of everything
+      const minX = Math.min(...els.filter(e => !e.port).map(e => e.x));
+      inEls.forEach(e => { e.x = minX - 80; });
+    }
+    els.forEach(e => {
+      e.pin = e.ins.map((s, i) => [e.x, e.y + e.h * (i + 1) / (e.ins.length + 1)]);
+      e.pout = e.outs.map((s, i) => [e.x + e.w, e.y + e.h * (i + 1) / (e.outs.length + 1)]);
+    });
+    return els;
+  }
+  function sdWires(els) {
+    const wires = [], lanes = {};
+    const maxY = Math.max(...els.map(e => e.y + e.h));
+    let lane = 0;
+    for (const e of els) e.ins.forEach((s, i) => {
+      const src = els.find(o => o.outs.includes(s)); if (!src) return;
+      const [x1, y1] = src.pout[src.outs.indexOf(s)], [x2, y2] = e.pin[i];
+      let d;
+      if (x2 > x1 + 14) {
+        const mx = Math.round(x1 + Math.max(8, Math.min(x2 - x1 - 8, (x2 - x1) / 2 + ((wires.length % 5) - 2) * 3)));
+        d = `M${x1},${y1} H${mx} V${y2} H${x2}`;
+      } else {                                     // feedback: round below the blocks
+        const ly = (lanes[s] ??= maxY + 14 + 8 * (lane++ % 6));
+        d = `M${x1},${y1} H${x1 + 10} V${ly} H${x2 - 12} V${y2} H${x2}`;
+      }
+      wires.push({ s, d, x1, y1 });
+    });
+    return wires;
+  }
+  const SUMMARY = { plan: "ref.feed", X: "X.x", Y: "Y.x", Z: "Z.x", struct: "st.dz", cutf: "cut.F", spindle: "sp.rpm", tip: "tip.contour", power: "pw.I_mains" };
+  function sdIcon(e) {
+    const b = e.b, x = e.x, y = e.y, w = e.w, h = e.h, cx = x + w / 2, cy = y + h / 2;
+    switch (b.type) {
+      case "gain": return `<polygon points="${x},${y} ${x},${y + h} ${x + w},${cy}" class="sb"/><text x="${x + w * 0.36}" y="${cy + 3.5}" class="st c">${b.label || fmtK(b.k)}</text>`;
+      case "sum": return `<circle cx="${cx}" cy="${cy}" r="${w / 2}" class="sb"/>` + b.signs.split("").map((g, i) => { const py = y + h * (i + 1) / (b.signs.length + 1); return `<text x="${x + 6}" y="${py + 3}" class="st sg">${g}</text>`; }).join("") + `<text x="${cx + 3}" y="${cy + 4}" class="st c">Σ</text>`;
+      case "prod": return `<circle cx="${cx}" cy="${cy}" r="${w / 2}" class="sb"/><text x="${cx}" y="${cy + 4}" class="st c">×</text>`;
+      case "int": return `<rect x="${x}" y="${y}" width="${w}" height="${h}" class="sb"/><text x="${cx}" y="${cy - 1}" class="st c">1</text><line x1="${x + 9}" x2="${x + w - 9}" y1="${cy + 2}" y2="${cy + 2}" class="sl"/><text x="${cx}" y="${cy + 12}" class="st c">s</text>`;
+      case "sat": return `<rect x="${x}" y="${y}" width="${w}" height="${h}" class="sb"/><path d="M${x + 7},${y + h - 9} H${x + 16} L${x + w - 16},${y + 9} H${x + w - 7}" class="sl"/>`;
+      case "lookup": return `<rect x="${x}" y="${y}" width="${w}" height="${h}" class="sb"/><path d="M${x + 6},${y + 10} C${x + 18},${y + 10} ${x + 22},${y + h - 8} ${x + w - 6},${y + h - 7}" class="sl"/><text x="${cx}" y="${y + h - 4}" class="st c sm">${b.sub || ""}</text>`;
+      case "const": return `<rect x="${x}" y="${y}" width="${w}" height="${h}" class="sb"/><text x="${cx}" y="${cy + 4}" class="st c">${b.sub || fmtK(b.k)}</text>`;
+      case "scope": return `<rect x="${x}" y="${y}" width="${w}" height="${h}" class="sb"/><rect x="${x + 8}" y="${y + 8}" width="${w - 16}" height="${h - 16}" class="scr"/><path d="M${x + 10},${cy + 4} l8,-8 l8,10 l8,-6 l8,4 l8,-6" class="sl"/>`;
+      case "sub": {
+        const P = SD.ports[b.child];
+        return `<rect x="${x}" y="${y}" width="${w}" height="${h}" class="sb sub"/><text x="${cx}" y="${y + 15}" class="st c bold">${b.label}</text>` +
+          `<text x="${cx}" y="${y + h - 6}" class="st c sm live" data-sum="${SUMMARY[b.child] || ""}"></text>` +
+          P.ins.map((s, i) => `<text x="${x + 4}" y="${e.pin[i][1] + 3}" class="st pl">${short(s)}</text>`).join("") +
+          P.outs.map((s, i) => `<text x="${x + w - 4}" y="${e.pout[i][1] + 3}" class="st pr">${short(s)}</text>`).join("");
+      }
+      default: return `<rect x="${x}" y="${y}" width="${w}" height="${h}" class="sb"/><text x="${cx}" y="${cy - (b.sub ? 2 : -4)}" class="st c bold">${b.label || b.id}</text>` + (b.sub ? `<text x="${cx}" y="${cy + 11}" class="st c sm">${b.sub}</text>` : "");
+    }
+  }
+  const fmtK = (k) => Math.abs(k) >= 1000 || (Math.abs(k) < 0.01 && k) ? k.toExponential(1) : (+k.toPrecision(3)).toString();
+  let sdView = null, sdBox = null, sdSel = null, sdDragged = false;
+  function sdRender() {
+    if (!SD) sdBuild();
+    const els = sdElements(simDiag), wires = sdWires(els);
+    const xs = els.flatMap(e => [e.x, e.x + e.w]), ys = els.flatMap(e => [e.y, e.y + e.h]);
+    const lanesY = Math.max(...ys) + 14 + 8 * 6;
+    const box = [Math.min(...xs) - 16, Math.min(...ys) - 24, Math.max(...xs) - Math.min(...xs) + 32, Math.max(lanesY, Math.max(...ys)) - Math.min(...ys) + 34];
+    sdBox = box; sdView = sdView && sdView.sys === simDiag ? sdView : { sys: simDiag, v: box.slice() };
+    const units = (s) => SD.M.units[SD.M.index.get(s)] || "";
+    let h = `<svg id="sd-svg" viewBox="${sdView.v.join(" ")}" role="img" aria-label="Block diagram: ${SD.M.systems[simDiag].label}">
+      <defs><marker id="sd-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="arr"/></marker></defs>`;
+    for (const w of wires) {
+      const pr = simProbe.includes(w.s);
+      h += `<g class="sw${pr ? " pr" : ""}" data-sig="${w.s}"><title>${w.s} (${units(w.s) || "–"}): click to plot it in the probe scope</title><path d="${w.d}" class="hit"/><path d="${w.d}" class="ln" marker-end="url(#sd-arr)"/></g>`;
+    }
+    for (const e of els) {
+      if (e.port) {
+        const n = (e.port === "in" ? SD.ports[simDiag].ins : SD.ports[simDiag].outs).indexOf(e.sig) + 1;
+        h += `<g class="sp ${e.port}"><rect x="${e.x}" y="${e.y}" width="${e.w}" height="${e.h}" rx="9"/><text x="${e.x + e.w / 2}" y="${e.y + 12.5}" class="st c">${n}</text>
+          <text x="${e.port === "in" ? e.x + e.w + 4 : e.x - 4}" y="${e.y - 3}" class="st ${e.port === "in" ? "" : "pr"} sm">${short(e.sig)}</text></g>`;
+        continue;
+      }
+      const b = e.b, open = b.type === "sub";
+      const isSel = sdSel && sdSel.sys === simDiag && sdSel.id === b.id;
+      h += `<g class="sblk ${b.type}${open ? " open" : ""}${isSel ? " sel" : ""}" data-id="${b.id}" ${open ? `data-sys="${b.child}"` : ""} tabindex="0" role="button" aria-label="${b.label || b.id}${open ? ", subsystem" : ""}">
+        <title>${b.label || b.id}${b.sub ? " — " + b.sub : ""}: click to show its scopes${open ? ", double-click to open" : ""}</title>${sdIcon(e)}</g>`;
+      if (!["fcn", "src", "sub", "const", "scope"].includes(b.type) && b.label && b.type !== "gain") h += `<text x="${e.x + e.w / 2}" y="${e.y + e.h + 11}" class="st c sm lbl">${b.label}</text>`;
+      if (b.type === "gain" && b.sub) h += `<text x="${e.x + e.w / 2}" y="${e.y + e.h + 11}" class="st c sm lbl">${b.sub}</text>`;
+    }
+    // value tags: probed wires always, every wire when "values" is on
+    for (const e of els) e.outs.forEach((s, i) => {
+      if (!(simShowVals || simProbe.includes(s) || e.port === "out")) return;
+      if (e.port === "in") return;
+      const [x, y] = e.pout[i];
+      h += `<text x="${x + 3}" y="${y - 3}" class="st val" data-val="${s}"></text>`;
+    });
+    h += `</svg>`;
+    const path = []; let id = simDiag; while (id) { path.unshift(id); id = SD.M.systems[id].parent; }
+    $("sd-crumb").innerHTML = path.map((p, i) => i < path.length - 1 ? `<button type="button" class="lk" data-sys="${p}">${SD.M.systems[p].label}</button> ›` : `<b>${SD.M.systems[p].label}</b>`).join(" ");
+    $("sd-wrap").innerHTML = h;
+    $("sd-crumb").querySelectorAll("[data-sys]").forEach(el => el.onclick = () => { simDiag = el.dataset.sys; sdSel = null; sdRender(); });
+    $("sd-wrap").querySelectorAll(".sblk").forEach(el => {
+      const open = () => { if (el.dataset.sys) { simDiag = el.dataset.sys; sdSel = null; sdRender(); } };
+      const pick = () => { const id = el.dataset.id; sdSel = sdSel && sdSel.sys === simDiag && sdSel.id === id ? null : { sys: simDiag, id }; sdRender(); };
+      el.addEventListener("click", pick); el.addEventListener("dblclick", (e) => { e.stopPropagation(); open(); });
+      el.addEventListener("keydown", e => { if (e.key === "Enter") open(); if (e.key === " ") { e.preventDefault(); pick(); } });
+    });
+    $("sd-svg").addEventListener("click", (e) => { if (!e.target.closest(".sblk, .sw") && sdSel && !sdDragged) { sdSel = null; sdRender(); } });
+    scopeInit();
+    $("sd-wrap").querySelectorAll(".sw").forEach(el => el.addEventListener("click", () => {
+      const s = el.dataset.sig, i = simProbe.indexOf(s);
+      if (i >= 0) simProbe.splice(i, 1); else { simProbe.push(s); if (simProbe.length > 4) simProbe.shift(); }
+      if (!scopeOn.has("probe")) { scopeOn.add("probe"); store.set("simScopes", [...scopeOn].join(",")); }
+      sdRender();
+    }));
+    sdLive(true);
+  }
+  // pan and zoom the diagram
+  (function () {
+    let drag = null;
+    const wrap = () => $("sd-wrap");
+    document.addEventListener("wheel", (e) => {
+      const svg = e.target.closest && e.target.closest("#sd-svg"); if (!svg || !sdView) return;
+      e.preventDefault();
+      const r = svg.getBoundingClientRect(), v = sdView.v, k = e.deltaY > 0 ? 1.15 : 1 / 1.15;
+      const s = Math.max(v[2] / r.width, v[3] / r.height);
+      const px = v[0] + (e.clientX - r.left - (r.width - v[2] / s) / 2) * s, py = v[1] + (e.clientY - r.top - (r.height - v[3] / s) / 2) * s;
+      sdView.v = [px - (px - v[0]) * k, py - (py - v[1]) * k, v[2] * k, v[3] * k];
+      svg.setAttribute("viewBox", sdView.v.join(" "));
+    }, { passive: false });
+    document.addEventListener("pointerdown", (e) => {
+      const svg = e.target.closest && e.target.closest("#sd-svg"); if (!svg || e.target.closest(".sblk, .sw")) return;
+      sdDragged = false;
+      drag = { x: e.clientX, y: e.clientY, v: sdView.v.slice(), svg };
+    });
+    document.addEventListener("pointermove", (e) => {
+      if (!drag) return;
+      if (Math.hypot(e.clientX - drag.x, e.clientY - drag.y) > 3) sdDragged = true;
+      const r = drag.svg.getBoundingClientRect(), s = Math.max(drag.v[2] / r.width, drag.v[3] / r.height);
+      sdView.v = [drag.v[0] - (e.clientX - drag.x) * s, drag.v[1] - (e.clientY - drag.y) * s, drag.v[2], drag.v[3]];
+      drag.svg.setAttribute("viewBox", sdView.v.join(" "));
+    });
+    document.addEventListener("pointerup", () => { drag = null; });
+    document.addEventListener("dblclick", (e) => { if (e.target.closest && e.target.closest("#sd-svg") && !e.target.closest(".sblk")) { sdView.v = sdBox.slice(); $("sd-svg").setAttribute("viewBox", sdView.v.join(" ")); } });
+  })();
+  let sdLiveT = 0;
+  function sdLive(force) {
+    const now = performance.now(); if (!force && now - sdLiveT < 120) return; sdLiveT = now;
+    if (!SR) return;
+    const M = SR.M, wrap = $("sd-wrap"); if (!wrap) return;
+    const kb = recK(simTp), val = (s) => recVal(kb, M.index.get(s));
+    wrap.querySelectorAll("[data-val]").forEach(el => { const s = el.dataset.val; el.textContent = fmtSig(val(s), M.units[M.index.get(s)]); });
+    wrap.querySelectorAll("[data-sum]").forEach(el => { const s = el.dataset.sum; if (s) el.textContent = short(s) + " " + fmtSig(val(s), M.units[M.index.get(s)]); });
+    // a saturating block lights up, as the torque limit or the VFD's power cap bites
+    const active = (b) => { const u = recVal(kb, b.ii[0]), lim = b.ii.length > 1 ? recVal(kb, b.ii[1]) : null;
+      return lim !== null ? Math.abs(u) > lim * 1.0005 : u < b.lo || u > b.hi; };
+    wrap.querySelectorAll(".sblk.sat").forEach(el => { const b = M.blocks.find(q => q.sys === simDiag && q.id === el.dataset.id); el.classList.toggle("on", !!(b && active(b))); });
+    if (simDiag === "top") {
+      const sat = (sys) => M.blocks.some(q => q.type === "sat" && (q.sys === sys || (SD.M.systems[q.sys] || {}).parent === sys) && active(q));
+      wrap.querySelectorAll(".sblk.open").forEach(el => el.classList.toggle("on", sat(el.dataset.sys)));
+    }
+  }
+
+  // ---- scopes: strip charts beside the 3D view, Simulink's Scope blocks
+  const COLS = ["#1f6fb2", "#d0402b", "#2f8f4e", "#9a6a12", "#7a4fb5"];
+  // each trace: [signal, label, scale (default from its unit), colour index, dashed]; dashed traces are what the program asked for
+  const RPM = 30 / Math.PI, T0 = SIMP ? SIMP.axes.Y.cw.T0 : 0;
+  const SCOPES = [
+    { id: "pos", title: "Position, tool tip", unit: "mm", sigs: [["tip.x", "X", 1000, 0], ["tip.y", "Y", 1000, 1], ["tip.z", "Z", 1000, 2], ["ref.x", "", 1000, 0, 1], ["ref.y", "", 1000, 1, 1], ["ref.z", "", 1000, 2, 1]], lines: [], note: "dashed: programmed" },
+    { id: "vel", title: "Velocity, tool tip", unit: "m/min", sigs: [["tip.vx", "X", 60, 0], ["tip.vy", "Y", 60, 1], ["tip.vz", "Z", 60, 2], ["ref.vx", "", 60, 0, 1], ["ref.vy", "", 60, 1, 1], ["ref.vz", "", 60, 2, 1]], lines: [], note: "dashed: programmed" },
+    { id: "acc", title: "Acceleration, tool tip", unit: "m/s²", sigs: [["tip.ax", "X", 1, 0], ["tip.ay", "Y", 1, 1], ["tip.az", "Z", 1, 2], ["ref.ax", "", 1, 0, 1], ["ref.ay", "", 1, 1, 1], ["ref.az", "", 1, 2, 1]], lines: [], note: "dashed: programmed" },
+    { id: "err", title: "Position error, tool tip", unit: "µm", sigs: [["tip.ex", "X"], ["tip.ey", "Y"], ["tip.ez", "Z"], ["tip.contour", "off the path", 1, 3]], lines: [[100, "R69 limit"], [-100, ""]] },
+    { id: "verr", title: "Velocity error, tool tip", unit: "mm/s", sigs: [["tip.evx", "X", 1000], ["tip.evy", "Y", 1000], ["tip.evz", "Z", 1000]], lines: [] },
+    { id: "aerr", title: "Acceleration error, tool tip", unit: "m/s²", sigs: [["tip.eax", "X", 1], ["tip.eay", "Y", 1], ["tip.eaz", "Z", 1]], lines: [] },
+    { id: "util", title: "Torque used", unit: "% of pull-out", sigs: [["X.util", "X"], ["Y.util", "Y"], ["Z.util", "Z"]], lines: [[80, "R70 limit"]] },
+    { id: "tq", title: "Motor torque", unit: "N·m (X: both motors)", sigs: [["X.T_m", "X", 1, 0], ["Y.T_m", "Y", 1, 1], ["Z.T_m", "Z", 1, 2], ["X.T_max", "", 1, 0, 1], ["Y.T_max", "", 1, 1, 1], ["Z.T_max", "", 1, 2, 1]], lines: [], note: "dashed: pull-out at speed" },
+    { id: "rpm", title: "Motor speed", unit: "rpm", sigs: [["X.w_m", "X", RPM], ["Y.w_m", "Y", RPM], ["Z.w_m", "Z", RPM]], lines: [] },
+    { id: "fd", title: "Drive force", unit: "N, belt / screw / rack", sigs: [["X.F_d", "X"], ["Y.F_d", "Y"], ["Z.F_d", "Z"]], lines: [] },
+    { id: "cut", title: "Cutting force", unit: "N", sigs: [["cut.F", "feed force"], ["cut.Fx", "x"], ["cut.Fy", "y"], ["cut.Fz", "z"]], lines: [] },
+    { id: "spw", title: "Spindle power", unit: "W", sigs: [["sp.P_cut", "cut"], ["sp.P_in", "VFD input"]], lines: [] },
+    { id: "srpm", title: "Spindle speed", unit: "rpm", sigs: [["sp.rpm", "actual", 1, 0], ["ref.rpm", "set", 1, 1, 1]], lines: [] },
+    { id: "col", title: "Column deflection at the head", unit: "µm", sigs: [["st.dx", "x, along the sheet", 1e6], ["st.dz", "z, normal to the bed", 1e6]], lines: [] },
+    { id: "rope", title: "Counterweight rope", unit: "N", sigs: [["cw.T", "tension"]], lines: [[T0 / 2, "R76 limit"]] },
+    { id: "bus", title: "60 V buses", unit: "V", sigs: [["pw.X1.V", "X1"], ["pw.X2.V", "X2"], ["pw.Y.V", "Y"], ["pw.Z.V", "Z"]], lines: [[90, "R72 limit"]] },
+    { id: "psu", title: "Supply load", unit: "W", sigs: [["pw.X1.P_psu", "X1"], ["pw.X2.P_psu", "X2"], ["pw.Y.P_psu", "Y"], ["pw.Z.P_psu", "Z"]], lines: [[350, "rating"]] },
+    { id: "mains", title: "Mains current", unit: "A", sigs: [["pw.I_mains", "mains"]], lines: [[15, "circuit"], [12, "80 %"]] },
+    { id: "fail", title: "Power and drivers", unit: "on = 1", sigs: [["pw.ok", "mains", 1, 0], ["X.ok", "X driver", 1, 1], ["Y.ok", "Y driver", 1, 2], ["Z.ok", "Z driver", 1, 3], ["pw.brake", "Y brake on", 1, 4, 1]], lines: [] },
+    { id: "probe", title: "Probe", unit: "", probe: true, sigs: [], lines: [] },
+  ];
+  const scopeOn = new Set((store.get("simScopes", "") || "pos,vel,acc,err,verr,aerr,util,mains,probe").split(",").filter(Boolean));
+  // what the diagram selection stands for: a subsystem's own signals, or one block's inputs and outputs
+  function scopeFilter() {
+    if (!SD) return null;
+    let sys = null, blk = null;
+    if (sdSel) { const b = SD.M.blocks.find(q => q.sys === sdSel.sys && q.id === sdSel.id); if (!b) return null; if (b.type === "sub") sys = b.child; else blk = b; }
+    else if (simDiag !== "top") sys = simDiag;
+    if (!sys && !blk) return null;
+    const desc = [], walk = (id) => { const S = SD.M.systems[id]; S.blocks.forEach(b => { if (b.type !== "sub") desc.push(b); }); S.children.forEach(walk); };
+    let sigs, label, probe = [];
+    if (sys) { walk(sys); sigs = new Set(desc.filter(b => b.type !== "scope").flatMap(b => b.out)); label = SD.M.systems[sys].label; }
+    else { sigs = new Set([...blk.out, ...blk.in]); label = blk.label || blk.id; probe = blk.type === "scope" ? blk.in : blk.out; }
+    return { sigs, label, probe };
+  }
+  function scopesShown() {
+    const F = scopeFilter();
+    if (!F) return SCOPES.filter(S => scopeOn.has(S.id));
+    const list = SCOPES.filter(S => !S.probe && S.sigs.some(([n]) => F.sigs.has(n)));
+    if (F.probe.length || simProbe.length || !list.length) list.push(SCOPES.find(S => S.probe));
+    return list;
+  }
+  function scopeInit() {
+    if (!$("scopes")) return;
+    const F = scopeFilter();
+    $("scope-sel").innerHTML = F ? `Scopes for <b>${F.label}</b>, from the diagram selection <button type="button" class="lk" id="scope-all">show the ticked set</button>` : "";
+    $("scope-sel").hidden = !F;
+    if (F) $("scope-all").onclick = () => { sdSel = null; if (simDiag !== "top") simDiag = "top"; sdRender(); };
+    $("scope-pick").hidden = !!F;
+    $("scope-pick").innerHTML = SCOPES.map(S => `<label class="${scopeOn.has(S.id) ? "on" : ""}"><input type="checkbox" data-sc="${S.id}"${scopeOn.has(S.id) ? " checked" : ""}>${S.title}</label>`).join("");
+    $("scope-pick").querySelectorAll("[data-sc]").forEach(el => el.onchange = () => {
+      el.checked ? scopeOn.add(el.dataset.sc) : scopeOn.delete(el.dataset.sc);
+      el.parentElement.classList.toggle("on", el.checked);
+      store.set("simScopes", [...scopeOn].join(",")); scopeInit();
+    });
+    $("scopes").innerHTML = scopesShown().map(S => `<div class="scope" id="sc-${S.id}"><div class="sc-h"><b>${S.title}</b><span class="sc-u"></span><span class="sc-k"></span></div><canvas></canvas></div>`).join("");
+    scopeDraw(true);
+  }
+  let scT = 0;
+  function scopeDraw(force) {
+    const now = performance.now(); if (!force && now - scT < 66) return; scT = now;
+    if (!SR || !REC.n) return;
+    const kEnd = recK(simTp) + 1;
+    const tNow = simTp, t0 = simWin ? Math.max(0, tNow - simWin) : 0, t1 = simWin ? Math.max(simWin, tNow) : Math.max(tNow, 1);
+    const ink = css("--muted"), line = css("--line"), fail = css("--fail");
+    // first bucket in the window
+    let i0 = 0, lo = 0, hi = REC.n - 1; while (lo < hi) { const m = (lo + hi) >> 1; if (REC.t[m] < t0) lo = m + 1; else hi = m; } i0 = lo;
+    const selProbe = (scopeFilter() || {}).probe || [];
+    scopesShown().forEach((S) => {
+      const div = $("sc-" + S.id); if (!div) return;
+      const cv = div.querySelector("canvas");
+      const W = cv.clientWidth, H = cv.clientHeight, dpr = Math.min(2, devicePixelRatio || 1);
+      if (cv.width !== W * dpr || cv.height !== H * dpr) { cv.width = W * dpr; cv.height = H * dpr; }
+      const g = cv.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+      const sigs = (S.probe ? (simProbe.length ? simProbe : selProbe).map((s, j) => [s, short(s), undefined, j]) : S.sigs)
+        .map(([s, l, k, c, dash], j) => { const i = SR.M.index.get(s); return i === undefined ? null : { i, l, k: k ?? sigScale(SR.M.units[i]), c: c ?? j, dash }; }).filter(Boolean);
+      const u0 = sigs.length ? SR.M.units[sigs[0].i] || "" : "";
+      div.querySelector(".sc-u").textContent = S.probe ? (sigs.length ? sigUnit(u0) : "click any wire in the diagram") : S.unit + (S.note ? " · " + S.note : "");
+      div.querySelector(".sc-k").innerHTML = sigs.filter(q => q.l).map(q => `<span style="color:${COLS[q.c % 5]}">${q.l}</span>`).join(" ");
+      let ymin = Infinity, ymax = -Infinity;
+      for (let b = i0; b < kEnd; b++) for (const q of sigs) { const a = REC.min[b * REC.ns + q.i] * q.k, c = REC.max[b * REC.ns + q.i] * q.k; if (a < ymin) ymin = a; if (c > ymax) ymax = c; }
+      for (const [y] of S.lines) { ymin = Math.min(ymin, y); ymax = Math.max(ymax, y); }
+      if (!isFinite(ymin)) { ymin = 0; ymax = 1; }
+      if (ymax - ymin < 1e-9) { ymax += 1; ymin -= 1; }
+      const pad = (ymax - ymin) * 0.08; ymin -= pad; ymax += pad;
+      const L = 40, R = 6, T = 4, B = 14, pw_ = W - L - R, ph = H - T - B;
+      const X = (t) => L + (t - t0) / (t1 - t0) * pw_, Y = (v) => T + (1 - (v - ymin) / (ymax - ymin)) * ph;
+      g.font = "10px " + css("--font-mono"); g.fillStyle = ink; g.strokeStyle = line; g.lineWidth = 1;
+      g.strokeRect(L + 0.5, T + 0.5, pw_, ph);
+      const step = niceStep((ymax - ymin) / 4);
+      for (let v = Math.ceil(ymin / step) * step; v <= ymax; v += step) { const y = Y(v); g.globalAlpha = 0.5; g.beginPath(); g.moveTo(L, y); g.lineTo(L + pw_, y); g.stroke(); g.globalAlpha = 1; g.fillText(fmtTick(v), 2, y + 3); }
+      const ts = niceStep((t1 - t0) / 5);
+      for (let t = Math.ceil(t0 / ts) * ts; t <= t1; t += ts) g.fillText(t.toFixed(ts < 1 ? 1 : 0) + " s", X(t) - 8, H - 2);
+      for (const [y, lab] of S.lines) { g.strokeStyle = fail; g.setLineDash([4, 3]); g.beginPath(); g.moveTo(L, Y(y)); g.lineTo(L + pw_, Y(y)); g.stroke(); g.setLineDash([]); if (lab) { g.fillStyle = fail; g.fillText(lab, L + 4, Y(y) - 3); g.fillStyle = ink; } }
+      if (!sigs.length) return;
+      g.save(); g.beginPath(); g.rect(L, T, pw_, ph); g.clip();
+      // per pixel column: the envelope of the buckets in it
+      for (const q of sigs) {
+        g.strokeStyle = COLS[q.c % 5]; g.lineWidth = q.dash ? 1 : 1.3; g.setLineDash(q.dash ? [5, 3] : []); g.globalAlpha = q.dash ? 0.8 : 1; g.beginPath();
+        let col = -1, cmn = 0, cmx = 0, first = true;
+        const flush = () => { if (col < 0) return; const x = col + 0.5; if (first) { g.moveTo(x, Y(cmx)); first = false; } else g.lineTo(x, Y(cmx)); if (cmn !== cmx) g.lineTo(x, Y(cmn)); };
+        for (let b = i0; b < kEnd; b++) {
+          const x = Math.floor(X(REC.t[b])), a = REC.min[b * REC.ns + q.i] * q.k, c = REC.max[b * REC.ns + q.i] * q.k;
+          if (x !== col) { flush(); col = x; cmn = a; cmx = c; } else { if (a < cmn) cmn = a; if (c > cmx) cmx = c; }
+        }
+        flush(); g.stroke();
+      }
+      g.setLineDash([]); g.globalAlpha = 1;
+      g.restore();
+    });
+  }
+  const niceStep = (r) => { const p = Math.pow(10, Math.floor(Math.log10(r || 1))), f = r / p; return (f < 1.5 ? 1 : f < 3.5 ? 2 : f < 7.5 ? 5 : 10) * p; };
+  const fmtTick = (v) => Math.abs(v) >= 1000 ? (v / 1000).toFixed(1) + "k" : Math.abs(v) < 1e-9 ? "0" : (+v.toPrecision(3)).toString();
+
+  // ---- the controls and measures
+  function simUI() {
+    if (!SR) return;
+    $("sim-play").textContent = simRun ? "Pause" : simDone() && simTp >= tEnd() - 1e-9 ? "Run again" : "Run";
+    $("sim-note").textContent = SR.job ? SR.job.note || "" : "";
+    simMeasures();
+  }
+  function simMeasures() {
+    if (!SR || !simMeter) return;
+    const r = simMeter.r, full = SIMRES && SIMRES[simJob], cut = ["profile", "pocket"].includes(simJob);
+    if (simJob.startsWith("pfail")) return simFailMeasures(r, full);
+    const rows = [
+      ["R69", "Contour error while cutting", cut ? r.contour : null, full && cut ? full.contour : null, "≤ 100", "µm"],
+      ["R70", "Torque used, worst axis", Math.max(r.util.X, r.util.Y, r.util.Z) * 100, full ? Math.max(full.util.X, full.util.Y, full.util.Z) * 100 : null, "≤ 80", "%"],
+      ["R71", "Supply load, 100 ms average", Math.max(...Object.values(r.psu)), full ? Math.max(...Object.values(full.psu)) : null, "≤ 350", "W"],
+      ["R72", "Highest bus voltage", r.vbus, full ? full.vbus : null, "≤ 90", "V"],
+      ["R73", "Mains current, 1 s average", r.mains_1s, full ? full.mains_1s : null, "≤ 15", "A"],
+      ["R74", "Spindle droop while cutting", cut ? r.droop * 100 : null, full && cut ? full.droop * 100 : null, "≤ 10", "%"],
+      ["R76", "Least rope tension", r.rope_min < 1e8 ? r.rope_min / SIMP.axes.Y.cw.T0 * 100 : null, full ? full.rope_min / SIMP.axes.Y.cw.T0 * 100 : null, "≥ 50", "% of static"],
+    ];
+    const f = (v) => v == null ? "–" : (+v.toPrecision(3)).toString();
+    $("sim-meas").innerHTML = `<table><thead><tr><th></th><th>measure</th><th>this run, computed</th><th>full run</th><th>limit</th></tr></thead><tbody>` +
+      rows.map(([id, t, a, b, l, u]) => `<tr><td><span class="chip ${status(id)}" data-req="${id}">${id}</span></td><td>${t}</td><td class="num">${f(a)}</td><td class="num">${f(b)}</td><td class="num">${l} ${u}</td></tr>`).join("") +
+      `</tbody></table><div class="sim-foot">“Full run” is router.py running this same model (sim.js) to the end of the job; the requirements read it.</div>`;
+    $("sim-meas").querySelectorAll("[data-req]").forEach(el => el.onclick = () => {
+      const id = el.dataset.req; showTab("p-req"); openGroupOf(id); selReq = id;
+      document.querySelectorAll(".req").forEach(r => r.classList.toggle("sel", r.dataset.req === id));
+      $("row-" + id)?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    });
+  }
+  // a power-failure job: how far each axis runs past its normal stop, whether it then holds, and the rope
+  function simFailMeasures(r, full) {
+    const ok = (V.sim && V.sim.overrun_ok) || {}, f = (v) => v == null ? "–" : (+v.toPrecision(3)).toString();
+    const over = (F, i) => { if (!F) return null; const a = "XYZ"[i], v = Math.abs(F.v0[i]); return Math.max(0, F.run[i] - v * v / (2 * SIMP.axes[a].acc)) * 1000; };
+    const creep = (F, i) => F && F.x2 ? Math.abs(F.xs[i] - F.x2[i]) * 1000 : null;
+    const A = r.fail, B = full && full.fail, rows = [];
+    ["X", "Y", "Z"].forEach((a, i) => {
+      rows.push(["R77", `${a}: ran on after the failure`, A ? A.run[i] * 1000 : null, B ? B.run[i] * 1000 : null, "", "mm"]);
+      rows.push(["R77", `${a}: past its normal stop`, over(A, i), over(B, i), "≤ " + f(ok[a]), "mm"]);
+      rows.push(["R79", `${a}: movement 2 s on`, creep(A, i), creep(B, i), "≤ 0.01", "mm"]);
+    });
+    rows.push(["R78", "Rope, peak tension", A ? A.rope_max : null, B ? B.rope_max : null, "≤ 3000", "N"]);
+    rows.push(["R78", "Rope, least tension", A ? A.rope_min : null, B ? B.rope_min : null, "", "N"]);
+    rows.push(["R72", "Highest bus voltage", A ? A.vbus : null, B ? B.vbus : null, "≤ 90", "V"]);
+    const trips = (F) => F ? Object.entries(F.trips).map(([k, q]) => `${k} ${q.why} at ${(q.t * 1000).toFixed(0)} ms`).join("; ") : "";
+    $("sim-meas").innerHTML = `<table><thead><tr><th></th><th>measure</th><th>this run, computed</th><th>full run</th><th>limit</th></tr></thead><tbody>` +
+      rows.map(([id, t, a, b, l, u]) => `<tr><td><span class="chip ${status(id)}" data-req="${id}">${id}</span></td><td>${t}</td><td class="num">${f(a)}</td><td class="num">${f(b)}</td><td class="num">${l} ${u}</td></tr>`).join("") +
+      `</tbody></table><div class="sim-foot">${A ? "Drivers: " + trips(A) + ". " : "The power fails halfway along the rapid. "}“Past its normal stop” is the run-on less the distance the controller would have stopped in from that speed; the allowances are the X rail beyond the travel, the Y rails' ends, and the 10 mm clearance over the sheet.</div>`;
+    $("sim-meas").querySelectorAll("[data-req]").forEach(el => el.onclick = () => {
+      const id = el.dataset.req; showTab("p-req"); openGroupOf(id); selReq = id;
+      document.querySelectorAll(".req").forEach(q => q.classList.toggle("sel", q.dataset.req === id));
+      $("row-" + id)?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    });
+  }
+  function renderSim() {
+    if (!SIMP) { $("p-sim").innerHTML = `<div class="empty">No simulation in this build.</div>`; return; }
+    $("p-sim").innerHTML = `<div class="sim-bar">
+        <div class="row2"><select id="sim-job" aria-label="Job">${Object.entries(SIM_JOBS).map(([k, j]) => `<option value="${k}"${k === simJob ? " selected" : ""}>${j.label}</option>`).join("")}</select>
+          <button type="button" id="sim-play">Run</button><button type="button" id="sim-reset">Reset</button>
+          <label>speed <select id="sim-speed">${[0.1, 0.25, 1, 4, 16].map(s => `<option value="${s}"${s === simSpeed ? " selected" : ""}>${s}×</option>`).join("")}</select></label>
+          <span id="sim-t" class="num"></span></div>
+        <div class="row2"><label>feed <input id="sim-feed" type="range" min="50" max="150" step="10" value="${simFeed * 100}"><span class="num" id="sim-feed-v">${simFeed * 100}%</span></label>
+          <label>accel <input id="sim-acc" type="range" min="50" max="300" step="25" value="${simAcc * 100}"><span class="num" id="sim-acc-v">${simAcc * 100}%</span></label>
+          <label>3D error <select id="sim-err">${[1, 100, 1000].map(k => `<option value="${k}"${k === simErr ? " selected" : ""}>×${k}</option>`).join("")}</select></label>
+          <label>window <select id="sim-win">${[[5, "5 s"], [20, "20 s"], [0, "all"]].map(([v, l]) => `<option value="${v}"${v === simWin ? " selected" : ""}>${l}</option>`).join("")}</select></label></div>
+        <div class="row2 jog"><span>jog</span>${["X", "Y", "Z"].map(a => `<button type="button" data-jog="${a}-">${a}−</button><button type="button" data-jog="${a}+">${a}+</button>`).join("")}
+          <select id="sim-jstep" aria-label="Jog step">${[1, 10, 100, 500].map(s => `<option value="${s}"${s === 100 ? " selected" : ""}>${s} mm</option>`).join("")}</select>
+          <label class="vals"><input type="checkbox" id="sim-vals"${simShowVals ? " checked" : ""}> values on wires</label></div>
+        <div class="sim-note" id="sim-note"></div></div>
+      <div class="scope-sel" id="scope-sel" hidden></div>
+      <div class="scope-pick" id="scope-pick" aria-label="Scopes to show"></div>
+      <div class="scopes" id="scopes" aria-label="Scopes"></div>
+      <div class="section-h">Measures</div><div id="sim-meas" class="sim-meas"></div>`;
+    $("sim-job").onchange = (e) => { simLoad(e.target.value); };
+    $("sim-play").onclick = () => {
+      if (!SR || simSeeking) return;
+      if (simTp >= tEnd() - 1e-9 && simDone()) simLoad(simJob);
+      simRun = !simRun; if (simRun) simBuffering = !simReady();
+      simLastReal = performance.now(); simUI();
+    };
+    $("sim-reset").onclick = () => simLoad(simJob);
+    $("sim-speed").onchange = (e) => { simSpeed = +e.target.value; if (simRun) { simBuffering = !simReady(); simUI(); } };
+    $("sim-feed").oninput = (e) => { simFeed = e.target.value / 100; $("sim-feed-v").textContent = e.target.value + "%"; };
+    $("sim-feed").onchange = () => simLoad(simJob);
+    $("sim-acc").oninput = (e) => { simAcc = e.target.value / 100; $("sim-acc-v").textContent = e.target.value + "%"; };
+    $("sim-acc").onchange = () => simLoad(simJob);
+    $("sim-err").onchange = (e) => { simErr = +e.target.value; simPose(true); };
+    $("sim-win").onchange = (e) => { simWin = +e.target.value; scopeDraw(true); };
+    $("sim-vals").onchange = (e) => { simShowVals = e.target.checked; sdRender(); };
+    $("p-sim").querySelectorAll("[data-jog]").forEach(el => el.onclick = () => {
+      if (!SR || simRun || simSeeking || !simDone() || simTp < tEnd() - 1e-9) return;      // jog from rest, at the end of what has played
+      const M = SR.M, cur = [M.get("ref.x"), M.get("ref.y"), M.get("ref.z")].map(v => v * 1000);
+      const [a, sgn] = [el.dataset.jog[0], el.dataset.jog[1] === "+" ? 1 : -1], i = "XYZ".indexOf(a), to = cur.slice();
+      to[i] += sgn * +$("sim-jstep").value;
+      const custom = { label: "Jog", note: `jog ${a} ${sgn > 0 ? "+" : "−"}${$("sim-jstep").value} mm at the rapid speed`, prog: [{ op: "rapid", to }] };
+      simLoad(simJob, { custom, start: cur, keep: true }); simRun = true; simBuffering = !simReady(); simLastReal = performance.now(); simUI();
+    });
+    sdRender(); simUI();
+  }
+  function enterSim() {
+    if (!SIMP) return;
+    simOn = true; document.body.classList.add("sim-mode");
+    if (!trace.cut) traceLines();
+    traceShow(true);
+    if (!SR) simLoad(simJob);
+    clearAnnot(); highlight(focus ? focusParts() : null);
+    setTimeout(() => { resize(); scopeDraw(true); }, 0);
+  }
+  function exitSim() {
+    if (!simOn) return;
+    simOn = false; simRun = false; simSeeking = false; document.body.classList.remove("sim-mode");
+    traceShow(false);
+    setTimeout(resize, 0);
+  }
+  function simFrame(now) {
+    if (!simOn || !SR) return;
+    const dt = simLastReal ? (now - simLastReal) / 1000 : 0; simLastReal = now;
+    if (!simSeeking) {
+      simAdvance(dt);
+      if (simRun && !simBuffering) simPose(false);
+      const T = tEnd() - simTOff, tp = simTp - simTOff, ahead = simDone() ? "all computed" : `computed to ${(tcNow() - simTOff).toFixed(1)} s`;
+      $("sim-t").textContent = simRun && simBuffering
+        ? `buffering… playback at ${simSpeed}× starts in about ${Math.ceil(simWait())} s (${ahead})`
+        : `t ${tp.toFixed(2)} of ${T.toFixed(1)} s · ${ahead}`;
+      $("sim-t").classList.toggle("buf", simRun && simBuffering);
+    }
+    scopeDraw(false); sdLive(false);
+    if ((now | 0) % 6 === 0) simMeasures();
+  }
+  // a requirement from the simulation: open the job and run ahead to just before its worst moment
+  function simFocusReq(id) {
+    if (!SIMRES) return;
+    const jobsAll = Object.keys(SIMRES).filter(j => !j.startsWith("pfail") || ["R72", "R73"].includes(id)), cut = ["profile", "pocket"];
+    const arg = (js, f, min) => js.reduce((a, b) => (min ? f(b) < f(a) : f(b) > f(a)) ? b : a);
+    let job = simJob, t = null, diag = "top";
+    const U = (j) => Math.max(...Object.values(SIMRES[j].util));
+    if (id === "R69") { job = arg(cut, j => SIMRES[j].contour); t = SIMRES[job].contour_at; diag = "tip"; simProbe.splice(0, simProbe.length, "tip.contour"); }
+    if (id === "R70") { job = arg(jobsAll, U); const ax = Object.entries(SIMRES[job].util).sort((a, b) => b[1] - a[1])[0][0]; t = SIMRES[job].util_at[ax]; diag = ax; }
+    if (id === "R71") { job = arg(jobsAll, j => Math.max(...Object.values(SIMRES[j].psu))); diag = "power"; }
+    if (id === "R72") { job = arg(jobsAll, j => SIMRES[j].vbus); diag = "pwX1"; }
+    if (id === "R73") { job = arg(jobsAll, j => SIMRES[j].mains_1s); diag = "power"; }
+    if (id === "R74") { job = arg(cut, j => SIMRES[j].droop); diag = "spindle"; }
+    if (id === "R75") { diag = "struct"; }
+    if (id === "R76") { job = arg(jobsAll.filter(j => !j.startsWith("pfail")), j => SIMRES[j].rope_min, true); diag = "Y"; }
+    if (["R77", "R78", "R79"].includes(id) && SIMRES.pfail_drop) {
+      job = "pfail_drop"; t = SIMRES[job].fail.t - 0.4; diag = id === "R78" ? "Y" : "top";
+      if (!scopeOn.has("fail")) { scopeOn.add("fail"); store.set("simScopes", [...scopeOn].join(",")); }
+    }
+    simDiag = diag; sdView = null; sdSel = null;
+    $("sim-job").value = job; simLoad(job); sdRender();
+    if (t != null) simSeek(Math.max(0, t - 0.6), () => { simSpeed = 0.1; $("sim-speed").value = "0.1"; simRun = true; simBuffering = !simReady(); simLastReal = performance.now(); simUI(); });
+  }
+
   // ------------------------------------------------------------- render loop
   function resize() {
     const w = view.clientWidth, h = view.clientHeight;
@@ -1258,9 +1965,10 @@ aside { display: flex; flex-direction: column; min-height: 0; background: var(--
   function frame(now) {
     if (anim) anim(now);
     if (buildAnim) buildAnim(now);
+    simFrame(now);
     dgReflect();
     controls.update();
-    renderer.render(scene, camera);
+    if (!simSeeking) renderer.render(scene, camera);
     const w = view.clientWidth, h = view.clientHeight;
     for (const l of labels) {
       v3.copy(l.pos).project(camera);
@@ -1269,7 +1977,7 @@ aside { display: flex; flex-direction: column; min-height: 0; background: var(--
     }
     requestAnimationFrame(frame);
   }
-  renderReqs(); renderTree(); renderInterfaces(); renderAssumptions(); renderBuild(); renderDiagram(); updateFilterBar();
+  renderReqs(); renderTree(); renderInterfaces(); renderAssumptions(); renderBuild(); renderDiagram(); updateFilterBar(); renderSim(); scopeInit();
   themeColours(); resize(); setView("iso"); applyPose();
   requestAnimationFrame(frame);
 })();

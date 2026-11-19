@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "name": "Tilted-bed CNC router, 2400 x 1200",
-  "written": "2026-11-19 13:18:57",
+  "written": "2026-11-19 15:52:28",
   "task": {
     "kind": "new_design"
   },
@@ -1227,6 +1227,169 @@
       "extra": {}
     },
     {
+      "id": "R69",
+      "text": "While cutting, the tool tip shall stay within 0.1 mm of the programmed path (servo lag, drive springs and column bending)",
+      "applies_to": [
+        "GAN",
+        "YC",
+        "ZA"
+      ],
+      "source": "stated",
+      "method": "simulate",
+      "kind": "max",
+      "limit": 100.0,
+      "unit": "um",
+      "tolerance": 0.0,
+      "extra": {}
+    },
+    {
+      "id": "R70",
+      "text": "No axis shall ask for more than 80 % of its motors' pull-out torque at the speed it is running, in any job",
+      "applies_to": [
+        "GAN"
+      ],
+      "source": "stated",
+      "method": "simulate",
+      "kind": "max",
+      "limit": 80,
+      "unit": "%",
+      "tolerance": 0.0,
+      "extra": {}
+    },
+    {
+      "id": "R71",
+      "text": "Each 60 V supply's load, averaged over 100 ms, shall stay within its 350 W rating in every job",
+      "applies_to": [
+        "ELEC"
+      ],
+      "source": "stated",
+      "method": "simulate",
+      "kind": "max",
+      "limit": 350.0,
+      "unit": "W",
+      "tolerance": 0.0,
+      "extra": {}
+    },
+    {
+      "id": "R72",
+      "text": "Braking energy shall not lift any 60 V bus above 90 V (the drivers trip at 100 V)",
+      "applies_to": [
+        "ELEC",
+        "GAN"
+      ],
+      "source": "stated",
+      "method": "simulate",
+      "kind": "max",
+      "limit": 90.0,
+      "unit": "V",
+      "tolerance": 0.0,
+      "extra": {}
+    },
+    {
+      "id": "R73",
+      "text": "Mains current averaged over any 1 s shall stay within the 15 A circuit, in every job",
+      "applies_to": [
+        "ELEC",
+        "SP"
+      ],
+      "source": "stated",
+      "method": "simulate",
+      "kind": "max",
+      "limit": 15.0,
+      "unit": "A",
+      "tolerance": 0.0,
+      "extra": {}
+    },
+    {
+      "id": "R76",
+      "text": "The counterweight rope shall never go slack: least tension at least half its static tension, in every job",
+      "applies_to": [
+        "GAN",
+        "YC"
+      ],
+      "source": "stated",
+      "method": "simulate",
+      "kind": "min",
+      "limit": 50,
+      "unit": "%",
+      "tolerance": 0.0,
+      "extra": {}
+    },
+    {
+      "id": "R74",
+      "text": "While cutting, the spindle shall hold within 10 % of its set speed (VFD power cap against the cut)",
+      "applies_to": [
+        "SP",
+        "ELEC"
+      ],
+      "source": "stated",
+      "method": "simulate",
+      "kind": "max",
+      "limit": 10,
+      "unit": "%",
+      "tolerance": 0.0,
+      "extra": {}
+    },
+    {
+      "id": "R75",
+      "text": "Each drive and column mode shall be at least 2.5 x the drivers' 20 Hz position-loop bandwidth, so the loop does not excite it",
+      "applies_to": [
+        "GAN",
+        "YC",
+        "ZA"
+      ],
+      "source": "stated",
+      "method": "simulate",
+      "kind": "min",
+      "limit": 2.5,
+      "unit": "",
+      "tolerance": 0.0,
+      "extra": {}
+    },
+    {
+      "id": "R77",
+      "text": "On a total power failure at rapid, no axis shall run past where the controller would have stopped it by more than it can: X 53 mm of rail beyond the travel, Y none, Z the 10 mm clearance over the sheet",
+      "applies_to": [
+        "GAN"
+      ],
+      "source": "stated",
+      "method": "simulate",
+      "kind": "min",
+      "limit": 0,
+      "unit": "mm",
+      "tolerance": 0.0,
+      "extra": {}
+    },
+    {
+      "id": "R79",
+      "text": "After a power failure every axis shall hold still: Y on its brake, Z and X on friction and detent (movement 2 s on)",
+      "applies_to": [
+        "GAN"
+      ],
+      "source": "stated",
+      "method": "simulate",
+      "kind": "max",
+      "limit": 0.01,
+      "unit": "mm",
+      "tolerance": 0.0,
+      "extra": {}
+    },
+    {
+      "id": "R78",
+      "text": "On a power failure the counterweight rope's peak tension shall stay within its breaking load / 5, as the head stops and the block runs on",
+      "applies_to": [
+        "GAN",
+        "YC"
+      ],
+      "source": "stated",
+      "method": "simulate",
+      "kind": "min",
+      "limit": 5.0,
+      "unit": "",
+      "tolerance": 0.0,
+      "extra": {}
+    },
+    {
       "id": "R63",
       "text": "Every cable and hose shall run from a real device, through the cable chains its axis needs (in order), to a real terminal in the cabinet, and be laid and terminated in a step (faults)",
       "applies_to": [
@@ -1488,6 +1651,46 @@
       "id": "A12",
       "text": "Sheet is located on retractable (pop-up) pins along its bottom edge, so the cutter can profile that edge",
       "reason": "a fixed ledge would be cut",
+      "affects": [],
+      "confirmed": false,
+      "extra": {}
+    },
+    {
+      "id": "A13",
+      "text": "Drive stiffness from catalogue orders of magnitude: HTD 5M belt EA 120 kN, rack mesh 100 N/um, ball nut 200 N/um",
+      "reason": "no stiffness data for the salvaged parts; the simulation's vibration results scale with them",
+      "affects": [],
+      "confirmed": false,
+      "extra": {}
+    },
+    {
+      "id": "A14",
+      "text": "Each 60 V bus has 2200 uF and the supplies cannot sink current; the drivers trip above 100 V DC",
+      "reason": "typical for open-frame supplies and closed-loop stepper drivers; measure the salvaged ones",
+      "affects": [],
+      "confirmed": false,
+      "extra": {}
+    },
+    {
+      "id": "A15",
+      "text": "Spindle rotor 0.003 kg m^2, 400 W of bearing and windage loss at 24 000 rpm",
+      "reason": "same-body spindles' catalogues",
+      "affects": [],
+      "confirmed": false,
+      "extra": {}
+    },
+    {
+      "id": "A16",
+      "text": "The drivers' position loop closes at 20 Hz on the motor encoder",
+      "reason": "a closed-loop stepper driver's usual tuning",
+      "affects": [],
+      "confirmed": false,
+      "extra": {}
+    },
+    {
+      "id": "A17",
+      "text": "On a power failure the controller stops at once; the drivers trip below 20 V or at one turn of position error; the Y brake holds 50 ms after the mains goes; unpowered motors give 0.15 N m of detent torque",
+      "reason": "closed-loop stepper drivers' and spring brakes' usual behaviour; measure them",
       "affects": [],
       "confirmed": false,
       "extra": {}
@@ -10970,6 +11173,831 @@
         "margin": 0.0
       },
       "regressed": false
+    },
+    {
+      "requirement": "R69",
+      "case": "profile cut, worst at 61.4 s",
+      "status": "pass",
+      "measured": 93.04087103332427,
+      "margin": 6.959128966675735,
+      "note": "",
+      "evidence": {
+        "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+        "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+      },
+      "extra": {},
+      "cases": [
+        {
+          "case": "profile cut, worst at 61.4 s",
+          "status": "pass",
+          "measured": 93.04087103332427,
+          "margin": 6.959128966675735,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "raster pocket, worst at 13.7 s",
+          "status": "pass",
+          "measured": 44.511704352746726,
+          "margin": 55.488295647253274,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        }
+      ]
+    },
+    {
+      "requirement": "R70",
+      "case": "rapids: X at 0.3 s",
+      "status": "pass",
+      "measured": 51.460633713189885,
+      "margin": 28.539366286810115,
+      "note": "",
+      "evidence": {
+        "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+        "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+      },
+      "extra": {},
+      "cases": [
+        {
+          "case": "rapids: X at 0.3 s",
+          "status": "pass",
+          "measured": 51.460633713189885,
+          "margin": 28.539366286810115,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "rapids: Y at 10.3 s",
+          "status": "pass",
+          "measured": 45.07354515826614,
+          "margin": 34.92645484173386,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "rapids: Z at 20.9 s",
+          "status": "pass",
+          "measured": 20.237196146207026,
+          "margin": 59.762803853792974,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "profile cut: X at 0.3 s",
+          "status": "pass",
+          "measured": 51.46063038265173,
+          "margin": 28.53936961734827,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "profile cut: Y at 61.4 s",
+          "status": "pass",
+          "measured": 22.08188770781544,
+          "margin": 57.91811229218456,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "profile cut: Z at 144.3 s",
+          "status": "pass",
+          "measured": 17.969107006917,
+          "margin": 62.030892993083,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "raster pocket: X at 0.3 s",
+          "status": "pass",
+          "measured": 51.46062402634025,
+          "margin": 28.53937597365975,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "raster pocket: Y at 22.1 s",
+          "status": "pass",
+          "measured": 28.533135645317447,
+          "margin": 51.466864354682556,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "raster pocket: Z at 13.7 s",
+          "status": "pass",
+          "measured": 11.753947680566055,
+          "margin": 68.24605231943394,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "tool change: X at 0.3 s",
+          "status": "pass",
+          "measured": 51.460631367332574,
+          "margin": 28.539368632667426,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "tool change: Y at 0.0 s",
+          "status": "pass",
+          "measured": 13.82303511197413,
+          "margin": 66.17696488802586,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "tool change: Z at 22.4 s",
+          "status": "pass",
+          "measured": 20.25102194479453,
+          "margin": 59.74897805520547,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        }
+      ]
+    },
+    {
+      "requirement": "R71",
+      "case": "supply X1, worst in raster pocket",
+      "status": "pass",
+      "measured": 80.07815469071697,
+      "margin": 269.921845309283,
+      "note": "",
+      "evidence": {
+        "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+        "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+      },
+      "extra": {},
+      "cases": [
+        {
+          "case": "supply X1, worst in raster pocket",
+          "status": "pass",
+          "measured": 80.07815469071697,
+          "margin": 269.921845309283,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "supply X2, worst in raster pocket",
+          "status": "pass",
+          "measured": 80.07815469071697,
+          "margin": 269.921845309283,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "supply Y, worst in rapids",
+          "status": "pass",
+          "measured": 67.32907835958187,
+          "margin": 282.6709216404181,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "supply Z, worst in rapids",
+          "status": "pass",
+          "measured": 33.04129938687605,
+          "margin": 316.95870061312394,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        }
+      ]
+    },
+    {
+      "requirement": "R72",
+      "case": "power failure",
+      "status": "pass",
+      "measured": 82.38059959338955,
+      "margin": 7.619400406610453,
+      "note": "",
+      "evidence": {
+        "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+        "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+      },
+      "extra": {},
+      "cases": [
+        {
+          "case": "rapids",
+          "status": "pass",
+          "measured": 65.47462521157836,
+          "margin": 24.525374788421644,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "profile cut",
+          "status": "pass",
+          "measured": 65.4763824082439,
+          "margin": 24.523617591756107,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "raster pocket",
+          "status": "pass",
+          "measured": 65.48111808755542,
+          "margin": 24.518881912444584,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "tool change",
+          "status": "pass",
+          "measured": 65.47859496794914,
+          "margin": 24.521405032050865,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "power failure",
+          "status": "pass",
+          "measured": 82.38059959338955,
+          "margin": 7.619400406610453,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "power failure, drivers drop out at once",
+          "status": "pass",
+          "measured": 57.997674682853564,
+          "margin": 32.002325317146436,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        }
+      ]
+    },
+    {
+      "requirement": "R73",
+      "case": "raster pocket",
+      "status": "pass",
+      "measured": 11.087472176551646,
+      "margin": 3.912527823448354,
+      "note": "",
+      "evidence": {
+        "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+        "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+      },
+      "extra": {},
+      "cases": [
+        {
+          "case": "rapids",
+          "status": "pass",
+          "measured": 1.9341574353442728,
+          "margin": 13.065842564655727,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "profile cut",
+          "status": "pass",
+          "measured": 11.013666662078947,
+          "margin": 3.986333337921053,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "raster pocket",
+          "status": "pass",
+          "measured": 11.087472176551646,
+          "margin": 3.912527823448354,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "tool change",
+          "status": "pass",
+          "measured": 1.9428294707791391,
+          "margin": 13.05717052922086,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "power failure",
+          "status": "pass",
+          "measured": 1.8607858712677803,
+          "margin": 13.13921412873222,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "power failure, drivers drop out at once",
+          "status": "pass",
+          "measured": 1.8607858712677803,
+          "margin": 13.13921412873222,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        }
+      ]
+    },
+    {
+      "requirement": "R76",
+      "case": "rapids",
+      "status": "pass",
+      "measured": 86.3739159488991,
+      "margin": 36.373915948899096,
+      "note": "",
+      "evidence": {
+        "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+        "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+      },
+      "extra": {},
+      "cases": [
+        {
+          "case": "rapids",
+          "status": "pass",
+          "measured": 86.3739159488991,
+          "margin": 36.373915948899096,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "profile cut",
+          "status": "pass",
+          "measured": 95.84891597613074,
+          "margin": 45.84891597613074,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "raster pocket",
+          "status": "pass",
+          "measured": 86.44091517261924,
+          "margin": 36.44091517261924,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "tool change",
+          "status": "pass",
+          "measured": 97.72845754991965,
+          "margin": 47.72845754991965,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        }
+      ]
+    },
+    {
+      "requirement": "R74",
+      "case": "profile cut",
+      "status": "pass",
+      "measured": 0.35215936821070837,
+      "margin": 9.647840631789292,
+      "note": "",
+      "evidence": {
+        "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+        "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+      },
+      "extra": {},
+      "cases": [
+        {
+          "case": "profile cut",
+          "status": "pass",
+          "measured": 0.35215936821070837,
+          "margin": 9.647840631789292,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "raster pocket",
+          "status": "pass",
+          "measured": 0.2888691700437198,
+          "margin": 9.71113082995628,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        }
+      ]
+    },
+    {
+      "requirement": "R75",
+      "case": "column x: 140 Hz",
+      "status": "pass",
+      "measured": 7.016944621820066,
+      "margin": 4.516944621820066,
+      "note": "",
+      "evidence": {
+        "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+        "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+      },
+      "extra": {},
+      "cases": [
+        {
+          "case": "drive X: 154 Hz",
+          "status": "pass",
+          "measured": 7.683184453143866,
+          "margin": 5.183184453143866,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "drive Y: 158 Hz",
+          "status": "pass",
+          "measured": 7.916899587365552,
+          "margin": 5.416899587365552,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "drive Z: 163 Hz",
+          "status": "pass",
+          "measured": 8.154766416806615,
+          "margin": 5.6547664168066145,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "column x: 140 Hz",
+          "status": "pass",
+          "measured": 7.016944621820066,
+          "margin": 4.516944621820066,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "column z: 205 Hz",
+          "status": "pass",
+          "measured": 10.26870721963608,
+          "margin": 7.768707219636079,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        }
+      ]
+    },
+    {
+      "requirement": "R77",
+      "case": "power failure: Y ran 1.5 mm, 0.0 past its normal stop",
+      "status": "pass",
+      "measured": 0.0,
+      "margin": 0.0,
+      "note": "",
+      "evidence": {
+        "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle; on the mains failing: supplies, VFD and controller off, command frozen, drivers on their buses' energy until they trip, Y brake after 50 ms; stick-slip friction, detent and brake",
+        "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+      },
+      "extra": {},
+      "cases": [
+        {
+          "case": "power failure: X ran 5.9 mm, 0.0 past its normal stop",
+          "status": "pass",
+          "measured": 53.0,
+          "margin": 53.0,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle; on the mains failing: supplies, VFD and controller off, command frozen, drivers on their buses' energy until they trip, Y brake after 50 ms; stick-slip friction, detent and brake",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "power failure: Y ran 1.5 mm, 0.0 past its normal stop",
+          "status": "pass",
+          "measured": 0.0,
+          "margin": 0.0,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle; on the mains failing: supplies, VFD and controller off, command frozen, drivers on their buses' energy until they trip, Y brake after 50 ms; stick-slip friction, detent and brake",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "power failure: Z ran 0.3 mm, 0.0 past its normal stop",
+          "status": "pass",
+          "measured": 10.0,
+          "margin": 10.0,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle; on the mains failing: supplies, VFD and controller off, command frozen, drivers on their buses' energy until they trip, Y brake after 50 ms; stick-slip friction, detent and brake",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "power failure, drivers drop out at once: X ran 80.5 mm, 49.3 past its normal stop",
+          "status": "pass",
+          "measured": 3.710631681490881,
+          "margin": 3.710631681490881,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle; on the mains failing: supplies, VFD and controller off, command frozen, drivers on their buses' energy until they trip, Y brake after 50 ms; stick-slip friction, detent and brake",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "power failure, drivers drop out at once: Y ran 9.6 mm, 0.0 past its normal stop",
+          "status": "pass",
+          "measured": 0.0,
+          "margin": 0.0,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle; on the mains failing: supplies, VFD and controller off, command frozen, drivers on their buses' energy until they trip, Y brake after 50 ms; stick-slip friction, detent and brake",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "power failure, drivers drop out at once: Z ran 10.6 mm, 7.1 past its normal stop",
+          "status": "pass",
+          "measured": 2.9067238750379385,
+          "margin": 2.9067238750379385,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle; on the mains failing: supplies, VFD and controller off, command frozen, drivers on their buses' energy until they trip, Y brake after 50 ms; stick-slip friction, detent and brake",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        }
+      ]
+    },
+    {
+      "requirement": "R79",
+      "case": "power failure: Y",
+      "status": "pass",
+      "measured": 7.2164496600635175e-12,
+      "margin": 0.00999999999278355,
+      "note": "",
+      "evidence": {
+        "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle; on the mains failing: supplies, VFD and controller off, command frozen, drivers on their buses' energy until they trip, Y brake after 50 ms; stick-slip friction, detent and brake",
+        "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+      },
+      "extra": {},
+      "cases": [
+        {
+          "case": "power failure: X",
+          "status": "pass",
+          "measured": 0.0,
+          "margin": 0.01,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle; on the mains failing: supplies, VFD and controller off, command frozen, drivers on their buses' energy until they trip, Y brake after 50 ms; stick-slip friction, detent and brake",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "power failure: Y",
+          "status": "pass",
+          "measured": 7.2164496600635175e-12,
+          "margin": 0.00999999999278355,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle; on the mains failing: supplies, VFD and controller off, command frozen, drivers on their buses' energy until they trip, Y brake after 50 ms; stick-slip friction, detent and brake",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "power failure: Z",
+          "status": "pass",
+          "measured": 0.0,
+          "margin": 0.01,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle; on the mains failing: supplies, VFD and controller off, command frozen, drivers on their buses' energy until they trip, Y brake after 50 ms; stick-slip friction, detent and brake",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "power failure, drivers drop out at once: X",
+          "status": "pass",
+          "measured": 0.0,
+          "margin": 0.01,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle; on the mains failing: supplies, VFD and controller off, command frozen, drivers on their buses' energy until they trip, Y brake after 50 ms; stick-slip friction, detent and brake",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "power failure, drivers drop out at once: Y",
+          "status": "pass",
+          "measured": 7.105427357601002e-12,
+          "margin": 0.009999999992894573,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle; on the mains failing: supplies, VFD and controller off, command frozen, drivers on their buses' energy until they trip, Y brake after 50 ms; stick-slip friction, detent and brake",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "power failure, drivers drop out at once: Z",
+          "status": "pass",
+          "measured": 0.0,
+          "margin": 0.01,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle; on the mains failing: supplies, VFD and controller off, command frozen, drivers on their buses' energy until they trip, Y brake after 50 ms; stick-slip friction, detent and brake",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        }
+      ]
+    },
+    {
+      "requirement": "R78",
+      "case": "power failure: peak 1379 N, least 11 N",
+      "status": "pass",
+      "measured": 10.879433435917802,
+      "margin": 5.879433435917802,
+      "note": "",
+      "evidence": {
+        "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle; on the mains failing: supplies, VFD and controller off, command frozen, drivers on their buses' energy until they trip, Y brake after 50 ms; stick-slip friction, detent and brake",
+        "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+      },
+      "extra": {},
+      "cases": [
+        {
+          "case": "power failure: peak 1379 N, least 11 N",
+          "status": "pass",
+          "measured": 10.879433435917802,
+          "margin": 5.879433435917802,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle; on the mains failing: supplies, VFD and controller off, command frozen, drivers on their buses' energy until they trip, Y brake after 50 ms; stick-slip friction, detent and brake",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        },
+        {
+          "case": "power failure, drivers drop out at once: peak 1034 N, least 251 N",
+          "status": "pass",
+          "measured": 14.512736442974507,
+          "margin": 9.512736442974507,
+          "note": "",
+          "evidence": {
+            "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle; on the mains failing: supplies, VFD and controller off, command frozen, drivers on their buses' energy until they trip, Y brake after 50 ms; stick-slip friction, detent and brake",
+            "leaves_out": "stiffness and damping are catalogue estimates (see the assumptions); no gantry yaw; cutting force from power only"
+          },
+          "extra": {}
+        }
+      ]
     },
     {
       "requirement": "R63",
