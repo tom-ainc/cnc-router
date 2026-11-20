@@ -3,10 +3,10 @@
 # Proprietary and confidential.
 
 """The system models of the systems-engineering skill: the product tree, requirements, assumptions,
-interfaces, blocks and check results of one task, written as `systems.json` and `systems.html`.
+interfaces, blocks and check results of one task, written as `systems.json` for the page
+(page/index.html, from the skill's page/ folder).
 
-A script imports this file, and `systems_page.py`, from its own folder. Both use only the standard
-library, so the script runs with `python3` or as a golf script. Every quantity carries its unit as
+A script imports this file from its own folder. It uses only the standard library, so the script runs with `python3` or as a golf script. Every quantity carries its unit as
 text; `convert` changes between the units in `UNITS`.
 """
 
@@ -530,20 +530,16 @@ class Model:
         return "\n".join(lines + data["problems"])
 
     def write(self, path="systems.json", baseline=None):
-        """Writes the models and results to `path`, the page for the user beside it as `.html`, and
-        prints the summary.
+        """Writes the models and results to `path` and prints the summary.
 
         `baseline` names a file of the results to compare with. Where it is not there yet, this run
         is written to it; later runs give each result its value in that file. Remove the file to
         start again."""
-        from systems_page import page
-
         earlier = None
         if baseline is not None and Path(baseline).exists():
             earlier = json.loads(Path(baseline).read_text())
         data = json.loads(json.dumps(self.to_dict(earlier), default=str))
         Path(path).write_text(json.dumps(data, indent=2))
-        Path(path).with_suffix(".html").write_text(page(data))
         print(self.summary(data))
         if baseline is not None and earlier is None:
             Path(baseline).write_text(json.dumps(data, indent=2))

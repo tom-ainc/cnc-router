@@ -568,7 +568,7 @@ body.sim-mode .ctl, body.sim-mode .stats { display: none; }
   }
   // how far to trust the model: its own checks, and how the requirements move when each guessed parameter is halved or doubled
   let SENS = null;
-  if (SIMP) fetch("sensitivity.json").then(r => r.ok ? r.json() : null).then(j => { SENS = j; simTrust(); }).catch(() => {});
+  if (SIMP) P.file("sensitivity.json").then(j => { SENS = j; simTrust(); });
   function simTrust() {
     const el = $("sim-trust"); if (!el || !V.sim) return;
     const v = V.sim.verify, f3 = (x) => (+x.toPrecision(3)).toString();

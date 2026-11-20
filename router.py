@@ -1510,7 +1510,7 @@ V.diagram({"ZA": (290, 14), "SP": (470, 14), "YC": (290, 90), "ELEC": (104, 112)
 for _z in viz.values():                                     # centres of gravity: head low and head high
     if _z.pop("cg", None):
         _z["marks"] = [[cgs[0], "CG, head low"], [cgs[1], "CG, head high"]]
-open("viewer_data.json", "w").write(json.dumps(V))
+V.write()                                                   # page/viewer_data.json; report() adds page/data.js
 # ---- how far each result can be trusted (se.report): who set each requirement, what its check rests on
 import se as _se
 _M = _se._m()

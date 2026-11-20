@@ -24,6 +24,11 @@
   const handlers = {};
   const Page = window.Page = {
     $, css, fmt, store, comps: [], driver: null, hold: false,
+    // a data file beside the page: from data.js when it is there, else fetched (null when neither)
+    // (fetched first when served, since a later script may have rewritten it; data.js's copy from disk)
+    file(name) { const f = window.PAGE_DATA && window.PAGE_DATA.files && window.PAGE_DATA.files[name];
+      if (location.protocol === "file:") return Promise.resolve(f || null);
+      return fetch(name).then(r => r.ok ? r.json() : f || null).catch(() => f || null); },
     on(ev, fn) { (handlers[ev] ||= []).push(fn); },
     emit(ev, ...a) { for (const f of handlers[ev] || []) { try { f(...a); } catch (e) { console.error(ev, e); } } },
     component(c) { this.comps.push(c); },
@@ -35,8 +40,11 @@
   (async function boot() {
     let V, S;
     try {
-      [V, S] = await Promise.all([fetch("viewer_data.json").then(r => r.json()), fetch("systems.json").then(r => r.json())]);
-      for (const src of V.components || []) await loadScript(src);
+      // data.js (written by report()) carries everything, so the page opens from disk; else fetch it
+      if (window.PAGE_DATA) ({ V, S } = window.PAGE_DATA);
+      else [V, S] = await Promise.all([fetch("viewer_data.json").then(r => r.json()), fetch("systems.json").then(r => r.json())]);
+      // confirm.js (what waits on the user, and every assumption) is part of the core; then the project's components
+      for (const src of ["confirm.js", ...(V.components || []).filter(c => c !== "confirm.js")]) await loadScript(src);
     } catch (e) {
       $("err").style.display = "block"; $("err").textContent = "The page did not load: " + e.message; return;
     }
@@ -47,7 +55,9 @@
   V.parts ||= {}; V.viz ||= {};
   if (V.title) { document.title = V.title; $("title").textContent = V.title; }
   $("subtitle").textContent = V.subtitle || "";
-  Page.style("#panes { display: contents; } .tabs { flex-wrap: wrap; } .tabs button { white-space: nowrap; }");
+  // no 3D model yet: the requirements, diagram and tabs take the whole page
+  if (!Object.keys(V.parts).length) Page.style("main { grid-template-columns: minmax(0, 1fr) !important; } .stage { display: none !important; }");
+  Page.style(".item.pick { cursor: pointer; border-left: 3px solid transparent; } .item.pick:hover { background: color-mix(in srgb, var(--accent-soft) 55%, transparent); } .item.pick.sel { background: var(--accent-soft); border-left-color: var(--accent); } #dg-svg svg { max-height: 360px; } #panes { display: contents; } .tabs { flex-wrap: wrap; } .tabs button { white-space: nowrap; }");
   // ------------------------------------------------------------- systems data
   const reqs = S.requirements;
   const res = Object.fromEntries(S.results.map(r => [r.requirement, r]));
@@ -205,19 +215,62 @@
       selectNode(el.dataset.node);
     }));
   }
+  // ---- items in the tabs that show themselves in 3D: an interface lights both sides, an assumption the parts of the
+  // requirements it feeds, a flow its block. Clicking the selected one again goes back to the diagram's focus.
+  let selItem = null;
+  const ifName = (x) => x.startsWith("external:") ? x.slice(9) + " (outside)" : (x === "P" ? V.whole || "whole system" : x);
+  function ifaceParts(i) {
+    const side = (x) => x.startsWith("external:") ? ((DG.ext || {})[x.slice(9)] || [0, 0, []])[2].flatMap(nodeParts) : x === "P" ? [] : nodeParts(x);
+    return [...side(i.a), ...side(i.b)];
+  }
+  function reqParts(id) {
+    const r = reqs.find(q => q.id === id), z = (V.viz || {})[id] || {};
+    return r ? (z.parts && z.parts.length ? z.parts : r.applies_to.flatMap(nodeParts)) : [];
+  }
+  function affectsOf(a) { return a.affects || []; }
+  function showItem(kind, id) {
+    if (Page.driver) return;
+    if (!id || selItem === kind + ":" + id) { selItem = null; markItems(); applyFocusView(); return; }
+    selItem = kind + ":" + id; clearAnnot();
+    if (kind === "if") {
+      const i = S.interfaces.find(q => q.id === id), ps = ifaceParts(i);
+      highlight(ps.length ? ps : null);
+      Page.note(`<b>${i.id}</b> ${ifName(i.a)} ↔ ${ifName(i.b)} · ${i.kind}<br><span style="color:var(--muted)">${i.text}${i.keeps ? "; keeps " + i.keeps : ""}</span>`);
+      const L = DG_LINKS.find(l => l.items.includes(i));
+      document.querySelectorAll("#dg-svg .dg-link").forEach(g => g.classList.toggle("on", !!L && g.dataset.key === linkKey(L)));
+    } else if (kind === "as") {
+      const a = S.assumptions.find(q => q.id === id), ps = [...new Set(affectsOf(a).flatMap(reqParts))];
+      highlight(ps.length ? ps : null);
+      Page.note(`<b>${a.id}</b> ${a.confirmed ? "" : `<span class="pill open">not confirmed</span> `}${a.text}` +
+        (affectsOf(a).length ? `<br><span style="color:var(--muted)">Feeds ${affectsOf(a).join(", ")}${ps.length ? "; their parts are lit" : ""}</span>` : `<br><span style="color:var(--muted)">Not tied to a requirement</span>`));
+    } else if (kind === "flow") {
+      const ps = nodeParts(id); highlight(ps.length ? ps : null);
+      Page.note(`<b>${id}</b> ${(nodes[id] || {}).name || ""}`);
+    }
+    markItems();
+  }
+  function markItems() {
+    document.querySelectorAll("[data-item]").forEach(el => el.classList.toggle("sel", el.dataset.item === selItem));
+  }
+  function bindItems(el) {
+    el.querySelectorAll("[data-item]").forEach(d => d.addEventListener("click", (e) => {
+      if (e.target.closest("[data-req]")) return;
+      const [k, id] = d.dataset.item.split(":"); showItem(k, id);
+    }));
+    el.querySelectorAll("[data-req]").forEach(c => c.addEventListener("click", (e) => { e.stopPropagation(); showTab("p-req"); selectReq(c.dataset.req, true); }));
+    markItems();
+  }
   function renderInterfaces() {
-    const name = (x) => x.startsWith("external:") ? x.slice(9) + " (outside)" : (x === "P" ? "machine" : x);
     const its = focus ? S.interfaces.filter(i => focus.ifaces.has(i.id)) : S.interfaces;
     const bl = focus ? S.blocks.filter(b => b.node === "P" || focus.nodes.has(b.node)) : S.blocks;
-    $("p-if").innerHTML = (its.length ? "" : `<div class="empty">No interfaces.</div>`) + its.map(i => `<div class="item"><div class="id">${i.id}</div>
-      <div><b>${name(i.a)}</b> ↔ <b>${name(i.b)}</b> · ${i.kind}<br>${i.text}</div>
+    $("p-if").innerHTML = (its.length ? "" : `<div class="empty">No interfaces.</div>`) + its.map(i => `<div class="item pick" data-item="if:${i.id}" tabindex="0"><div class="id">${i.id}</div>
+      <div><b>${ifName(i.a)}</b> ↔ <b>${ifName(i.b)}</b> · ${i.kind}<br>${i.text}</div>
       ${i.keeps ? `<div class="why">keeps: ${i.keeps}</div>` : ""}</div>`).join("") +
-      `<div class="section-h">Flows</div>` + bl.map(b => `<div class="item"><div class="id">${b.node}</div>
+      (bl.length ? `<div class="section-h">Flows</div>` : "") + bl.map(b => `<div class="item pick" data-item="flow:${b.node}" tabindex="0"><div class="id">${b.node}</div>
       <div>in: ${b.inputs.map(p => p.name + (p.unit ? " (" + p.unit + ")" : "")).join(", ")}<br>out: ${b.outputs.map(p => p.name).join(", ")}</div></div>`).join("");
+    bindItems($("p-if"));
   }
-  function renderAssumptions() {
-    $("p-as").innerHTML = S.assumptions.map(a => `<div class="item"><div class="id">${a.id}</div><div>${a.text}</div><div class="why">${a.reason}</div></div>`).join("");
-  }
+  const asShown = () => focus ? S.assumptions.filter(a => affectsOf(a).some(id => focus.reqs.has(id))) : S.assumptions;
   // tabs: the core's four, and each component's, placed after the tab it names
   let activeTab = "p-req";
   function showTab(id) {
@@ -231,11 +284,13 @@
   }
 
   function renderTabs() {
-    const tabs = [["p-req", "t-req", "Requirements"], ["p-tree", "t-tree", "Product tree"], ["p-if", "t-if", "Interfaces"], ["p-as", "t-as", "Assumptions"]];
+    const tabs = [["p-req", "t-req", "Requirements"], ["p-tree", "t-tree", "Product tree"], ["p-if", "t-if", "Interfaces"]];
+    const after = {};
     for (const c of Page.comps) {
       if (!c.pane) continue;
+      // after its anchor, and after the tabs placed there before it, so tabs keep the order they load in
       const t = [c.pane, c.tabId || "t-" + c.pane.replace(/^p-/, ""), c.tab || c.id], k = c.after ? tabs.findIndex(x => x[0] === c.after) : -1;
-      if (k >= 0) tabs.splice(k + 1, 0, t); else tabs.push(t);
+      if (k >= 0) { after[c.after] = (after[c.after] || 0) + 1; tabs.splice(k + after[c.after], 0, t); } else tabs.push(t);
       if (c.stage) $("ctl").insertAdjacentHTML("beforebegin", c.stage);
     }
     $("tabs").innerHTML = tabs.map(([p, id, l]) => `<button role="tab" aria-selected="${p === activeTab}" data-pane="${p}" id="${id}">${l}</button>`).join("");
@@ -444,6 +499,12 @@
     selReq = id; selNode = null;
     document.querySelectorAll(".req").forEach(el => el.classList.toggle("sel", el.dataset.req === id));
     document.querySelectorAll(".node").forEach(el => el.classList.remove("sel"));
+    viewReq(id);
+    if (scroll && id) $("row-" + id)?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }
+  // a requirement in 3D, from any tab: its pose, its parts lit, its dimensions and marks, and a note
+  function viewReq(id) {
+    selItem = null; markItems();
     clearAnnot();
     if (!id) { highlight(null); $("note").classList.remove("show"); return; }
     const r = reqs.find(q => q.id === id), z = (V.viz || {})[id] || {};
@@ -459,7 +520,6 @@
       (z.sweep ? ` <br><span style="color:var(--muted)">Showing the travel the check covers.</span>` : "") +
       (x.case ? `<br><span style="color:var(--muted)">Worst case: ${x.case}</span>` : "");
     $("note").classList.add("show");
-    if (scroll) $("row-" + id)?.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }
   function selectNode(nid) { setFocus(nid ? { type: "node", id: nid } : null); }
   $("v-clear").onclick = () => { setFocus(null); selectReq(null); };
@@ -644,6 +704,7 @@
     dgSel = sel; focus = focusOf(sel);
     reqFilter = focus ? { ids: [...focus.reqs], label: focus.label } : null;
     selReq = null;
+    selItem = null;
     renderReqs(); renderTree(); renderInterfaces(); renderDiagram(); updateFilterBar();
     applyFocusView();
     Page.emit("focus", focus);
@@ -655,7 +716,6 @@
       if (pane === "p-req") n = `${focus.reqs.size} requirement${focus.reqs.size === 1 ? "" : "s"}`;
       else if (pane === "p-if") n = `${focus.ifaces.size} interface${focus.ifaces.size === 1 ? "" : "s"}`;
       else if (pane === "p-tree") n = `${focus.nodes.size} block${focus.nodes.size === 1 ? "" : "s"}`;
-      else if (pane === "p-as") n = "assumptions are not tied to blocks, so all are shown";
       else { const c = Page.comps.find(c => c.pane === pane && c.filterLabel); if (c) n = c.filterLabel(focus); }
     }
     $("filter").classList.toggle("show", !!focus);
@@ -726,7 +786,7 @@
     V, S, THREE, reqs, res, nodes, status, standing, STANDING, partToNode, nodeParts, reqsOfNode, expand, nodeOfPart, dgName,
     scene, local, camera, renderer, controls, meshes, groupObj, groupOffset, pose, poseOf, axes, applyPose, animateTo, stopAnim, sequence,
     highlight, accent, clearAnnot, addDim, addLabel, addCG, setView, resize, view,
-    showTab, selectReq, selectNode, openGroupOf, setFocus, focusParts, applyFocusView, updateFilterBar, renderReqs,
+    showTab, selectReq, viewReq, showItem, markItems, asShown, selectNode, openGroupOf, setFocus, focusParts, applyFocusView, updateFilterBar, renderReqs,
     linkOf: (key) => DG_LINKS.find(l => linkKey(l) === key),
     // a requirement's chip, coloured by status; bindReqChips(el) makes every chip in el open its requirement
     reqChip: (id, text) => `<span class="chip ${status(id)}" data-req="${id}" title="${(reqs.find(r => r.id === id) || {}).text || id}">${text || id}</span>`,
@@ -741,7 +801,7 @@
   // the components: each adds its meshes, tab, stage panel and handlers once the core is built
   for (const c of Page.comps) if (c.init) { try { c.init(Page); } catch (e) { console.error(c.id, e); } }
   renderTabs();
-  renderReqs(); renderTree(); renderInterfaces(); renderAssumptions(); renderDiagram(); updateFilterBar();
+  renderReqs(); renderTree(); renderInterfaces(); renderDiagram(); updateFilterBar();
   for (const c of Page.comps) if (c.render) { try { c.render(); } catch (e) { console.error(c.id, e); } }
   applyPose(); local.updateMatrixWorld(true); fitViews();
   if (V.floor) makeFloor(V.floor);

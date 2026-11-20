@@ -12,8 +12,8 @@
     require("R1", "The tank shall hold at least 50 L", volume_mm3, ">=", 50, "L", measured_in="mm^3")
     report()
 
-`report` runs last: it prints one line for each requirement, writes `systems.html`, and says
-whether the work is done.
+`report` runs last: it prints one line for each requirement, writes `systems.json`, brings the page
+(`page/index.html`) up to date, and says whether any check fails.
 """
 
 from systems import DENSITY, Model, convert, mass_kg  # noqa: F401
@@ -251,7 +251,7 @@ def require_clear_travel(
 
 
 def report(baseline=None):
-    """Prints the results, writes the page, and says how far they go. Call it last.
+    """Prints the results, brings the page up to date, and says how far they go. Call it last.
 
     The last line is never "done": a check that passes says the model predicts a pass. It counts the passes by how
     far they can be trusted (draft: the requirement is not confirmed; provisional: it rests on something not
@@ -263,6 +263,7 @@ def report(baseline=None):
         if not getattr(m, model_) and model_ not in m.skipped:
             m.skip(model_, "none written")
     m.write(baseline=baseline)
+    page = _write_page(m)
     results = [m.result(id) for id in m.requirements]
     by = {}
     for r in results:
@@ -273,6 +274,8 @@ def report(baseline=None):
         return False
     if failing:
         print(f"FAILING: {', '.join(failing)}. Change the design and run again.")
+        if page:
+            print(f"The page: {page}")
         return False
     passing = sum(len(by.get(k, [])) for k in ("draft", "provisional", "credible"))
     parts = ", ".join(f"{len(by[k])} {k}" for k in ("draft", "provisional", "credible") if by.get(k))
@@ -288,8 +291,44 @@ def report(baseline=None):
     if weak:
         print(f"  Fragile (fail under a plausible change of a guess): {' '.join(weak)}")
     print("  Nothing is done until it is tested on the real thing: record tests with validate().")
+    if page:
+        print(f"The page: {page} (opens from disk; publish the page/ folder to share it)")
     return True
 
+
+
+# ================================================================== the page
+_COMPONENT_ORDER = ["sim.js", "sim-page.js", "sim-ui.js", "build.js", "flex.js", "confirm.js", "stackup.js", "hazards.js",
+                    "cost.js", "tests.js"]
+
+
+def _write_page(m, folder="page"):
+    """Brings the page up to date with this run: systems.json into page/, a default viewer_data.json when the script
+    wrote none (no 3D model: the requirements, diagram and tabs), and page/data.js with all of it, so page/index.html
+    opens straight from disk. The page itself (index.html, core.js) is copied from the systems-engineering skill."""
+    import json
+    import os
+    if not os.path.exists(os.path.join(folder, "core.js")):
+        print(f"  No page: copy it from the systems-engineering skill (mkdir -p {folder} && cp <skill>/page/* {folder}/), then run again.")
+        return
+    S = json.load(open("systems.json"))
+    with open(os.path.join(folder, "systems.json"), "w") as f:
+        f.write(json.dumps(S))
+    vp = os.path.join(folder, "viewer_data.json")
+    if os.path.exists(vp):
+        V = json.load(open(vp))
+    else:
+        V = dict(title=m.name, components=[c for c in _COMPONENT_ORDER if os.path.exists(os.path.join(folder, c)) and c != "flex.js"])
+        with open(vp, "w") as f:
+            f.write(json.dumps(V))
+    extra = {}
+    for name in ("sensitivity.json",):
+        q = os.path.join(folder, name)
+        if os.path.exists(q):
+            extra[name] = json.load(open(q))
+    with open(os.path.join(folder, "data.js"), "w") as f:
+        f.write("window.PAGE_DATA = " + json.dumps({"V": V, "S": S, "files": extra}) + ";\n")
+    return os.path.abspath(os.path.join(folder, "index.html"))
 
 
 # ================================================================== the page's data
