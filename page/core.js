@@ -55,6 +55,19 @@
   V.parts ||= {}; V.viz ||= {};
   if (V.title) { document.title = V.title; $("title").textContent = V.title; }
   $("subtitle").textContent = V.subtitle || "";
+  // what the agent is doing: a band under the header, while the work goes on
+  if (V.progress && (V.progress.now || V.progress.done)) {
+    const g = V.progress, el = document.createElement("div");
+    el.className = "progress-band";
+    el.innerHTML = [g.done && `<span><b>Done</b> ${g.done}</span>`, g.now && `<span><b>Now</b> ${g.now}</span>`, g.next && `<span><b>Next</b> ${g.next}</span>`,
+      (V.ask || []).length && `<span><button type="button" class="lk" id="pg-ask">${V.ask.length} question${V.ask.length > 1 ? "s" : ""} for you</button></span>`,
+      g.at && `<span class="at">updated ${g.at}</span>`].filter(Boolean).join("");
+    document.querySelector("header").after(el);
+    Page.style(`.progress-band { display: flex; flex-wrap: wrap; gap: 4px 18px; padding: 6px 16px; font-size: 12.5px; background: var(--accent-soft); border-bottom: 1px solid var(--line); }
+      .progress-band b { font-weight: 600; margin-right: 4px; } .progress-band .at { margin-left: auto; color: var(--muted); }
+      .progress-band button { background: none; border: 0; padding: 0; font: inherit; font-weight: 600; }`);
+    $("pg-ask")?.addEventListener("click", () => showTab("p-conf"));
+  }
   // no 3D model yet: the requirements, diagram and tabs take the whole page
   if (!Object.keys(V.parts).length) Page.style("main { grid-template-columns: minmax(0, 1fr) !important; } .stage { display: none !important; }");
   Page.style(".item.pick { cursor: pointer; border-left: 3px solid transparent; } .item.pick:hover { background: color-mix(in srgb, var(--accent-soft) 55%, transparent); } .item.pick.sel { background: var(--accent-soft); border-left-color: var(--accent); } #dg-svg svg { max-height: 360px; } #panes { display: contents; } .tabs { flex-wrap: wrap; } .tabs button { white-space: nowrap; }");

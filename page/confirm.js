@@ -37,7 +37,9 @@
     const items = () => {
       const R = reqs.filter(r => r.source !== "stated" && (res[r.id] || {}).standing !== "validated" && (!P.focus || r.applies_to.some(n => n === "P" || P.inFocus(n))));
       const shown = P.asShown(), A = shown.filter(a => !a.confirmed), D = shown.filter(a => a.confirmed);
-      return { R, A, D };
+      const ask = new Set(V.ask || []);           // the batch asked now: shown first, by itself
+      return { R: R.filter(r => !ask.has(r.id)), A: A.filter(a => !ask.has(a.id)), D,
+               Q: [...R.filter(r => ask.has(r.id)), ...A.filter(a => ask.has(a.id))] };
     };
     const limitText = (r) => r.limit != null ? ` (limit ${{ max: "≤", min: "≥", equal: "=" }[r.kind] || ""} ${fmt(r.limit)} ${r.unit || ""})` : "";
     function reply() {
@@ -52,11 +54,14 @@
         <div class="why">${why}</div>${m.text != null && !m.ok && !done ? `<textarea placeholder="What it should be">${m.text}</textarea>` : ""}</div>`;
     }
     function render() {
-      const el = $("p-conf"), { R, A, D } = items();
+      const el = $("p-conf"), { R, A, D, Q } = items();
       const n = Object.values(marks).filter(m => m.ok || m.text).length;
-      let h = `<div class="cf-bar"><span>${R.length} requirements and ${A.length} assumptions wait on you · ${n} answered</span>
+      let h = `<div class="cf-bar"><span>${Q.length ? `${Q.length} asked now · ` : ""}${R.length + A.length} more wait on you · ${n} answered</span>
         <button type="button" id="cf-all">Confirm all shown</button><button type="button" id="cf-clear">Clear answers</button></div>`;
-      if (!R.length && !A.length) h += `<div class="empty">Nothing waiting: every requirement is stated or confirmed, and every assumption confirmed.</div>`;
+      if (Q.length) h += `<div class="section-h">Asked now</div>` + Q.map(q => q.applies_to ? row(q.id, q.text + limitText(q), SRC[q.source] || q.source, "req:" + q.id)
+                                                                                     : row(q.id, q.text, (q.reason || "") + feeds(q), "as:" + q.id)).join("") +
+        `<div class="section-h">Also waiting, when you have time</div>`;
+      if (!R.length && !A.length && !Q.length) h += `<div class="empty">Nothing waiting: every requirement is stated or confirmed, and every assumption confirmed.</div>`;
       const by = {}; R.forEach(r => { (by[topicOf[r.id] || "Other"] ||= []).push(r); });
       for (const [t, rs] of Object.entries(by)) h += `<div class="section-h">${t}</div>` + rs.map(r => row(r.id, r.text + limitText(r), SRC[r.source] || r.source, "req:" + r.id)).join("");
       if (A.length) h += `<div class="section-h">Assumptions</div>` + A.map(a => row(a.id, a.text, (a.reason || "") + feeds(a), "as:" + a.id)).join("");
@@ -81,13 +86,13 @@
         const ta = d.querySelector("textarea");
         if (ta) ta.oninput = () => { marks[id] = { text: ta.value }; save(); $("cf-reply").value = reply(); };
       });
-      $("cf-all").onclick = () => { R.forEach(r => { if (!marks[r.id] || !marks[r.id].text) marks[r.id] = { ok: true }; }); A.forEach(a => { if (!marks[a.id] || !marks[a.id].text) marks[a.id] = { ok: true }; }); save(); render(); };
+      $("cf-all").onclick = () => { [...Q, ...R, ...A].forEach(q => { if (!marks[q.id] || !marks[q.id].text) marks[q.id] = { ok: true }; }); save(); render(); };
       $("cf-clear").onclick = () => { marks = {}; save(); render(); };
       $("cf-copy").onclick = () => { const t = $("cf-reply"); t.select(); try { navigator.clipboard.writeText(t.value); } catch (e) { document.execCommand("copy"); } $("cf-copy").textContent = "Copied"; setTimeout(() => { if ($("cf-copy")) $("cf-copy").textContent = "Copy reply"; }, 1500); };
     }
     Object.assign(comp, {
       render,
-      filterLabel: () => { const q = items(); return `${q.R.length} requirements and ${q.A.length} assumptions to confirm`; },
+      filterLabel: () => { const q = items(); return `${q.Q.length + q.R.length + q.A.length} to confirm`; },
       exit() { if (sel) { sel = null; P.applyFocusView(); } },
     });
     P.on("focus", render);

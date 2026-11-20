@@ -415,6 +415,17 @@ class PageView(dict):
         z = {k: v for k, v in dict(pose=pose, parts=parts, view=view, dims=dims, marks=marks, sweep=sweep).items() if v is not None}
         self["viz"][req] = {**self["viz"].get(req, {}), **z, **flags}
 
+    def progress(self, now, next="", done=""):
+        """What the agent is doing, shown in a band under the page's header: what changed since the user last
+        looked (done), what it is working on (now), and what comes after (next). Update it with each publish."""
+        import datetime
+        self["progress"] = dict(now=now, next=next, done=done, at=datetime.datetime.now().strftime("%H:%M"))
+
+    def ask(self, *ids):
+        """The batch of requirements and assumptions to put to the user now: the few whose answers matter for the
+        work about to start. The To confirm tab shows them first, under "Asked now"."""
+        self["ask"] = list(ids)
+
     # ---- data for the companion skills' components (each component's file says how it shows it)
     def bom_line(self, item, node, qty, price, kind="bought", unit="", supplier="", part_no="", link="", date="",
                  estimated=False, basis="", parts=None):
