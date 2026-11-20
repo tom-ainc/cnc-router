@@ -292,7 +292,7 @@ def report(baseline=None):
         print(f"  Fragile (fail under a plausible change of a guess): {' '.join(weak)}")
     print("  Nothing is done until it is tested on the real thing: record tests with validate().")
     if page:
-        print(f"The page: {page} (opens from disk; publish the page/ folder to share it)")
+        print(f"The page: {page} (serve the page/ folder, python3 -m http.server, or publish it)")
     return True
 
 
@@ -303,31 +303,25 @@ _COMPONENT_ORDER = ["sim.js", "sim-page.js", "sim-ui.js", "build.js", "flex.js",
 
 
 def _write_page(m, folder="page"):
-    """Brings the page up to date with this run: systems.json into page/, a default viewer_data.json when the script
-    wrote none (no 3D model: the requirements, diagram and tabs), and page/data.js with all of it, so page/index.html
-    opens straight from disk. The page itself (index.html, core.js) is copied from the systems-engineering skill."""
+    """Brings the page up to date with this run: systems.json into page/, and a default viewer_data.json when the
+    script wrote none (no 3D model: the requirements, diagram and tabs). The page itself (index.html, core.js and
+    golf's viewer) is copied from the systems-engineering skill; the page must be served (or published) to open."""
     import json
     import os
     if not os.path.exists(os.path.join(folder, "core.js")):
-        print(f"  No page: copy it from the systems-engineering skill (mkdir -p {folder} && cp <skill>/page/* {folder}/), then run again.")
+        print(f"  No page: copy it from the systems-engineering skill (mkdir -p {folder} && cp -r <skill>/page/* {folder}/), then run again.")
         return
     S = json.load(open("systems.json"))
     with open(os.path.join(folder, "systems.json"), "w") as f:
         f.write(json.dumps(S))
     vp = os.path.join(folder, "viewer_data.json")
-    if os.path.exists(vp):
-        V = json.load(open(vp))
-    else:
+    if not os.path.exists(vp):
         V = dict(title=m.name, components=[c for c in _COMPONENT_ORDER if os.path.exists(os.path.join(folder, c)) and c != "flex.js"])
         with open(vp, "w") as f:
             f.write(json.dumps(V))
-    extra = {}
-    for name in ("sensitivity.json",):
-        q = os.path.join(folder, name)
-        if os.path.exists(q):
-            extra[name] = json.load(open(q))
-    with open(os.path.join(folder, "data.js"), "w") as f:
-        f.write("window.PAGE_DATA = " + json.dumps({"V": V, "S": S, "files": extra}) + ";\n")
+    stale = os.path.join(folder, "data.js")
+    if os.path.exists(stale):
+        os.remove(stale)
     return os.path.abspath(os.path.join(folder, "index.html"))
 
 
@@ -358,6 +352,12 @@ class PageView(dict):
     def __init__(self, title, subtitle="", components=(), whole="whole system", **extra):
         super().__init__(title=title, subtitle=subtitle, components=list(components), whole=whole,
                          parts={}, viz={}, axes=[], groups={}, **extra)
+
+    def golf(self, folder="golf"):
+        """Draw the parts with golf's viewer from the bundle `golf bundle --out page/<folder>` wrote: the design script
+        shows each part with group= its moving group (the groups below), and the page moves the instances by name.
+        Parts given here with meshes are drawn too, beside the golf model."""
+        self["golf"] = folder
 
     def frame(self, translate=(0, 0, 0), rotate=(0, 0, 0)):
         """Where the model's own frame sits in the world (z up, mm): a move, then rotations about x, y, z in degrees."""

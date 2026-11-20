@@ -84,7 +84,7 @@ body.sim-mode .ctl, body.sim-mode .stats { display: none; }
 .sim-foot { padding: 6px 12px 12px; font-size: 11px; color: var(--muted); }
 `);
   comp.init = function (P) {
-  const { V, THREE, $, css, store, status, local, pose, applyPose, highlight, clearAnnot, showTab, openGroupOf } = P;
+  const { V, $, css, store, status, pose, applyPose, highlight, clearAnnot, showTab, openGroupOf } = P;
   // ------------------------------------------------------------- simulation: Simulink-style diagrams, scopes, and the 3D view, all driven by one run
   const MODEL = window.SIMMODEL || window.CNCSIM;
   const SIMP = MODEL && V.sim && V.sim.params, SIMRES = V.sim && V.sim.results;
@@ -125,40 +125,48 @@ body.sim-mode .ctl, body.sim-mode .stats { display: none; }
     REC.t[REC.n++] = t; REC.next = t + REC.dt;
   }
 
-  // ---- the path in 3D: what the program asks for (faint) and where the tool tip went (cutting moves bright)
-  const trace = { max: 60000 };
+  // ---- the path in 3D: what the program asks for (faint, dashed) and where the tool tip went (cutting moves bright),
+  // drawn as overlay lines in golf's viewer; points are in the model's frame (mm) and placed in the world by the core
+  const trace = { max: 60000, on: false, shownTo: -1, drawnAt: 0 };
   function traceLines() {
-    const mk = (col, op, dashed) => {
-      const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.BufferAttribute(new Float32Array(trace.max * 6), 3)); g.setDrawRange(0, 0);
-      const m = dashed ? new THREE.LineDashedMaterial({ color: col, transparent: true, opacity: op, dashSize: 12, gapSize: 8, depthTest: false })
-                       : new THREE.LineBasicMaterial({ color: col, transparent: true, opacity: op, depthTest: false });
-      const L = new THREE.LineSegments(g, m); L.renderOrder = 998; L.frustumCulled = false; L.visible = false; local.add(L); return L;
-    };
-    trace.cut = mk("#d0402b", 1); trace.move = mk("#4b5560", 0.7); trace.plan = mk("#1f6fb2", 0.35);
+    trace.seg = { cut: new Float64Array(trace.max * 6), move: new Float64Array(trace.max * 6) };
     trace.n = { cut: 0, move: 0 }; trace.tt = { cut: new Float64Array(trace.max), move: new Float64Array(trace.max) };
+    trace.plan = [];
   }
   function tracePush(kind, a, b, t) {
-    const L = trace[kind], n = trace.n[kind]; if (n >= trace.max) return;
-    const arr = L.geometry.attributes.position.array, o = n * 6;
-    arr[o] = a[0]; arr[o + 1] = a[1]; arr[o + 2] = a[2]; arr[o + 3] = b[0]; arr[o + 4] = b[1]; arr[o + 5] = b[2];
-    trace.tt[kind][n] = t; trace.n[kind] = n + 1; L.geometry.attributes.position.needsUpdate = true;
+    const n = trace.n[kind]; if (n >= trace.max) return;
+    trace.seg[kind].set([...a, ...b], n * 6); trace.tt[kind][n] = t; trace.n[kind] = n + 1;
   }
-  function traceShowTo(t) {                     // draw the track up to the playback time
-    for (const k of ["cut", "move"]) {
-      const tt = trace.tt[k]; let lo = 0, hi = trace.n[k];
-      while (lo < hi) { const m = (lo + hi) >> 1; if (tt[m] <= t) lo = m + 1; else hi = m; }
-      trace[k].geometry.setDrawRange(0, lo * 2);
+  // segments as polylines: consecutive segments that meet join into one line
+  function polylines(arr, count, style) {
+    const out = []; let cur = null;
+    for (let i = 0; i < count; i++) {
+      const o = i * 6, a = P.toWorld([arr[o], arr[o + 1], arr[o + 2]], "fixed"), b = P.toWorld([arr[o + 3], arr[o + 4], arr[o + 5]], "fixed");
+      if (cur && Math.hypot(a[0] - cur[cur.length - 1][0], a[1] - cur[cur.length - 1][1], a[2] - cur[cur.length - 1][2]) < 1e-6) cur.push(b);
+      else { if (cur) out.push({ type: "line", points: cur, style }); cur = [a, b]; }
     }
+    if (cur) out.push({ type: "line", points: cur, style });
+    return out;
   }
+  function traceDraw(force) {
+    const now = performance.now();
+    if (!force && now - trace.drawnAt < 150) return; trace.drawnAt = now;
+    if (!trace.on || !trace.n) { P.overlay("trace", null); return; }
+    const upTo = (k) => { const tt = trace.tt[k]; let lo = 0, hi = trace.n[k]; while (lo < hi) { const m = (lo + hi) >> 1; if (tt[m] <= trace.shownTo) lo = m + 1; else hi = m; } return lo; };
+    const planArr = Float64Array.from(trace.plan);
+    P.overlay("trace", [
+      ...polylines(planArr, trace.plan.length / 6, { color: "#1f6fb2", opacity: 0.35, width: 1.5, dash: [12, 8], depth: "front" }),
+      ...polylines(trace.seg.move, upTo("move"), { color: "#4b5560", opacity: 0.7, width: 1.5, depth: "front" }),
+      ...polylines(trace.seg.cut, upTo("cut"), { color: "#d0402b", width: 2, depth: "front" }),
+    ]);
+  }
+  function traceShowTo(t) { trace.shownTo = t; traceDraw(false); }          // draw the track up to the playback time
   function traceReset(plan) {
-    for (const k of ["cut", "move"]) { trace.n[k] = 0; trace[k].geometry.setDrawRange(0, 0); }
-    const segs = plan.segs.filter(s => s.L), arr = trace.plan.geometry.attributes.position.array;
-    let n = 0;
-    for (const s of segs) { if (n >= trace.max) break; arr.set([...s.p0, ...s.p1], n * 6); n++; }
-    trace.plan.geometry.setDrawRange(0, n * 2); trace.plan.geometry.attributes.position.needsUpdate = true;
-    trace.last = null;
+    trace.n.cut = trace.n.move = 0; trace.plan = [];
+    for (const s of plan.segs.filter(s => s.L)) trace.plan.push(...s.p0, ...s.p1);
+    trace.last = null; traceDraw(true);
   }
-  const traceShow = (on) => ["cut", "move", "plan"].forEach(k => { if (trace[k]) trace[k].visible = on; });
+  const traceShow = (on) => { trace.on = on; traceDraw(true); };
 
   // ---- a run
   function simLoad(job, opt) {
@@ -174,10 +182,8 @@ body.sim-mode .ctl, body.sim-mode .stats { display: none; }
     simUI(); simPose(true);
   }
   function traceAppendPlan(plan) {
-    const arr = trace.plan.geometry.attributes.position.array;
-    let n = trace.plan.geometry.drawRange.count / 2;
-    for (const s of plan.segs.filter(s => s.L)) { if (n >= trace.max) break; arr.set([...s.p0, ...s.p1], n * 6); n++; }
-    trace.plan.geometry.setDrawRange(0, n * 2); trace.plan.geometry.attributes.position.needsUpdate = true;
+    for (const s of plan.segs.filter(s => s.L)) trace.plan.push(...s.p0, ...s.p1);
+    traceDraw(true);
   }
   // the computation runs ahead of the playback into the recording; playback starts (and resumes) only once the
   // computation can stay ahead of it to the end of the job at the chosen speed
@@ -665,7 +671,7 @@ body.sim-mode .ctl, body.sim-mode .stats { display: none; }
   function enterSim() {
     if (!SIMP) return;
     simOn = true; document.body.classList.add("sim-mode");
-    if (!trace.cut) traceLines();
+    if (!trace.seg) traceLines();
     traceShow(true);
     if (!SR) simLoad(simJob);
     clearAnnot(); highlight(P.focus ? P.focusParts() : null);

@@ -1272,16 +1272,33 @@ V["cables"] = [dict(name=c["name"], od=c["od"], info=f"{c['what']}: {c['dev']} t
                 for c in CABLE_ROUTES.values()]
 V["ropes"] = [{"name": "gantry_frame.rope", "r": 2.5, "pts": [[*p, grp] for p, grp in ROPE_PTS],
                 "info": [it for it in items if it["name"] == "gantry_frame.rope"][0]["note"]}]
+# The page draws the parts with golf's viewer from a golf bundle (page/golf). This script runs on an older golf, so it
+# writes each shown part, placed in the world, as a STEP file with page_model.json; page_model.py shows them on the current golf and `golf bundle` writes page/golf.
+# Set PAGE_MODEL=1 to write them; the page's data needs only each part's group, colour and note.
+import os as _os
+_PM = _os.environ.get("PAGE_MODEL")
+_pm_index = []
+if _PM:
+    _os.makedirs("page_model", exist_ok=True)
 for _it in items:
     if _it["name"] in CHAIN_SPECS or _it["name"] == "gantry_frame.rope":
         continue
-    V["parts"][_it["name"]] = dict(mesh_of(_it["part"]), group=_it["group"], colour=_hex(_it["colour"]),
+    V["parts"][_it["name"]] = dict(group=_it["group"], colour=_hex(_it["colour"]),
                                    info=f"{_it['note']} | {_it['mat']} | {_it['kg']:.2f} kg", kind=_it["kind"])
+    if _PM:
+        _f = f"page_model/{_it['name']}.step"
+        export_step_file([_it["part"] if _it["group"] == "world" else world(_it["part"])], _f)
+        _pm_index.append(dict(name=_it["name"], file=_f, colour=list(_it["colour"]), group=_it["group"]))
+# the motors: golf cannot mesh their STEP (nor read their gmsh mesh as a solid), so the page draws that mesh itself
 for name, loc, grp, nd in (("gantry_drives.x_motor_bottom", x_motor_loc(_c1 - COL_W, Y_RB), "x", "GAN"),
                            ("gantry_drives.x_motor_top", x_motor_loc(_c1 - COL_W, Y_RT), "x", "GAN"),
                            ("gantry_drives.y_motor", y_motor_loc(_c1 - COL_W), "x", "GAN"), ("y_carriage.z_motor", z_motor_loc(_c1, REF[1]), "xy", "YC")):
     V["parts"][name] = dict(shared="motor", group=grp, colour="#34383f", loc=loc_matrix(loc),
                             info="StepperOnline 34E1K-120, 12 N*m closed-loop (salvaged) | 5.0 kg", kind="bought")
+if _PM:
+    with open("page_model/page_model.json", "w") as _fh:
+        json.dump(_pm_index, _fh)
+V["golf"] = "golf"
 # which product-tree node shows which parts
 for node, prefixes in ((N_BED, ("bed.",)), (N_GAN, ("gantry_frame.", "gantry_drives.", "counterweight.")), (N_YC, ("y_carriage.",)),
                        (N_ZA, ("z_axis.",)), (N_SP, ("spindle.", "tool")), (N_ATC, ("atc_rack.",)), (N_BASE, ("floor_frame.", "feet.")),

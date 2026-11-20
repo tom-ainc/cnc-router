@@ -35,54 +35,50 @@
 .step { scroll-margin-top: 84px; }
 `);
   comp.init = function (P) {
-  const { V, S, THREE, $, fmt, meshes, scene, local, groupObj, accent, clearAnnot, highlight, animateTo, showTab, nodeOfPart } = P;
-  function mergeGeos(gs) {
-    let n = 0; gs.forEach(g => { n += g.attributes.position.count; });
-    const pos = new Float32Array(n * 3), nor = new Float32Array(n * 3);
-    let o = 0;
-    for (const g of gs) { pos.set(g.attributes.position.array, o * 3); nor.set(g.attributes.normal.array, o * 3); o += g.attributes.position.count; }
-    const m = new THREE.BufferGeometry();
-    m.setAttribute("position", new THREE.BufferAttribute(pos, 3)); m.setAttribute("normal", new THREE.BufferAttribute(nor, 3));
-    return m;
+  const { V, S, $, fmt, items, addMesh, setItem, clearAnnot, highlight, animateTo, showTab, nodeOfPart } = P;
+  // ---- fasteners: one mesh per joint, built from catalogue sizes, every fastener of the joint in it
+  function solid(parts) {           // parts: [[radius bottom, radius top, z0, z1, segments]], each a closed prism or cone along z
+    const Pp = [], T = [];
+    for (const [r0, r1, z0, z1, n] of parts) {
+      const o = Pp.length / 3;
+      for (let i = 0; i < n; i++) { const a = 2 * Math.PI * i / n, c = Math.cos(a), s = Math.sin(a); Pp.push(r0 * c, r0 * s, z0, r1 * c, r1 * s, z1); }
+      Pp.push(0, 0, z0, 0, 0, z1);
+      const b = o + 2 * n, t = b + 1;
+      for (let i = 0; i < n; i++) {
+        const j = (i + 1) % n, A = o + 2 * i, B = o + 2 * j;
+        T.push(A, B, B + 1, A, B + 1, A + 1, b, B, A, t, A + 1, B + 1);
+      }
+    }
+    return { P: Pp, T };
   }
-  // ---- fasteners: one instanced mesh per joint, built from catalogue sizes
-  function fastenerGeo(F) {
-    const d = F.d, L = F.L, parts = [];
-    const cylZ = (r, z0, z1, seg) => { const g = new THREE.CylinderGeometry(r, r, z1 - z0, seg || 14); g.rotateX(Math.PI / 2); g.translate(0, 0, (z0 + z1) / 2); return g.toNonIndexed(); };
-    const coneZ = (r0, r1, z0, z1) => { const g = new THREE.CylinderGeometry(r1, r0, z1 - z0, 14); g.rotateX(Math.PI / 2); g.translate(0, 0, (z0 + z1) / 2); return g.toNonIndexed(); };
-    if (F.type === "SET") parts.push(cylZ(d / 2 - 0.1, 0, L));
-    else parts.push(cylZ(d / 2 - 0.1, 0, L));
-    if (F.type === "SHCS") parts.push(cylZ(F.head[0] / 2, -F.head[1], 0, 16));
-    if (F.type === "HEX") parts.push(cylZ(F.head[0] / 2, -F.head[1], 0, 6));
-    if (F.type === "ROD") parts.push(cylZ(F.head[0] / 2, -F.head[1], 0, 6));
-    if (["CSK", "WOOD", "TEK"].includes(F.type)) parts.push(coneZ(d, d / 2, 0, 0.55 * d));
-    if (F.nut) parts.push(cylZ(F.nut[0] / 2, F.nut[2], F.nut[2] + F.nut[1], 6));
-    parts.forEach(g => g.computeVertexNormals());
-    return mergeGeos(parts);
+  function fastenerShape(F) {
+    const d = F.d, L = F.L, parts = [[d / 2 - 0.1, d / 2 - 0.1, 0, L, 14]];
+    if (F.type === "SHCS") parts.push([F.head[0] / 2, F.head[0] / 2, -F.head[1], 0, 16]);
+    if (F.type === "HEX" || F.type === "ROD") parts.push([F.head[0] / 2, F.head[0] / 2, -F.head[1], 0, 6]);
+    if (["CSK", "WOOD", "TEK"].includes(F.type)) parts.push([d, d / 2, 0, 0.55 * d, 14]);
+    if (F.nut) parts.push([F.nut[0] / 2, F.nut[0] / 2, F.nut[2], F.nut[2] + F.nut[1], 6]);
+    return solid(parts);
   }
-  const _M = new THREE.Matrix4();
-  const fastObjs = [];
-  const _q = new THREE.Quaternion(), _zA = new THREE.Vector3(0, 0, 1), _dv = new THREE.Vector3(), _one = new THREE.Vector3(1, 1, 1);
+  // every fastener of a joint, along its direction, at its points (in its group's frame)
+  function jointMesh(F) {
+    const sh = fastenerShape(F), n = Math.hypot(...F.dir), z = F.dir.map(v => v / n);
+    const a = Math.abs(z[0]) < 0.9 ? [1, 0, 0] : [0, 1, 0];
+    let x = [a[1] * z[2] - a[2] * z[1], a[2] * z[0] - a[0] * z[2], a[0] * z[1] - a[1] * z[0]]; const xn = Math.hypot(...x); x = x.map(v => v / xn);
+    const y = [z[1] * x[2] - z[2] * x[1], z[2] * x[0] - z[0] * x[2], z[0] * x[1] - z[1] * x[0]];
+    const Pp = [], T = [];
+    F.pts.forEach((p, i) => {
+      const o = i * sh.P.length / 3;
+      for (let k = 0; k < sh.P.length; k += 3) { const u = sh.P[k], v = sh.P[k + 1], w = sh.P[k + 2]; Pp.push(p[0] + x[0] * u + y[0] * v + z[0] * w, p[1] + x[1] * u + y[1] * v + z[1] * w, p[2] + x[2] * u + y[2] * v + z[2] * w); }
+      for (const t of sh.T) T.push(t + o);
+    });
+    return { positions: Pp, triangles: T };
+  }
+  const fasteners = {};
   for (const F of V.fasteners || []) {
     if (!F.draw || !F.L) continue;
-    const geo = fastenerGeo(F);
     const col = F.type === "SHCS" || F.type === "SET" ? "#26282c" : ["TEK", "WOOD"].includes(F.type) ? "#b9a46a" : "#8d939b";
-    const mat = new THREE.MeshStandardMaterial({ color: col, roughness: 0.45, metalness: 0.5, transparent: true, opacity: 1 });
-    const im = new THREE.InstancedMesh(geo, mat, F.pts.length);
-    im.frustumCulled = false;
-    _dv.set(...F.dir).normalize(); _q.setFromUnitVectors(_zA, _dv);
-    F.pts.forEach((p, i) => { _M.compose(new THREE.Vector3(...p), _q, _one); im.setMatrixAt(i, _M); });
-    im.userData.name = "fastener:" + F.name; im.userData.base = F.pts.map(p => p.slice()); im.userData.F = F; im.userData.edges = null;
-    groupObj(F.group).add(im);
-    meshes["fastener:" + F.name] = im;
-    V.parts["fastener:" + F.name] = { info: `${F.pts.length} x ${F.label}` + (F.ok ? "" : " (fails a check)"), kind: "bought" };
-    fastObjs.push(im);
-  }
-  function shiftFastener(im, off) {
-    const F = im.userData.F;
-    _dv.set(...F.dir).normalize(); _q.setFromUnitVectors(_zA, _dv);
-    F.pts.forEach((p, i) => { _M.compose(new THREE.Vector3(p[0] + off[0], p[1] + off[1], p[2] + off[2]), _q, _one); im.setMatrixAt(i, _M); });
-    im.instanceMatrix.needsUpdate = true;
+    addMesh("fastener:" + F.name, { ...jointMesh(F), color: col, group: F.group, info: `${F.pts.length} x ${F.label}` + (F.ok ? "" : " (fails a check)"), kind: "bought" });
+    fasteners["fastener:" + F.name] = F;
   }
   // ------------------------------------------------------------- the build: step-by-step playback
   const ASM = V.assembly || { steps: [], stage: {}, units: {} };
@@ -95,22 +91,12 @@
   const stepIdx = Object.fromEntries(asmSteps.map((s, i) => [s.id, i]));
   for (const F of V.fasteners || []) {
     const n = "fastener:" + F.name;
-    if (!meshes[n]) continue;
+    if (!items[n]) continue;
     addedAt[n] = stepIdx[F.step];
     const st = asmSteps[stepIdx[F.step]];
     if (st && st.unit) unitOf[n] = st.unit;
   }
-  for (const m of Object.values(meshes)) if (m.matrixAutoUpdate === false) m.userData.loc0 = m.matrix.clone();
-  const _off = new THREE.Vector3(), _T = new THREE.Matrix4();
-  const _qInv = local.quaternion.clone().invert();
-  function setOffset(name, v, frame) {
-    const m = meshes[name]; if (!m) return;
-    _off.set(v[0], v[1], v[2]);
-    if (frame === "world" && m.parent !== scene) _off.applyQuaternion(_qInv);
-    if (frame !== "world" && m.parent === scene) _off.applyQuaternion(local.quaternion);
-    if (m.userData.loc0) { _T.makeTranslation(_off.x, _off.y, _off.z); m.matrix.copy(_T).multiply(m.userData.loc0); }
-    else m.position.copy(_off);
-  }
+  const setOffset = (name, v, frame) => setItem(name, { offset: v, frame });
   const lerp3 = (a, b, t) => [0, 1, 2].map(i => a[i] + (b[i] - a[i]) * t);
   const scale3 = (a, s) => a.map(v => v * s);
   let building = false, stepIx = 0, buildT = 1, buildAnim = null, playing = null;
@@ -138,29 +124,24 @@
     const k = stepIx, st = asmSteps[k], e = buildT < .5 ? 2 * buildT * buildT : 1 - Math.pow(-2 * buildT + 2, 2) / 2;
     const unitLegs = st.path || [[[0, 0, 1], 150, "local"]];
     const approach = legOffset(unitLegs, 0)[0];
-    const col = accent().multiplyScalar(0.3);
-    for (const [n, m] of Object.entries(meshes)) {
-      const a = addedAt[n], u = unitOf[n], mv = u ? moveAt[u] : undefined;
-      m.visible = a !== undefined && a <= k;
-      if (!m.visible) continue;
+    for (const n of Object.keys(items)) {
+      const o = P.ownerOf(n), a = addedAt[o], u = unitOf[o], mv = u ? moveAt[u] : undefined;
+      if (!(a !== undefined && a <= k)) { setItem(n, { visible: false }); continue; }
       let off = [0, 0, 0], frame = "local";
       const staged = u && (mv === undefined || mv > k);
       if (staged) off = ASM.stage[u] || [0, 0, 1000];
       if (a === k) {
         if (staged) off = lerp3([off[0], off[1], off[2] + 200], off, e);
-        else if (st.legs_of && n in st.legs_of) { [off, frame] = legOffset(st.legs_of[n], e); }
+        else if (st.legs_of && o in st.legs_of) { [off, frame] = legOffset(st.legs_of[o], e); }
         else if (!n.startsWith("fastener:")) { [off, frame] = legOffset(unitLegs, e); }
       }
       if (u && mv === k) off = e < .5 ? lerp3(ASM.stage[u] || [0, 0, 0], approach, e * 2) : legOffset(unitLegs, (e - .5) * 2)[0];
       if (n.startsWith("fastener:") && a === k && !staged) {
-        const F = m.userData.F, s = (1 - e) * 40;
+        const F = fasteners[n], s = (1 - e) * 40;
         off = [-F.dir[0] * s, -F.dir[1] * s, -F.dir[2] * s];
       }
-      if (n.startsWith("fastener:")) shiftFastener(m, off); else setOffset(n, off, frame);
       const now = a === k || (u && mv === k);
-      m.material.opacity = 1; m.material.depthWrite = true;
-      m.material.emissive = now ? col : new THREE.Color(0);
-      if (m.userData.edges) m.userData.edges.material.opacity = 0.25;
+      setItem(n, { visible: true, opacity: 1, hot: !!now, offset: off, frame });
     }
   }
   function enterBuild() {
@@ -172,7 +153,7 @@
   function exitBuild() {
     if (!building) return;
     building = false; P.driver = null; stopPlay(); buildAnim = null;
-    for (const n of Object.keys(meshes)) { meshes[n].visible = true; if (n.startsWith("fastener:")) shiftFastener(meshes[n], [0, 0, 0]); else setOffset(n, [0, 0, 0]); }
+    for (const n of Object.keys(items)) setItem(n, { visible: true, offset: [0, 0, 0] });
     highlight(null); P.note(null);
   }
   function goStep(i, animate = true) {
@@ -298,6 +279,5 @@
   });
   P.on("focus", () => { filterBuild(); if (building && P.focus) buildToFocus(); });
   P.on("frame", (now) => { if (buildAnim) buildAnim(now); });
-  P.shiftFastener = shiftFastener;
   };
 })();

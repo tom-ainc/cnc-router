@@ -1,43 +1,32 @@
 // flex.js: cable chains, cables and hoses, and ropes that re-lay themselves as the axes move.
-// A component of the page framework (core.js); its data is in viewer_data.json:
+// A component of the page framework (core.js), drawn with golf's viewer: each chain is one mesh of its links, each
+// cable and rope a tube. Its data is in viewer_data.json:
 //   V.chains  [{name, group, var (the axis that drives it), m_off, m_min, f, F, d, n, w, R, sg, h, W, pitch, L, N, info}]
 //   V.cables  [{name, od, info, pts: [[x, y, z, group] or ["chain", chain name]]}]
-//   V.ropes   [{name, r, info, pts: [[x, y, z, group]]}]
+//   V.ropes   [{name, r, info, colour, pts: [[x, y, z, group]]}]
+// Points are in their group's frame; the core moves them with the pose.
 (function () {
   const comp = { id: "flex" };
   Page.component(comp);
   comp.init = function (P) {
-  const { V, THREE, meshes, scene, local, groupObj, groupOffset, pose } = P;
+  const { V, pose, toWorld, addShapes } = P;
+  const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+
   // ---- cable chains: link by link, re-laid every time an axis moves
-  function boxGeo(x0, x1, y0, y1, z0, z1) {
-    const g = new THREE.BoxGeometry(x1 - x0, y1 - y0, z1 - z0);
-    g.translate((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2);
-    return g.toNonIndexed();
+  // one link: two side plates and two cross bars, as boxes in the link's frame (x along the chain, y across it)
+  function box(x0, x1, y0, y1, z0, z1, P, T) {
+    const o = P.length / 3;
+    for (const x of [x0, x1]) for (const y of [y0, y1]) for (const z of [z0, z1]) P.push(x, y, z);
+    // corners: index = 4*ix + 2*iy + iz
+    [[0, 1, 3, 2], [4, 6, 7, 5], [0, 4, 5, 1], [2, 3, 7, 6], [0, 2, 6, 4], [1, 5, 7, 3]]
+      .forEach(([a, b, c, d]) => T.push(o + a, o + b, o + c, o + a, o + c, o + d));
   }
-  function mergeGeos(gs) {
-    let n = 0; gs.forEach(g => { n += g.attributes.position.count; });
-    const pos = new Float32Array(n * 3), nor = new Float32Array(n * 3);
-    let o = 0;
-    for (const g of gs) { pos.set(g.attributes.position.array, o * 3); nor.set(g.attributes.normal.array, o * 3); o += g.attributes.position.count; }
-    const m = new THREE.BufferGeometry();
-    m.setAttribute("position", new THREE.BufferAttribute(pos, 3)); m.setAttribute("normal", new THREE.BufferAttribute(nor, 3));
-    return m;
+  function linkShape(c) {
+    const p = c.pitch, L = 0.8 * p, t = 3, h = c.h, Wd = c.W, P = [], T = [];
+    box(-L / 2, L / 2, 0, t, -h / 2, h / 2, P, T); box(-L / 2, L / 2, Wd - t, Wd, -h / 2, h / 2, P, T);
+    box(-0.2 * p, 0.2 * p, t - 0.5, Wd - t + 0.5, h / 2 - t, h / 2 - 0.3, P, T); box(-0.2 * p, 0.2 * p, t - 0.5, Wd - t + 0.5, -h / 2 + 0.3, -h / 2 + t, P, T);
+    return { P, T };
   }
-  const chainObjs = [];
-  for (const c of V.chains || []) {
-    const p = c.pitch, L = 0.8 * p, t = 3, h = c.h, Wd = c.W;
-    const geo = mergeGeos([boxGeo(-L / 2, L / 2, 0, t, -h / 2, h / 2), boxGeo(-L / 2, L / 2, Wd - t, Wd, -h / 2, h / 2),
-                           boxGeo(-0.2 * p, 0.2 * p, t - 0.5, Wd - t + 0.5, h / 2 - t, h / 2 - 0.3), boxGeo(-0.2 * p, 0.2 * p, t - 0.5, Wd - t + 0.5, -h / 2 + 0.3, -h / 2 + t)]);
-    const mat = new THREE.MeshStandardMaterial({ color: "#2b2f34", roughness: 0.5, metalness: 0.05, transparent: true, opacity: 1 });
-    const im = new THREE.InstancedMesh(geo, mat, c.N);
-    im.userData.name = c.name; im.userData.edges = null;
-    im.frustumCulled = false;
-    groupObj(c.group).add(im);
-    meshes[c.name] = im;
-    chainObjs.push({ c, im });
-    V.parts[c.name] = { info: c.info + " | " + c.N + " links, " + Math.round(c.L) + " mm", kind: "bought" };
-  }
-  const _M = new THREE.Matrix4(), _t = new THREE.Vector3(), _w = new THREE.Vector3(), _z = new THREE.Vector3();
   function chainPoint(c, m, s) {
     const b = c.f + 30 + ((c.sg || 1) * m - c.m_min) / 2, a = b - c.f, R = c.R, F = c.F, d = c.d, n = c.n;
     if (s <= a) return [[0, 1, 2].map(i => F[i] + d[i] * s), d];
@@ -50,28 +39,43 @@
     const u = s - a - Math.PI * R;
     return [[0, 1, 2].map(i => F[i] + d[i] * a + n[i] * 2 * R - d[i] * u), d.map(v => -v)];
   }
-  function updateChains() {
-    for (const { c, im } of chainObjs) {
-      const m = pose[c.var] + c.m_off;
-      for (let i = 0; i < c.N; i++) {
-        const [p, t] = chainPoint(c, m, i * c.L / (c.N - 1));
-        _t.set(t[0], t[1], t[2]); _w.set(c.w[0], c.w[1], c.w[2]); _z.crossVectors(_t, _w);
-        _M.makeBasis(_t, _w, _z); _M.setPosition(p[0], p[1], p[2]);
-        im.setMatrixAt(i, _M);
-      }
-      im.instanceMatrix.needsUpdate = true;
+  // each link is a body of its own, placed every time the chain re-lays: "<chain>.<i>", so the chain's name picks them all
+  const R = P.rot;
+  const chains = (V.chains || []).map(c => {
+    const link = linkShape(c);
+    V.parts[c.name] = { info: c.info + " | " + c.N + " links, " + Math.round(c.L) + " mm", kind: "bought", group: c.group };
+    for (let i = 0; i < c.N; i++) P.addBody(`${c.name}.${i}`, { positions: link.P, triangles: link.T, color: "#2b2f34" });
+    return { c, link };
+  });
+  function placeChain({ c }) {
+    const m = pose[c.var] + c.m_off, w = c.w;
+    for (let i = 0; i < c.N; i++) {
+      const [p, t] = chainPoint(c, m, i * c.L / (c.N - 1));
+      const z = [t[1] * w[2] - t[2] * w[1], t[2] * w[0] - t[0] * w[2], t[0] * w[1] - t[1] * w[0]];
+      // the link's axes in the world: the frame's rotation of (t, w, z) as columns
+      const a = R(t), b = R(w), d = R(z);
+      P.placeBody(`${c.name}.${i}`, toWorld(p, c.group), [a[0], b[0], d[0], a[1], b[1], d[1], a[2], b[2], d[2]]);
     }
   }
+
+  // a smooth line through points (Catmull-Rom), for cables and ropes drawn as tubes
+  function smooth(pts, per) {
+    if (pts.length < 3) return pts;
+    const out = [];
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(pts.length - 1, i + 2)];
+      const n = Math.max(1, Math.min(per, Math.ceil(dist(p1, p2) / 15)));
+      for (let k = 0; k < n; k++) {
+        const t = k / n, t2 = t * t, t3 = t2 * t;
+        out.push([0, 1, 2].map(j => 0.5 * (2 * p1[j] + (-p0[j] + p2[j]) * t + (2 * p0[j] - 5 * p1[j] + 4 * p2[j] - p3[j]) * t2 + (-p0[j] + 3 * p1[j] - 3 * p2[j] + p3[j]) * t3)));
+      }
+    }
+    out.push(pts[pts.length - 1]);
+    return out;
+  }
+
   // ---- cables and hoses: re-laid through the chains as the axes move
   const chainByName = Object.fromEntries((V.chains || []).map(c => [c.name, c]));
-  const cableObjs = [];
-  const _gv = new THREE.Vector3();
-  const grpOff = groupOffset;
-  function toWorld(p, g) {
-    if (g === "world") return new THREE.Vector3(p[0], p[1], p[2]);
-    const o = grpOff(g);
-    return local.localToWorld(_gv.set(p[0] + o[0], p[1] + o[1], p[2] + o[2]).clone());
-  }
   function cablePoints(C, idx) {
     const out = [];
     for (const w of C.pts) {
@@ -85,47 +89,18 @@
         }
       } else out.push(toWorld(w.slice(0, 3), w[3]));
     }
-    return out.filter((p, i, a) => i === 0 || p.distanceTo(a[i - 1]) > 0.5);
+    return out.filter((p, i, a) => i === 0 || dist(p, a[i - 1]) > 0.5);
   }
   (V.cables || []).forEach((C, idx) => {
-    const isHose = C.name.startsWith("hose.");
-    const mat = new THREE.MeshStandardMaterial({ color: isHose ? "#2f7fbf" : (C.od >= 10 ? "#e07b1f" : "#3b3f45"), roughness: 0.6, metalness: 0.05, transparent: true, opacity: 1 });
-    const m = new THREE.Mesh(new THREE.BufferGeometry(), mat);
-    m.userData.name = C.name; m.userData.edges = null; m.frustumCulled = false;
-    scene.add(m); meshes[C.name] = m;
-    V.parts[C.name] = { info: C.info, kind: "bought" };
-    cableObjs.push({ C, m, idx });
+    const color = C.name.startsWith("hose.") ? "#2f7fbf" : (C.od >= 10 ? "#e07b1f" : "#3b3f45");
+    addShapes(C.name, () => [{ type: "tube", points: smooth(cablePoints(C, idx), 4), radius: C.od / 2, style: { color, lit: true } }], { info: C.info });
   });
-  function updateCables() {
-    local.updateMatrixWorld(true);          // before the first render the local frame's world matrix is not set yet
-    for (const { C, m, idx } of cableObjs) {
-      const pts = cablePoints(C, idx);
-      if (pts.length < 2) continue;
-      const curve = new THREE.CatmullRomCurve3(pts, false, "centripetal");
-      const geo = new THREE.TubeGeometry(curve, Math.min(400, pts.length * 4), C.od / 2, 6, false);
-      m.geometry.dispose(); m.geometry = geo;
-    }
-  }
 
-  // ---- ropes and belts: a smooth line through points that each ride with a group, re-laid as the axes move
-  // V.ropes [{name, r, pts: [[x, y, z, group]], info, colour}]
-  const ropeObjs = [];
+  // ---- ropes and belts: a smooth line through points that each ride with a group
   for (const R of V.ropes || []) {
-    const mat = new THREE.MeshStandardMaterial({ color: R.colour || "#9aa0a6", roughness: 0.4, metalness: 0.6, transparent: true, opacity: 1 });
-    const m = new THREE.Mesh(new THREE.BufferGeometry(), mat);
-    m.userData.name = R.name; m.userData.edges = null; m.frustumCulled = false;
-    local.add(m); meshes[R.name] = m;
-    V.parts[R.name] = { info: R.info, kind: "bought" };
-    ropeObjs.push({ R, m });
+    addShapes(R.name, () => [{ type: "tube", points: smooth(R.pts.map(([x, y, z, g]) => toWorld([x, y, z], g)), 8), radius: R.r,
+      style: { color: R.colour || "#9aa0a6", lit: true } }], { info: R.info });
   }
-  function updateRope() {
-    for (const { R, m } of ropeObjs) {
-      const pts = R.pts.map(([x, y, z, g]) => { const o = groupOffset(g); return new THREE.Vector3(x + o[0], y + o[1], z + o[2]); });
-      const curve = new THREE.CatmullRomCurve3(pts, false, "catmullrom", 0.05);
-      m.geometry.dispose(); m.geometry = new THREE.TubeGeometry(curve, 160, R.r, 8, false);
-    }
-  }
-
-  P.on("pose", () => { updateChains(); updateRope(); updateCables(); });
+  P.on("pose", () => { for (const ch of chains) placeChain(ch); });
   };
 })();

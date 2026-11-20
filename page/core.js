@@ -24,11 +24,8 @@
   const handlers = {};
   const Page = window.Page = {
     $, css, fmt, store, comps: [], driver: null, hold: false,
-    // a data file beside the page: from data.js when it is there, else fetched (null when neither)
-    // (fetched first when served, since a later script may have rewritten it; data.js's copy from disk)
-    file(name) { const f = window.PAGE_DATA && window.PAGE_DATA.files && window.PAGE_DATA.files[name];
-      if (location.protocol === "file:") return Promise.resolve(f || null);
-      return fetch(name).then(r => r.ok ? r.json() : f || null).catch(() => f || null); },
+    // a data file beside the page, or null
+    file(name) { return fetch(name).then(r => r.ok ? r.json() : null).catch(() => null); },
     on(ev, fn) { (handlers[ev] ||= []).push(fn); },
     emit(ev, ...a) { for (const f of handlers[ev] || []) { try { f(...a); } catch (e) { console.error(ev, e); } } },
     component(c) { this.comps.push(c); },
@@ -40,18 +37,19 @@
   (async function boot() {
     let V, S;
     try {
-      // data.js (written by report()) carries everything, so the page opens from disk; else fetch it
-      if (window.PAGE_DATA) ({ V, S } = window.PAGE_DATA);
-      else [V, S] = await Promise.all([fetch("viewer_data.json").then(r => r.json()), fetch("systems.json").then(r => r.json())]);
+      [V, S] = await Promise.all([fetch("viewer_data.json").then(r => r.json()), fetch("systems.json").then(r => r.json())]);
+      // golf's viewer: the runtime `golf bundle` wrote (V.golf), else the copy beside the page
+      Page.cinema = await import(new URL((V.golf ? V.golf + "/" : "cinema/") + "cinema.js", location.href).href);
       // confirm.js (what waits on the user, and every assumption) is part of the core; then the project's components
       for (const src of ["confirm.js", ...(V.components || []).filter(c => c !== "confirm.js")]) await loadScript(src);
     } catch (e) {
       $("err").style.display = "block"; $("err").textContent = "The page did not load: " + e.message; return;
     }
-    main(V, S);
+    try { await main(V, S); }
+    catch (e) { console.error(e); $("err").style.display = "block"; $("err").textContent = "The page stopped: " + e.message; }
   })();
 
-  function main(V, S) {
+  async function main(V, S) {
   V.parts ||= {}; V.viz ||= {};
   if (V.title) { document.title = V.title; $("title").textContent = V.title; }
   $("subtitle").textContent = V.subtitle || "";
@@ -69,7 +67,7 @@
     $("pg-ask")?.addEventListener("click", () => showTab("p-conf"));
   }
   // no 3D model yet: the requirements, diagram and tabs take the whole page
-  if (!Object.keys(V.parts).length) Page.style("main { grid-template-columns: minmax(0, 1fr) !important; } .stage { display: none !important; }");
+  if (!Object.keys(V.parts).length && !V.golf) Page.style("main { grid-template-columns: minmax(0, 1fr) !important; } .stage { display: none !important; }");
   Page.style(".item.pick { cursor: pointer; border-left: 3px solid transparent; } .item.pick:hover { background: color-mix(in srgb, var(--accent-soft) 55%, transparent); } .item.pick.sel { background: var(--accent-soft); border-left-color: var(--accent); } #dg-svg svg { max-height: 360px; } #panes { display: contents; } .tabs { flex-wrap: wrap; } .tabs button { white-space: nowrap; }");
   // ------------------------------------------------------------- systems data
   const reqs = S.requirements;
@@ -310,73 +308,27 @@
     $("panes").innerHTML = tabs.map(([p]) => `<div class="pane" id="${p}" role="tabpanel"${p === activeTab ? "" : " hidden"}></div>`).join("");
     document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => showTab(b.dataset.pane)));
   }
-  // ------------------------------------------------------------- 3D
+  // ------------------------------------------------------------- 3D: golf's viewer (Cinema JS)
+  // The model's parts are golf instances from the bundle (V.golf: the folder `golf bundle` wrote), or meshes given in
+  // V.parts (p, t) for a design with no golf model; components add their own (cable chains, fasteners) as meshes,
+  // and lines, tubes and labels as overlay shapes. Every one is an item: Page.items[name], with its group, its
+  // visibility, opacity and outline, and an offset; the core places it from the pose.
   const view = $("view");
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
-  view.prepend(renderer.domElement);
-  const scene = new THREE.Scene();
-  // orthographic: true proportions in every view; viewH is the height of world the view shows (mm), zoom scales it
-  let viewH = 3200, aspect = 1;
-  const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 10, 60000);
-  function frustum() {
-    camera.top = viewH / 2; camera.bottom = -viewH / 2;
-    camera.left = -viewH * aspect / 2; camera.right = viewH * aspect / 2;
-    camera.updateProjectionMatrix();
-  }
-  camera.up.set(0, 0, 1);
-  const controls = new THREE.OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
-  scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8f99, 0.75));
-  const sun = new THREE.DirectionalLight(0xffffff, 0.65); sun.position.set(-2000, -3000, 4000); scene.add(sun);
-  const fill = new THREE.DirectionalLight(0xffffff, 0.25); fill.position.set(3000, 2000, 1500); scene.add(fill);
-
-  // the floor grid: V.floor {x: [lo, hi], y: [lo, hi], step, major} in mm, else fitted round the model once it is built
-  const floor = new THREE.Group();
-  const gmat = new THREE.LineBasicMaterial({ transparent: true, opacity: 0.18 });
-  const gmat2 = new THREE.LineBasicMaterial({ transparent: true, opacity: 0.4 });
-  function makeFloor(fl) {
-    floor.clear();
-    const st = fl.step || 100, mj = fl.major || 1000, g1 = [], g2 = [];
-    for (let x = fl.x[0]; x <= fl.x[1] + 1e-6; x += st) (Math.abs(x % mj) > 1e-6 ? g1 : g2).push(x, fl.y[0], 0, x, fl.y[1], 0);
-    for (let y = fl.y[0]; y <= fl.y[1] + 1e-6; y += st) (Math.abs(y % mj) > 1e-6 ? g1 : g2).push(fl.x[0], y, 0, fl.x[1], y, 0);
-    [[g1, gmat], [g2, gmat2]].forEach(([a, m]) => { const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(a, 3)); floor.add(new THREE.LineSegments(g, m)); });
-  }
-  scene.add(floor);
-
-  // the model's own frame in the world: V.frame {translate: [x, y, z], rotate: [rx, ry, rz] degrees}
-  const local = new THREE.Group();
-  const FR = V.frame || {};
-  local.position.set(...(FR.translate || [0, 0, 0]));
-  local.rotation.set(...(FR.rotate || [0, 0, 0]).map(THREE.MathUtils.degToRad));
-  scene.add(local);
+  const C = Page.cinema;
+  const stageEl = document.createElement("div"); stageEl.id = "cinema"; view.prepend(stageEl);
+  Page.style("#cinema { position: absolute; inset: 0; } #view { position: relative; }");
+  const viewer = C.createViewer(stageEl, { theme: "light", partsList: false, viewCube: false, measure: false, preloadKernel: false, background: css("--viewer") || undefined });
+  // the model's own frame in the world: V.frame {translate: [x, y, z], rotate: [rx, ry, rz] degrees, X then Y then Z}
+  const FR = V.frame || {}, T0 = FR.translate || [0, 0, 0];
+  const R = (function () {
+    const [a, b, c] = (FR.rotate || [0, 0, 0]).map(d => d * Math.PI / 180);
+    const ca = Math.cos(a), sa = Math.sin(a), cb = Math.cos(b), sb = Math.sin(b), cc = Math.cos(c), sc = Math.sin(c);
+    return [cb * cc, -cb * sc, sb, sa * sb * cc + ca * sc, -sa * sb * sc + ca * cc, -sa * cb, -ca * sb * cc + sa * sc, ca * sb * sc + sa * cc, ca * cb];
+  })();
+  const rot = (v) => [R[0] * v[0] + R[1] * v[1] + R[2] * v[2], R[3] * v[0] + R[4] * v[1] + R[5] * v[2], R[6] * v[0] + R[7] * v[1] + R[8] * v[2]];
+  const add3 = (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
   // moving groups: V.groups {name: [[axis, [dx, dy, dz], scale, ref], ...]}: the group moves by dir * scale * (pose[axis] - ref)
-  // summed over its terms. "fixed" is the model's frame, "world" the scene.
-  const groupObjs = {};
-  for (const g of Object.keys(V.groups || {})) { groupObjs[g] = new THREE.Group(); local.add(groupObjs[g]); }
-  const groupObj = (g) => g === "world" ? scene : groupObjs[g] || local;
-  const meshes = {};
-  const sharedGeo = {};
-  function makeGeo(src, smooth) {
-    let g = new THREE.BufferGeometry();
-    g.setAttribute("position", new THREE.Float32BufferAttribute(src.p, 3));
-    g.setIndex(src.t);
-    if (smooth) { g.computeVertexNormals(); return g; }       // bought-part meshes: smooth shading
-    g = g.toNonIndexed(); g.computeVertexNormals(); return g;
-  }
-  for (const [name, P] of Object.entries(V.parts)) {
-    const geo = P.shared ? (sharedGeo[P.shared] ||= makeGeo(V.shared[P.shared], true)) : makeGeo(P, false);
-    const mat = new THREE.MeshStandardMaterial({ color: P.colour, roughness: 0.65, metalness: 0.15, transparent: true, opacity: 1, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 });
-    const m = new THREE.Mesh(geo, mat);
-    m.userData.name = name; m.userData.base = new THREE.Color(P.colour);
-    if (P.loc) { m.matrixAutoUpdate = false; m.matrix.set(...P.loc); }
-    const edgeGeo = P.shared ? (sharedGeo[P.shared + ":edges"] ||= new THREE.EdgesGeometry(geo, 40)) : new THREE.EdgesGeometry(geo, 25);
-    const edges = new THREE.LineSegments(edgeGeo, new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.25 }));
-    m.add(edges); m.userData.edges = edges;
-    groupObj(P.group).add(m);
-    meshes[name] = m;
-  }
-  // ---- the pose: one value per axis (V.axes [{id, label, range, unit, start}]); a pose given as a list is in axis order
+  // summed over its terms, in the model's frame. "fixed" does not move; "world" parts are in the world, not the frame.
   const axes = V.axes || [];
   const pose = Object.fromEntries(axes.map(a => [a.id, a.start ?? a.range[0]]));
   const poseOf = (p) => Array.isArray(p) ? Object.fromEntries(axes.map((a, i) => [a.id, p[i]])) : { ...pose, ...p };
@@ -385,9 +337,121 @@
     for (const [ax, d, k, ref] of (V.groups || {})[g] || []) { const s = (k ?? 1) * ((pose[ax] ?? 0) - (ref ?? 0)); o[0] += d[0] * s; o[1] += d[1] * s; o[2] += d[2] * s; }
     return o;
   }
+  // a point in a group's frame, in the world, where the pose has it
+  function toWorld(p, g) { return g === "world" ? p.slice(0, 3) : add3(rot(add3(p, groupOffset(g))), T0); }
+  const groupWorld = (g) => g === "world" ? [0, 0, 0] : rot(groupOffset(g));
+  const frameVec = (v, frame) => frame === "world" ? v : rot(v);
+
+  const items = {};
+  function makeItem(name, f) {
+    const it = { name, group: "fixed", vis: true, op: 1, hot: false, off: [0, 0, 0], ...f };
+    items[name] = it; return it;
+  }
+  // meshes the page makes (a design with no golf model, motors golf cannot read, fasteners, chain links) are drawn as
+  // instances too: they are written as one OBJ model, loaded once the components have added theirs
+  const pendingObj = [];
+  function addMesh(name, { positions, triangles, color = "#a0a4a8", group = "fixed", info = "", kind = "made" }) {
+    // a still shape in its group's frame (or the world, for "world"), moved with its group like any part
+    const w = group === "world", P = new Array(positions.length);
+    for (let i = 0; i < positions.length; i += 3) {
+      const q = w ? [positions[i], positions[i + 1], positions[i + 2]] : add3(rot([positions[i], positions[i + 1], positions[i + 2]]), T0);
+      P[i] = q[0]; P[i + 1] = q[1]; P[i + 2] = q[2];
+    }
+    pendingObj.push({ name, P, T: triangles, color });
+    V.parts[name] ||= { info, kind, group };
+    return makeItem(name, { kind: "inst", group, color });
+  }
+  function addBody(name, { positions, triangles, color = "#a0a4a8", info, kind = "bought" }) {
+    // a rigid shape in its own frame, placed by placeBody (position and rotation in the world), as a chain's links
+    pendingObj.push({ name, P: positions, T: triangles, color });
+    if (info) V.parts[name] ||= { info, kind };
+    return makeItem(name, { kind: "inst", body: true, color, pos: [0, 0, 0], rotd: [0, 0, 0] });
+  }
+  // place a body: M is its rotation as a 3x3 row-major matrix in the world
+  function placeBody(name, pos, M) {
+    const it = items[name]; if (!it) return;
+    const b = Math.asin(Math.max(-1, Math.min(1, M[2]))), a = Math.atan2(-M[5], M[8]), c = Math.atan2(-M[1], M[0]);
+    it.pos = pos; it.rotd = [a, b, c].map(v => v * 180 / Math.PI); sync(it);
+  }
+  async function loadPageObjects() {
+    if (!pendingObj.length) return;
+    let txt = "", vi = 1;
+    for (const o of pendingObj) {
+      txt += `o ${o.name}\n`;
+      for (let i = 0; i < o.P.length; i += 3) txt += `v ${o.P[i].toFixed(3)} ${o.P[i + 1].toFixed(3)} ${o.P[i + 2].toFixed(3)}\n`;
+      for (let i = 0; i < o.T.length; i += 3) txt += `f ${o.T[i] + vi} ${o.T[i + 1] + vi} ${o.T[i + 2] + vi}\n`;
+      vi += o.P.length / 3;
+    }
+    const md = await viewer.load(new File([txt], "page.obj", { type: "text/plain" }));
+    models.push(md);
+    for (const o of pendingObj) { const it = items[o.name]; it.inst = md.find(o.name); if (it.inst) { it.model = md; it.inst.style({ color: o.color }); sync(it); } }
+    pendingObj.length = 0;
+  }
+  // a shape item: overlay shapes (tubes, lines) made by a function of the pose, in world mm, drawn with the item's opacity
+  function addShapes(name, make, { group = "fixed", info = "", kind = "bought" } = {}) {
+    const it = makeItem(name, { kind: "shapes", group, make });
+    V.parts[name] ||= { info, kind, group };
+    return it;
+  }
+  let shapesDirty = true;
+  function drawShapes() {
+    if (!shapesDirty) return; shapesDirty = false;
+    const out = [];
+    for (const it of Object.values(items)) if (it.kind === "shapes" && it.vis && it.op > 0.02) {
+      for (const s of it.make(it) || []) out.push({ ...s, style: { ...(s.style || {}), opacity: (s.style?.opacity ?? 1) * it.op, ...(it.hot ? { color: css("--accent") } : {}) } });
+    }
+    viewer.setOverlay("items", out.length ? out : null);
+  }
+  // push an item's state to the viewer
+  function sync(it) {
+    if (it.inst) {
+      const st = { visible: it.vis, opacity: it.op, outline: it.hot ? css("--accent") : "none" };
+      if (it.body) { st.position = add3(it.pos, it.off); st.rotation = it.rotd; }
+      else st.position = add3(groupWorld(it.group), it.off);
+      it.inst.style(st);
+    } else if (it.kind === "shapes") shapesDirty = true;
+  }
+  // what components set: shown or not, faint or not, outlined (in this step), and an offset from where the pose has it
+  function setItem(name, st) {
+    const it = items[name]; if (!it) return;
+    if (st.visible != null) it.vis = st.visible;
+    if (st.opacity != null) it.op = st.opacity;
+    if (st.hot != null) it.hot = st.hot;
+    if (st.offset) it.off = frameVec(st.offset, st.frame || "local");
+    sync(it);
+  }
+  // the part a name belongs to: a chain link "x_chain.12" belongs to "x_chain"
+  function ownerOf(n) { let m = n; while (m && !(m in V.parts) && !(m in partToNode) && m.includes(".")) m = m.slice(0, m.lastIndexOf(".")); return (m in V.parts) || (m in partToNode) ? m : n; }
+
+  // the golf model, or the parts' own meshes
+  let model = null, models = [];
+  if (V.golf) {
+    // every model in the bundle: a large design is shown in several runs, each one model
+    const b = await (await fetch(V.golf + "/bundle.json")).json();
+    models = await Promise.all(Object.values(b.models).map(m => viewer.load(V.golf + "/" + m.path)));
+    model = models[0];
+    for (const md of models) (function walk(n) { for (const c of n.children || []) { if (c.children && c.children.length) walk(c); else if (c.name) makeItem(c.name, { kind: "inst", inst: c, model: md, group: (V.parts[c.name] || {}).group || "fixed" }); } })(md);
+  }
+  for (const [name, P] of Object.entries(V.parts)) {
+    if (items[name] || !(P.p || P.shared)) continue;
+    let pos = (P.shared ? V.shared[P.shared] : P).p, tri = (P.shared ? V.shared[P.shared] : P).t;
+    if (P.loc) { const L = P.loc, q = new Array(pos.length); for (let i = 0; i < pos.length; i += 3) { const x = pos[i], y = pos[i + 1], z = pos[i + 2]; q[i] = L[0] * x + L[1] * y + L[2] * z + L[3]; q[i + 1] = L[4] * x + L[5] * y + L[6] * z + L[7]; q[i + 2] = L[8] * x + L[9] * y + L[10] * z + L[11]; } pos = q; }
+    addMesh(name, { positions: pos, triangles: tri, color: P.colour, group: P.group || "fixed", info: P.info, kind: P.kind });
+  }
+  // an instance's name from a pick hit's path
+  const nameAt = (hit) => {
+    if (!hit || !models.length) return null;
+    if (hit.name) return hit.name;
+    for (const md of hit.model ? [models.find(m => m === hit.model || m.name === hit.model || m.modelName === hit.model) || models[0]] : models) {
+      const i = md.instance ? md.instance(hit.instance) : null; if (i && i.name) return ownerOf(i.name);
+    }
+    return null;
+  };
+
   function applyPose() {
-    for (const [g, obj] of Object.entries(groupObjs)) obj.position.set(...groupOffset(g));
+    for (const it of Object.values(items)) if (!it.body && (it.group !== "fixed" || it.off.some(Boolean))) sync(it);
     Page.emit("pose", pose);
+    shapesDirty = true;
     for (const a of axes) {
       const el = $("ax-" + a.id); if (!el) continue;
       el.value = pose[a.id]; $("ax-" + a.id + "-v").textContent = Math.round(pose[a.id]) + " " + (a.unit ?? "mm");
@@ -400,68 +464,64 @@
   });
   if (!axes.length) $("ctl").hidden = true;
 
-  // highlight: the chosen parts keep their colour, everything else goes faint
-  const accent = () => new THREE.Color(css("--accent"));
+  // highlight: the chosen parts keep their colour and are outlined, everything else goes faint
+  const accent = () => css("--accent");
   // a name picks that part, or every part whose name starts with it and a dot ("y_carriage" picks "y_carriage.y_plate")
   function expand(names) {
     const out = new Set();
-    for (const n of names || []) for (const m of Object.keys(meshes)) if (m === n || m.startsWith(n.endsWith(".") ? n : n + ".")) out.add(m);
+    for (const n of names || []) for (const m of Object.keys(items)) if (m === n || m.startsWith(n.endsWith(".") ? n : n + ".")) out.add(m);
     return out;
   }
   function highlight(names) {
     const on = expand(names);
-    for (const [n, m] of Object.entries(meshes)) {
-      const lit = !on.size || on.has(n);
-      m.material.opacity = lit ? 1 : 0.12;
-      m.material.depthWrite = lit;
-      m.material.emissive = on.has(n) ? accent().multiplyScalar(0.28) : new THREE.Color(0);
-      if (m.userData.edges) m.userData.edges.material.opacity = lit ? 0.25 : 0.05;
-    }
+    for (const [n, it] of Object.entries(items)) { it.op = !on.size || on.has(n) ? 1 : 0.12; it.hot = on.has(n); sync(it); }
   }
 
-  // dimension lines and markers
-  const annot = new THREE.Group(); scene.add(annot);
-  let labels = [];
-  function clearAnnot() { annot.clear(); labels.forEach(l => l.el.remove()); labels = []; }
-  function addLabel(pos, text, cls) {
-    const el = document.createElement("div"); el.className = "dim-label" + (cls ? " " + cls : ""); el.textContent = text;
-    $("labels").appendChild(el); labels.push({ el, pos });
-  }
-  function onTop(o) { o.renderOrder = 999; o.material.transparent = true; o.material.depthTest = false; return o; }
+  // dimension lines, marks and labels: overlay shapes in world mm, drawn over the model
+  let annot = [];
+  const drawAnnot = () => viewer.setOverlay("annot", annot.length ? annot : null);
+  function clearAnnot() { annot = []; drawAnnot(); }
+  function addLabel(pos, text, cls) { annot.push({ type: "label", position: pos, text, style: { color: cls === "cg" ? css("--fail") : css("--ink"), depth: "front" } }); drawAnnot(); }
   function addDim(a, b, text) {
-    const A = new THREE.Vector3(...a), B = new THREE.Vector3(...b);
     const col = accent();
-    const g = new THREE.BufferGeometry().setFromPoints([A, B]);
-    annot.add(onTop(new THREE.Line(g, new THREE.LineBasicMaterial({ color: col }))));
-    [A, B].forEach(p => { const s = onTop(new THREE.Mesh(new THREE.SphereGeometry(12, 12, 8), new THREE.MeshBasicMaterial({ color: col }))); s.position.copy(p); annot.add(s); });
-    addLabel(A.clone().add(B).multiplyScalar(0.5), text);
+    annot.push({ type: "line", points: [a, b], arrows: "both", style: { color: col, width: 2, depth: "front" } });
+    annot.push({ type: "point", position: a, diameter: 8, style: { color: col, depth: "front" } }, { type: "point", position: b, diameter: 8, style: { color: col, depth: "front" } });
+    addLabel([(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2], text);
   }
   function addCG(p, text) {
-    const col = new THREE.Color(css("--fail"));
-    const s = onTop(new THREE.Mesh(new THREE.SphereGeometry(28, 20, 14), new THREE.MeshBasicMaterial({ color: col })));
-    s.position.set(...p); annot.add(s);
-    const g = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(...p), new THREE.Vector3(p[0], p[1], 0)]);
-    annot.add(onTop(new THREE.Line(g, new THREE.LineDashedMaterial({ color: col, dashSize: 30, gapSize: 20 }))).computeLineDistances());
-    addLabel(new THREE.Vector3(p[0], p[1], p[2] + 90), text, "cg");
+    const col = css("--fail");
+    annot.push({ type: "point", position: p, diameter: 16, style: { color: col, depth: "front" } });
+    annot.push({ type: "line", points: [p, [p[0], p[1], 0]], style: { color: col, width: 1.5, dash: [8, 6], depth: "front" } });
+    addLabel([p[0], p[1], p[2] + 90], text, "cg");
   }
 
+  // the floor grid: V.floor {x: [lo, hi], y: [lo, hi], step, major} in mm, else fitted round the model
+  function makeFloor(fl) {
+    const st = fl.step || 100, mj = fl.major || 1000, sh = [], ink = css("--ink") || "#333";
+    for (let x = fl.x[0]; x <= fl.x[1] + 1e-6; x += st) sh.push({ type: "line", points: [[x, fl.y[0], 0], [x, fl.y[1], 0]], style: { color: ink, opacity: Math.abs(x % mj) > 1e-6 ? 0.12 : 0.3, width: 1 } });
+    for (let y = fl.y[0]; y <= fl.y[1] + 1e-6; y += st) sh.push({ type: "line", points: [[fl.x[0], y, 0], [fl.x[1], y, 0]], style: { color: ink, opacity: Math.abs(y % mj) > 1e-6 ? 0.12 : 0.3, width: 1 } });
+    viewer.setOverlay("floor", sh);
+  }
+  function bounds() {
+    const lo = [Infinity, Infinity, Infinity], hi = [-Infinity, -Infinity, -Infinity];
+    const grow = (p) => { for (let k = 0; k < 3; k++) { lo[k] = Math.min(lo[k], p[k]); hi[k] = Math.max(hi[k], p[k]); } };
+    for (const it of Object.values(items)) {
+      if (it.inst) { const b = it.inst.bounds(); if (b && isFinite(b.min[0])) { grow(b.min); grow(b.max); } }
+
+    }
+    return isFinite(lo[0]) ? { min: lo, max: hi } : { min: [-500, -500, 0], max: [500, 500, 500] };
+  }
   // camera views: V.views {name: {dir, height, target, label}}; without them, iso, side and front are fitted to the model
   let VIEWS = V.views;
   function fitViews() {
-    const b = new THREE.Box3();
-    for (const m of Object.values(meshes)) if (m.geometry && !m.isInstancedMesh) { m.geometry.computeBoundingBox(); const bb = m.geometry.boundingBox.clone().applyMatrix4(m.matrixWorld); if (isFinite(bb.min.x)) b.union(bb); }
-    const c = b.getCenter(new THREE.Vector3()), s = b.getSize(new THREE.Vector3()), r = s.length() * 1.2 || 1000;
-    if (!VIEWS) VIEWS = { iso: { dir: [-0.5, -0.72, 0.45], height: r, target: c.toArray() }, side: { dir: [-1, 0, 0], height: r * 0.8, target: c.toArray() },
-                          front: { dir: [0, -1, 0], height: r, target: c.toArray() } };
-    if (!V.floor) { const st = 1000; makeFloor({ x: [Math.floor((b.min.x - 500) / st) * st, Math.ceil((b.max.x + 500) / st) * st], y: [Math.floor((b.min.y - 500) / st) * st, Math.ceil((b.max.y + 500) / st) * st] }); }
+    const b = bounds(), c = [0, 1, 2].map(k => (b.min[k] + b.max[k]) / 2), r = Math.hypot(...[0, 1, 2].map(k => b.max[k] - b.min[k])) * 1.2 || 1000;
+    if (!VIEWS) VIEWS = { iso: { dir: [-0.5, -0.72, 0.45], height: r, target: c }, side: { dir: [-1, 0, 0], height: r * 0.8, target: c }, front: { dir: [0, -1, 0], height: r, target: c } };
+    if (!V.floor) { const st = 1000; makeFloor({ x: [Math.floor((b.min[0] - 500) / st) * st, Math.ceil((b.max[0] + 500) / st) * st], y: [Math.floor((b.min[1] - 500) / st) * st, Math.ceil((b.max[1] + 500) / st) * st] }); }
   }
   function setView(kind) {
-    const v = VIEWS[kind] || VIEWS[Object.keys(VIEWS)[0]];
-    const tg = new THREE.Vector3(...v.target), d = new THREE.Vector3(...v.dir).normalize().multiplyScalar(15000);
-    controls.target.copy(tg);
-    camera.position.copy(tg).add(d);
-    viewH = v.height; camera.zoom = 1; frustum();
-    controls.update();
+    const v = VIEWS[kind] || VIEWS[Object.keys(VIEWS)[0]], n = Math.hypot(...v.dir);
+    viewer.camera.projection = "orthographic";
+    viewer.camera.set({ target: v.target, position: v.target.map((t, k) => t + v.dir[k] / n * 15000), up: [0, 0, 1], height: v.height });
   }
 
   // motion
@@ -537,29 +597,25 @@
   function selectNode(nid) { setFocus(nid ? { type: "node", id: nid } : null); }
   $("v-clear").onclick = () => { setFocus(null); selectReq(null); };
 
-  // picking in the viewer
-  const ray = new THREE.Raycaster(), mouse = new THREE.Vector2();
-  function pick(e) {
-    const r = renderer.domElement.getBoundingClientRect();
-    mouse.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
-    ray.setFromCamera(mouse, camera);
-    const hits = ray.intersectObjects(Object.values(meshes).filter(m => m.visible && m.material.opacity > 0.5), false);
-    return hits.length ? hits[0].object.userData.name : null;
+  // picking in the viewer: a click selects the part's block; hovering names the part
+  let down = null, hoverT = 0;
+  stageEl.addEventListener("pointerdown", e => { down = [e.clientX, e.clientY]; });
+  async function pickName(e) {
+    try { const hits = await viewer.pickAt(e); return nameAt((hits || [])[0]); } catch (err) { return null; }
   }
-  let down = null;
-  renderer.domElement.addEventListener("pointerdown", e => { down = [e.clientX, e.clientY]; });
-  renderer.domElement.addEventListener("pointerup", e => {
+  stageEl.addEventListener("pointerup", async e => {
     if (!down || Math.hypot(e.clientX - down[0], e.clientY - down[1]) > 4) return;
-    const n = pick(e); if (n && partToNode[n]) selectNode(partToNode[n]);
+    const n = await pickName(e); if (n && partToNode[n]) selectNode(partToNode[n]);
   });
-  renderer.domElement.addEventListener("pointermove", e => {
-    const n = pick(e), h = $("hover");
+  stageEl.addEventListener("pointermove", async e => {
+    const now = performance.now(); if (now - hoverT < 120) return; hoverT = now;
+    const n = await pickName(e), h = $("hover");
     if (!n) { h.style.display = "none"; return; }
     const r = view.getBoundingClientRect();
     h.textContent = n + (partToNode[n] ? " · " + partToNode[n] : "") + (V.parts[n] && V.parts[n].info ? " — " + V.parts[n].info : "");
     h.style.left = (e.clientX - r.left + 12) + "px"; h.style.top = (e.clientY - r.top + 12) + "px"; h.style.display = "block";
   });
-  renderer.domElement.addEventListener("pointerleave", () => { $("hover").style.display = "none"; });
+  stageEl.addEventListener("pointerleave", () => { $("hover").style.display = "none"; });
 
   // ------------------------------------------------------------- block diagram: always on top, it sets the focus every tab filters by
   // and shows what the 3D view shows: blocks fade with their parts, the current build step's blocks are outlined
@@ -739,14 +795,14 @@
   function dgReflect() {
     if (++dgTick % 5) return;
     const building = !!Page.driver;
-    nodeMeshes ||= Object.fromEntries(Object.keys(DG.nodes).map(id => [id, [...expand(nodeParts(id))].map(n => meshes[n]).filter(Boolean)]));
+    nodeMeshes ||= Object.fromEntries(Object.keys(DG.nodes).map(id => [id, [...expand(nodeParts(id))].map(n => items[n]).filter(Boolean)]));
     const st = {};
     for (const [id, ms] of Object.entries(nodeMeshes)) {
       let vis = 0, lit = 0, hot = 0;
       for (const m of ms) {
-        if (!m.visible) continue; vis++;
-        if (m.material.opacity > 0.5) lit++;
-        const em = m.material.emissive; if (em && em.r + em.g + em.b > 0.01) hot++;
+        if (!m.vis) continue; vis++;
+        if (m.op > 0.5) lit++;
+        if (m.hot) hot++;
       }
       st[id] = !ms.length ? "" : vis === 0 ? "unbuilt" : lit === 0 ? "faint" : (building && vis < ms.length ? "part" : "") + (hot && building ? " hot" : "");
     }
@@ -766,38 +822,21 @@
     });
   }
 
-  // ------------------------------------------------------------- render loop
-  function resize() {
-    const w = view.clientWidth, h = view.clientHeight;
-    renderer.setSize(w, h, false); aspect = w / h; frustum();
-  }
-  new ResizeObserver(resize).observe(view);
-  function themeColours() {
-    renderer.setClearColor(new THREE.Color(css("--viewer")));
-    const ink = new THREE.Color(css("--ink")); gmat.color = ink; gmat2.color = ink;
-  }
-  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", themeColours);
-  new MutationObserver(themeColours).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
-  const v3 = new THREE.Vector3();
+  // ------------------------------------------------------------- the loop: motion, components, the diagram, the overlays
+  function resize() { viewer.redraw && viewer.redraw(); }
   function frame(now) {
     if (anim) anim(now);
     Page.emit("frame", now);
+    drawShapes();
     dgReflect();
-    controls.update();
-    if (!Page.hold) renderer.render(scene, camera);
-    const w = view.clientWidth, h = view.clientHeight;
-    for (const l of labels) {
-      v3.copy(l.pos).project(camera);
-      l.el.style.left = ((v3.x + 1) / 2 * w) + "px"; l.el.style.top = ((1 - v3.y) / 2 * h) + "px";
-      l.el.style.display = v3.z < 1 ? "block" : "none";
-    }
     requestAnimationFrame(frame);
   }
 
   // what the components can use
   Object.assign(Page, {
-    V, S, THREE, reqs, res, nodes, status, standing, STANDING, partToNode, nodeParts, reqsOfNode, expand, nodeOfPart, dgName,
-    scene, local, camera, renderer, controls, meshes, groupObj, groupOffset, pose, poseOf, axes, applyPose, animateTo, stopAnim, sequence,
+    V, S, reqs, res, nodes, status, standing, STANDING, partToNode, nodeParts, reqsOfNode, expand, nodeOfPart, dgName,
+    viewer, models, items, addMesh, addBody, placeBody, addShapes, setItem, ownerOf, overlay: (name, shapes) => viewer.setOverlay(name, shapes),
+    toWorld, rot, groupOffset, pose, poseOf, axes, applyPose, animateTo, stopAnim, sequence,
     highlight, accent, clearAnnot, addDim, addLabel, addCG, setView, resize, view,
     showTab, selectReq, viewReq, showItem, markItems, asShown, selectNode, openGroupOf, setFocus, focusParts, applyFocusView, updateFilterBar, renderReqs,
     linkOf: (key) => DG_LINKS.find(l => linkKey(l) === key),
@@ -813,13 +852,14 @@
   Object.defineProperty(Page, "tab", { get: () => activeTab });
   // the components: each adds its meshes, tab, stage panel and handlers once the core is built
   for (const c of Page.comps) if (c.init) { try { c.init(Page); } catch (e) { console.error(c.id, e); } }
+  await loadPageObjects();
   renderTabs();
   renderReqs(); renderTree(); renderInterfaces(); renderDiagram(); updateFilterBar();
   for (const c of Page.comps) if (c.render) { try { c.render(); } catch (e) { console.error(c.id, e); } }
-  applyPose(); local.updateMatrixWorld(true); fitViews();
+  applyPose(); fitViews();
   if (V.floor) makeFloor(V.floor);
   Object.keys(VIEWS).forEach(k => { const b = document.createElement("button"); b.type = "button"; b.id = "v-" + k; b.textContent = VIEWS[k].label || k[0].toUpperCase() + k.slice(1); b.onclick = () => setView(k); $("viewbar").insertBefore(b, $("v-clear")); });
-  themeColours(); resize(); setView(Object.keys(VIEWS)[0]); applyPose();
+  setView(Object.keys(VIEWS)[0]); applyPose();
   requestAnimationFrame(frame);
   }
 })();
