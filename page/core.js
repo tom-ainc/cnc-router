@@ -39,7 +39,8 @@
     try {
       [V, S] = await Promise.all([fetch("viewer_data.json").then(r => r.json()), fetch("systems.json").then(r => r.json())]);
       // golf's viewer: the runtime `golf bundle` wrote (V.golf), else the copy beside the page
-      Page.cinema = await import(new URL((V.golf ? V.golf + "/" : "cinema/") + "cinema.js", location.href).href);
+      // (V.cinema names it; a folder `golf bundle` wrote has its own copy; else the one the skill ships, page/cinema/)
+      Page.cinema = await import(new URL(V.cinema || (V.golf_bundle ? V.golf + "/cinema.js" : "cinema/cinema.js"), location.href).href);
       // confirm.js (what waits on the user, and every assumption) is part of the core; then the project's components
       for (const src of ["confirm.js", ...(V.components || []).filter(c => c !== "confirm.js")]) await loadScript(src);
     } catch (e) {
@@ -393,12 +394,19 @@
     V.parts[name] ||= { info, kind, group };
     return it;
   }
-  let shapesDirty = true;
+  // Tubes are slow for the viewer to rebuild (about 0.15 ms a point), so while the pose is moving (a slider, an
+  // animation, the simulation) they are drawn as lines, and as tubes again once it has been still for a moment.
+  let shapesDirty = true, lastMove = 0, tubesOwed = false;
   function drawShapes() {
-    if (!shapesDirty) return; shapesDirty = false;
+    const moving = performance.now() - lastMove < 250;
+    if (!shapesDirty && !(tubesOwed && !moving)) return;
+    shapesDirty = false; tubesOwed = moving;
     const out = [];
     for (const it of Object.values(items)) if (it.kind === "shapes" && it.vis && it.op > 0.02) {
-      for (const s of it.make(it) || []) out.push({ ...s, style: { ...(s.style || {}), opacity: (s.style?.opacity ?? 1) * it.op, ...(it.hot ? { color: css("--accent") } : {}) } });
+      for (const s of it.make(it) || []) {
+        const style = { ...(s.style || {}), opacity: (s.style?.opacity ?? 1) * it.op, ...(it.hot ? { color: css("--accent") } : {}) };
+        out.push(moving && s.type === "tube" ? { type: "line", points: s.points, style: { ...style, width: 3 } } : { ...s, style });
+      }
     }
     viewer.setOverlay("items", out.length ? out : null);
   }
@@ -408,7 +416,10 @@
       const st = { visible: it.vis, opacity: it.op, outline: it.hot ? css("--accent") : "none" };
       if (it.body) { st.position = add3(it.pos, it.off); st.rotation = it.rotd; }
       else st.position = add3(groupWorld(it.group), it.off);
-      it.inst.style(st);
+      // send only what changed: each style call costs the viewer work, and the outline most
+      const last = it.sent || {}, d = {};
+      for (const k of Object.keys(st)) if (String(st[k]) !== String(last[k])) d[k] = st[k];
+      if (Object.keys(d).length) { it.inst.style(d); it.sent = st; }
     } else if (it.kind === "shapes") shapesDirty = true;
   }
   // what components set: shown or not, faint or not, outlined (in this step), and an offset from where the pose has it
@@ -451,7 +462,7 @@
   function applyPose() {
     for (const it of Object.values(items)) if (!it.body && (it.group !== "fixed" || it.off.some(Boolean))) sync(it);
     Page.emit("pose", pose);
-    shapesDirty = true;
+    shapesDirty = true; lastMove = performance.now();
     for (const a of axes) {
       const el = $("ax-" + a.id); if (!el) continue;
       el.value = pose[a.id]; $("ax-" + a.id + "-v").textContent = Math.round(pose[a.id]) + " " + (a.unit ?? "mm");

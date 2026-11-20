@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "name": "Tilted-bed CNC router, 2400 x 1200",
-  "written": "2026-11-20 12:23:51",
+  "written": "2026-11-20 16:16:54",
   "task": {
     "kind": "new_design"
   },
@@ -2714,8 +2714,8 @@
       "requirement": "R7",
       "case": "",
       "status": "pass",
-      "measured": 798.8218743857867,
-      "margin": 201.1781256142133,
+      "measured": 798.821874385787,
+      "margin": 201.17812561421295,
       "note": "",
       "evidence": {},
       "extra": {},
@@ -2723,8 +2723,8 @@
         {
           "case": "",
           "status": "pass",
-          "measured": 798.8218743857867,
-          "margin": 201.1781256142133,
+          "measured": 798.821874385787,
+          "margin": 201.17812561421295,
           "note": "",
           "evidence": {},
           "extra": {}
@@ -7904,8 +7904,8 @@
       "requirement": "R15",
       "case": "",
       "status": "pass",
-      "measured": 347.8708228218111,
-      "margin": 197.8708228218111,
+      "measured": 347.8325002485924,
+      "margin": 197.8325002485924,
       "note": "",
       "evidence": {
         "tool": "sum of part masses x golf part centres",
@@ -7916,8 +7916,8 @@
         {
           "case": "",
           "status": "pass",
-          "measured": 347.8708228218111,
-          "margin": 197.8708228218111,
+          "measured": 347.8325002485924,
+          "margin": 197.8325002485924,
           "note": "",
           "evidence": {
             "tool": "sum of part masses x golf part centres",
@@ -7942,8 +7942,8 @@
       "requirement": "R16",
       "case": "",
       "status": "pass",
-      "measured": 2297.073785956929,
-      "margin": 1997.073785956929,
+      "measured": 2297.271578937885,
+      "margin": 1997.271578937885,
       "note": "",
       "evidence": {
         "tool": "moments about the front feet",
@@ -7954,8 +7954,8 @@
         {
           "case": "",
           "status": "pass",
-          "measured": 2297.073785956929,
-          "margin": 1997.073785956929,
+          "measured": 2297.271578937885,
+          "margin": 1997.271578937885,
           "note": "",
           "evidence": {
             "tool": "moments about the front feet",
@@ -7980,8 +7980,8 @@
       "requirement": "R32",
       "case": "",
       "status": "pass",
-      "measured": 0.9998361634952307,
-      "margin": 0.0008361634952307462,
+      "measured": 0.9998361634966552,
+      "margin": 0.0008361634966551623,
       "note": "",
       "evidence": {},
       "extra": {},
@@ -7989,8 +7989,8 @@
         {
           "case": "",
           "status": "pass",
-          "measured": 0.9998361634952307,
-          "margin": 0.0008361634952307462,
+          "measured": 0.9998361634966552,
+          "margin": 0.0008361634966551623,
           "note": "",
           "evidence": {},
           "extra": {}
@@ -8012,8 +8012,8 @@
       "requirement": "R17",
       "case": "",
       "status": "pass",
-      "measured": 2.3909517508904803,
-      "margin": 0.8909517508904803,
+      "measured": 2.3909517508904763,
+      "margin": 0.8909517508904763,
       "note": "",
       "evidence": {
         "tool": "F = m a + gravity + cut + 1 % friction; T = F r / (ratio eff); 34E1K-120 published pull-out curve at 48 V",
@@ -8024,8 +8024,8 @@
         {
           "case": "",
           "status": "pass",
-          "measured": 2.3909517508904803,
-          "margin": 0.8909517508904803,
+          "measured": 2.3909517508904763,
+          "margin": 0.8909517508904763,
           "note": "",
           "evidence": {
             "tool": "F = m a + gravity + cut + 1 % friction; T = F r / (ratio eff); 34E1K-120 published pull-out curve at 48 V",
@@ -8909,8 +8909,8 @@
         {
           "case": "X motor",
           "status": "pass",
-          "measured": 132.64847113492968,
-          "margin": 217.35152886507032,
+          "measured": 132.64847113492982,
+          "margin": 217.35152886507018,
           "note": "",
           "evidence": {
             "tool": "P = T w / 0.8 + 2 I^2 R",
@@ -9001,8 +9001,8 @@
       "requirement": "R44",
       "case": "",
       "status": "pass",
-      "measured": 0.012584367055433998,
-      "margin": 0.007415632944566002,
+      "measured": 0.012584367055434018,
+      "margin": 0.007415632944565983,
       "note": "",
       "evidence": {
         "tool": "d = F L^3 / 48 E I between posts",
@@ -9013,8 +9013,8 @@
         {
           "case": "",
           "status": "pass",
-          "measured": 0.012584367055433998,
-          "margin": 0.007415632944566002,
+          "measured": 0.012584367055434018,
+          "margin": 0.007415632944565983,
           "note": "",
           "evidence": {
             "tool": "d = F L^3 / 48 E I between posts",
@@ -9118,8 +9118,8 @@
       "requirement": "R47",
       "case": "",
       "status": "pass",
-      "measured": 0.013228022524279886,
-      "margin": 0.03677197747572011,
+      "measured": 0.013228022524279896,
+      "margin": 0.036771977475720106,
       "note": "",
       "evidence": {
         "tool": "sum of R22, R44/2, R46 and the bearing blocks in series",
@@ -9130,8 +9130,8 @@
         {
           "case": "",
           "status": "pass",
-          "measured": 0.013228022524279886,
-          "margin": 0.03677197747572011,
+          "measured": 0.013228022524279896,
+          "margin": 0.036771977475720106,
           "note": "",
           "evidence": {
             "tool": "sum of R22, R44/2, R46 and the bearing blocks in series",
@@ -9552,8 +9552,8 @@
       "requirement": "R51",
       "case": "Y carriage: 35.0 of 36 kg",
       "status": "pass",
-      "measured": 0.971893571124639,
-      "margin": 0.028106428875360967,
+      "measured": 0.971893571124657,
+      "margin": 0.02810642887534298,
       "note": "",
       "evidence": {},
       "extra": {},
@@ -9561,8 +9561,8 @@
         {
           "case": "Y carriage: 35.0 of 36 kg",
           "status": "pass",
-          "measured": 0.971893571124639,
-          "margin": 0.028106428875360967,
+          "measured": 0.971893571124657,
+          "margin": 0.02810642887534298,
           "note": "",
           "evidence": {},
           "extra": {}
@@ -9570,8 +9570,8 @@
         {
           "case": "Z axis: 12.5 of 13 kg",
           "status": "pass",
-          "measured": 0.9599983870710163,
-          "margin": 0.04000161292898374,
+          "measured": 0.9599983870710168,
+          "margin": 0.04000161292898319,
           "note": "",
           "evidence": {},
           "extra": {}
@@ -9602,8 +9602,8 @@
       "requirement": "R53",
       "case": "",
       "status": "pass",
-      "measured": 0.46916000218463416,
-      "margin": 4.530839997815366,
+      "measured": 0.4691600021846134,
+      "margin": 4.530839997815386,
       "note": "",
       "evidence": {
         "tool": "part volumes x density",
@@ -9614,8 +9614,8 @@
         {
           "case": "",
           "status": "pass",
-          "measured": 0.46916000218463416,
-          "margin": 4.530839997815366,
+          "measured": 0.4691600021846134,
+          "margin": 4.530839997815386,
           "note": "",
           "evidence": {
             "tool": "part volumes x density",
@@ -11959,8 +11959,8 @@
       "requirement": "R69",
       "case": "profile cut, worst at 61.4 s",
       "status": "pass",
-      "measured": 93.50466589813657,
-      "margin": 6.495334101863435,
+      "measured": 93.5046658981365,
+      "margin": 6.495334101863506,
       "note": "",
       "evidence": {
         "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -11971,8 +11971,8 @@
         {
           "case": "profile cut, worst at 61.4 s",
           "status": "pass",
-          "measured": 93.50466589813657,
-          "margin": 6.495334101863435,
+          "measured": 93.5046658981365,
+          "margin": 6.495334101863506,
           "note": "",
           "evidence": {
             "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12014,8 +12014,8 @@
       "requirement": "R70",
       "case": "rapids: X at 0.3 s",
       "status": "pass",
-      "measured": 51.46063244247367,
-      "margin": 28.539367557526333,
+      "measured": 51.460632442473816,
+      "margin": 28.539367557526184,
       "note": "",
       "evidence": {
         "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12026,8 +12026,8 @@
         {
           "case": "rapids: X at 0.3 s",
           "status": "pass",
-          "measured": 51.46063244247367,
-          "margin": 28.539367557526333,
+          "measured": 51.460632442473816,
+          "margin": 28.539367557526184,
           "note": "",
           "evidence": {
             "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12050,8 +12050,8 @@
         {
           "case": "rapids: Z at 20.9 s",
           "status": "pass",
-          "measured": 20.236851674477045,
-          "margin": 59.763148325522955,
+          "measured": 20.236851674476842,
+          "margin": 59.76314832552316,
           "note": "",
           "evidence": {
             "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12062,8 +12062,8 @@
         {
           "case": "profile cut: X at 0.3 s",
           "status": "pass",
-          "measured": 51.46062911251522,
-          "margin": 28.53937088748478,
+          "measured": 51.460629112506474,
+          "margin": 28.539370887493526,
           "note": "",
           "evidence": {
             "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12086,8 +12086,8 @@
         {
           "case": "profile cut: Z at 144.3 s",
           "status": "pass",
-          "measured": 17.969107006918158,
-          "margin": 62.03089299308184,
+          "measured": 17.969107006916314,
+          "margin": 62.03089299308368,
           "note": "",
           "evidence": {
             "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12098,8 +12098,8 @@
         {
           "case": "raster pocket: X at 0.3 s",
           "status": "pass",
-          "measured": 51.46062275646411,
-          "margin": 28.53937724353589,
+          "measured": 51.46062275649833,
+          "margin": 28.53937724350167,
           "note": "",
           "evidence": {
             "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12122,8 +12122,8 @@
         {
           "case": "raster pocket: Z at 13.7 s",
           "status": "pass",
-          "measured": 11.721237022340853,
-          "margin": 68.27876297765914,
+          "measured": 11.721237022341658,
+          "margin": 68.27876297765835,
           "note": "",
           "evidence": {
             "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12134,8 +12134,8 @@
         {
           "case": "tool change: X at 0.3 s",
           "status": "pass",
-          "measured": 51.46063009627242,
-          "margin": 28.539369903727582,
+          "measured": 51.460630096274976,
+          "margin": 28.539369903725024,
           "note": "",
           "evidence": {
             "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12158,8 +12158,8 @@
         {
           "case": "tool change: Z at 22.4 s",
           "status": "pass",
-          "measured": 20.251021944797742,
-          "margin": 59.74897805520226,
+          "measured": 20.251021944781908,
+          "margin": 59.74897805521809,
           "note": "",
           "evidence": {
             "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12185,8 +12185,8 @@
       "requirement": "R71",
       "case": "supply X1, worst in raster pocket",
       "status": "pass",
-      "measured": 80.0774593333553,
-      "margin": 269.9225406666447,
+      "measured": 80.0774593333446,
+      "margin": 269.9225406666554,
       "note": "",
       "evidence": {
         "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12197,8 +12197,8 @@
         {
           "case": "supply X1, worst in raster pocket",
           "status": "pass",
-          "measured": 80.0774593333553,
-          "margin": 269.9225406666447,
+          "measured": 80.0774593333446,
+          "margin": 269.9225406666554,
           "note": "",
           "evidence": {
             "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12209,8 +12209,8 @@
         {
           "case": "supply X2, worst in raster pocket",
           "status": "pass",
-          "measured": 80.0774593333553,
-          "margin": 269.9225406666447,
+          "measured": 80.0774593333446,
+          "margin": 269.9225406666554,
           "note": "",
           "evidence": {
             "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12233,8 +12233,8 @@
         {
           "case": "supply Z, worst in rapids",
           "status": "pass",
-          "measured": 33.0416458967437,
-          "margin": 316.9583541032563,
+          "measured": 33.041645896743674,
+          "margin": 316.95835410325634,
           "note": "",
           "evidence": {
             "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12259,8 +12259,8 @@
       "requirement": "R72",
       "case": "power failure",
       "status": "pass",
-      "measured": 82.19947805228843,
-      "margin": 7.800521947711573,
+      "measured": 82.19947805222122,
+      "margin": 7.800521947778776,
       "note": "",
       "evidence": {
         "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12271,8 +12271,8 @@
         {
           "case": "rapids",
           "status": "pass",
-          "measured": 65.24335028035486,
-          "margin": 24.75664971964514,
+          "measured": 65.2433502803562,
+          "margin": 24.756649719643804,
           "note": "",
           "evidence": {
             "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12283,8 +12283,8 @@
         {
           "case": "profile cut",
           "status": "pass",
-          "measured": 65.24510186007294,
-          "margin": 24.754898139927064,
+          "measured": 65.2451018600456,
+          "margin": 24.754898139954406,
           "note": "",
           "evidence": {
             "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12295,8 +12295,8 @@
         {
           "case": "raster pocket",
           "status": "pass",
-          "measured": 65.2498549535767,
-          "margin": 24.7501450464233,
+          "measured": 65.24985495359445,
+          "margin": 24.75014504640555,
           "note": "",
           "evidence": {
             "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12307,8 +12307,8 @@
         {
           "case": "tool change",
           "status": "pass",
-          "measured": 65.24733310792942,
-          "margin": 24.75266689207058,
+          "measured": 65.24733310785165,
+          "margin": 24.752666892148355,
           "note": "",
           "evidence": {
             "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12319,8 +12319,8 @@
         {
           "case": "power failure",
           "status": "pass",
-          "measured": 82.19947805228843,
-          "margin": 7.800521947711573,
+          "measured": 82.19947805222122,
+          "margin": 7.800521947778776,
           "note": "",
           "evidence": {
             "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12358,8 +12358,8 @@
       "requirement": "R73",
       "case": "raster pocket",
       "status": "pass",
-      "measured": 11.087494662676269,
-      "margin": 3.912505337323731,
+      "measured": 11.087494662676065,
+      "margin": 3.9125053373239354,
       "note": "",
       "evidence": {
         "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12370,8 +12370,8 @@
         {
           "case": "rapids",
           "status": "pass",
-          "measured": 1.93416417169661,
-          "margin": 13.06583582830339,
+          "measured": 1.9341641716965856,
+          "margin": 13.065835828303415,
           "note": "",
           "evidence": {
             "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12382,8 +12382,8 @@
         {
           "case": "profile cut",
           "status": "pass",
-          "measured": 11.013700393442106,
-          "margin": 3.9862996065578944,
+          "measured": 11.013700393442154,
+          "margin": 3.9862996065578464,
           "note": "",
           "evidence": {
             "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12394,8 +12394,8 @@
         {
           "case": "raster pocket",
           "status": "pass",
-          "measured": 11.087494662676269,
-          "margin": 3.912505337323731,
+          "measured": 11.087494662676065,
+          "margin": 3.9125053373239354,
           "note": "",
           "evidence": {
             "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12406,8 +12406,8 @@
         {
           "case": "tool change",
           "status": "pass",
-          "measured": 1.9428450860343978,
-          "margin": 13.057154913965602,
+          "measured": 1.9428450860343989,
+          "margin": 13.0571549139656,
           "note": "",
           "evidence": {
             "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12418,8 +12418,8 @@
         {
           "case": "power failure",
           "status": "pass",
-          "measured": 1.8608327095276629,
-          "margin": 13.139167290472336,
+          "measured": 1.860832709527632,
+          "margin": 13.139167290472368,
           "note": "",
           "evidence": {
             "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12430,8 +12430,8 @@
         {
           "case": "power failure, drivers drop out at once",
           "status": "pass",
-          "measured": 1.8608327095276629,
-          "margin": 13.139167290472336,
+          "measured": 1.860832709527632,
+          "margin": 13.139167290472368,
           "note": "",
           "evidence": {
             "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12583,8 +12583,8 @@
       "requirement": "R75",
       "case": "column x: 140 Hz",
       "status": "pass",
-      "measured": 7.016944621820066,
-      "margin": 4.516944621820066,
+      "measured": 7.016944621820068,
+      "margin": 4.516944621820068,
       "note": "",
       "evidence": {
         "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12595,8 +12595,8 @@
         {
           "case": "drive X: 154 Hz",
           "status": "pass",
-          "measured": 7.683184453143866,
-          "margin": 5.183184453143866,
+          "measured": 7.683184453143864,
+          "margin": 5.183184453143864,
           "note": "",
           "evidence": {
             "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12631,8 +12631,8 @@
         {
           "case": "column x: 140 Hz",
           "status": "pass",
-          "measured": 7.016944621820066,
-          "margin": 4.516944621820066,
+          "measured": 7.016944621820068,
+          "margin": 4.516944621820068,
           "note": "",
           "evidence": {
             "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12643,8 +12643,8 @@
         {
           "case": "column z: 205 Hz",
           "status": "pass",
-          "measured": 10.26870721963608,
-          "margin": 7.768707219636079,
+          "measured": 10.268707219636081,
+          "margin": 7.768707219636081,
           "note": "",
           "evidence": {
             "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle",
@@ -12717,8 +12717,8 @@
         {
           "case": "power failure, drivers drop out at once: X ran 80.2 mm, 48.9 past its normal stop",
           "status": "pass",
-          "measured": 4.063967177662363,
-          "margin": 4.063967177662363,
+          "measured": 4.06396717778712,
+          "margin": 4.06396717778712,
           "note": "",
           "evidence": {
             "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle; on the mains failing: supplies, VFD and controller off, command frozen, drivers on their buses' energy until they trip, Y brake after 50 ms; stick-slip friction, detent and brake",
@@ -12741,8 +12741,8 @@
         {
           "case": "power failure, drivers drop out at once: Z ran 10.5 mm, 7.0 past its normal stop",
           "status": "pass",
-          "measured": 3.001504123331155,
-          "margin": 3.001504123331155,
+          "measured": 3.001504123330971,
+          "margin": 3.001504123330971,
           "note": "",
           "evidence": {
             "tool": "time-domain simulation (page/sim.js, 0.1 ms steps): planner, closed-loop drivers on the published pull-out curve, belt/screw/rack springs, carriages, counterweight rope, column bending modes, 60 V buses, VFD and spindle; on the mains failing: supplies, VFD and controller off, command frozen, drivers on their buses' energy until they trip, Y brake after 50 ms; stick-slip friction, detent and brake",
@@ -12986,8 +12986,8 @@
         {
           "case": "X",
           "status": "pass",
-          "measured": 0.0012710433324736314,
-          "margin": 0.09872895666752637,
+          "measured": 0.001271043332451427,
+          "margin": 0.09872895666754858,
           "note": "",
           "evidence": {
             "tool": "page/sim.js verify(): lossless free vibration, steady-speed force balance, idle start, half time step",
@@ -13042,8 +13042,8 @@
         {
           "case": "X: 0.912 against 0.912 N m",
           "status": "pass",
-          "measured": 4.334510905756872e-06,
-          "margin": 0.9999956654890942,
+          "measured": 4.334428660435208e-06,
+          "margin": 0.9999956655713396,
           "note": "",
           "evidence": {
             "tool": "page/sim.js verify(): lossless free vibration, steady-speed force balance, idle start, half time step",
@@ -13066,8 +13066,8 @@
         {
           "case": "Z: 0.683 against 0.683 N m",
           "status": "pass",
-          "measured": 1.8309436189412054e-06,
-          "margin": 0.9999981690563811,
+          "measured": 1.830943419101061e-06,
+          "margin": 0.9999981690565809,
           "note": "",
           "evidence": {
             "tool": "page/sim.js verify(): lossless free vibration, steady-speed force balance, idle start, half time step",
@@ -13118,8 +13118,8 @@
       "requirement": "R84",
       "case": "pocket: contour: 44.15 to 44.39",
       "status": "pass",
-      "measured": 0.5462009180959182,
-      "margin": 1.4537990819040818,
+      "measured": 0.5462009180881244,
+      "margin": 1.4537990819118756,
       "note": "",
       "evidence": {
         "tool": "page/sim.js verify(): lossless free vibration, steady-speed force balance, idle start, half time step",
@@ -13130,8 +13130,8 @@
         {
           "case": "rapids: util: 51.46 to 51.47",
           "status": "pass",
-          "measured": 0.017094201851963753,
-          "margin": 1.9829057981480362,
+          "measured": 0.017094200639911072,
+          "margin": 1.982905799360089,
           "note": "",
           "evidence": {
             "tool": "page/sim.js verify(): lossless free vibration, steady-speed force balance, idle start, half time step",
@@ -13142,8 +13142,8 @@
         {
           "case": "rapids: vbus: 65.24 to 65.24",
           "status": "pass",
-          "measured": 0.0012359153465757444,
-          "margin": 1.9987640846534243,
+          "measured": 0.0012359160300734473,
+          "margin": 1.9987640839699266,
           "note": "",
           "evidence": {
             "tool": "page/sim.js verify(): lossless free vibration, steady-speed force balance, idle start, half time step",
@@ -13166,8 +13166,8 @@
         {
           "case": "pocket: contour: 44.15 to 44.39",
           "status": "pass",
-          "measured": 0.5462009180959182,
-          "margin": 1.4537990819040818,
+          "measured": 0.5462009180881244,
+          "margin": 1.4537990819118756,
           "note": "",
           "evidence": {
             "tool": "page/sim.js verify(): lossless free vibration, steady-speed force balance, idle start, half time step",
@@ -13178,8 +13178,8 @@
         {
           "case": "pocket: util: 51.46 to 51.47",
           "status": "pass",
-          "measured": 0.012063105271331587,
-          "margin": 1.9879368947286684,
+          "measured": 0.012063105204962454,
+          "margin": 1.9879368947950375,
           "note": "",
           "evidence": {
             "tool": "page/sim.js verify(): lossless free vibration, steady-speed force balance, idle start, half time step",
@@ -13190,8 +13190,8 @@
         {
           "case": "pocket: vbus: 65.25 to 65.25",
           "status": "pass",
-          "measured": 0.001255379618747554,
-          "margin": 1.9987446203812524,
+          "measured": 0.0012553792334668579,
+          "margin": 1.9987446207665331,
           "note": "",
           "evidence": {
             "tool": "page/sim.js verify(): lossless free vibration, steady-speed force balance, idle start, half time step",
@@ -13238,8 +13238,8 @@
         {
           "case": "pfail_drop: x_run: 80.19 to 80.19",
           "status": "pass",
-          "measured": 0.00888430120129513,
-          "margin": 1.9911156987987049,
+          "measured": 0.008884301427847241,
+          "margin": 1.9911156985721528,
           "note": "",
           "evidence": {
             "tool": "page/sim.js verify(): lossless free vibration, steady-speed force balance, idle start, half time step",
@@ -14133,8 +14133,8 @@
       "requirement": "R58",
       "case": "G04 Stand the column onto the X blocks: column, 96.3 kg tilted up from a 900 mm trestle, 2 at the far end",
       "status": "pass",
-      "measured": 22.299227718864213,
-      "margin": 2.7007722811357873,
+      "measured": 22.29922771886421,
+      "margin": 2.700772281135791,
       "note": "",
       "evidence": {},
       "extra": {},
@@ -14142,16 +14142,16 @@
         {
           "case": "F01 Weld nuts and levelling feet on the floor rails: floor_frame.front_rail, 38.4 kg carried by 2",
           "status": "pass",
-          "measured": 19.20775680000005,
-          "margin": 5.792243199999952,
+          "measured": 19.207756800000034,
+          "margin": 5.792243199999966,
           "note": "",
           "evidence": {},
           "extra": {}
         },
         {
-          "case": "F02 Cross members and outriggers: floor_frame.outrigger_3, 3.2 kg carried by 1",
+          "case": "F02 Cross members and outriggers: floor_frame.outrigger_4, 3.2 kg carried by 1",
           "status": "pass",
-          "measured": 3.158744092643788,
+          "measured": 3.1587440926437873,
           "margin": 21.841255907356214,
           "note": "",
           "evidence": {},
@@ -14160,8 +14160,8 @@
         {
           "case": "F04 Rear posts: floor_frame.rear_post_0, 9.7 kg carried by 1",
           "status": "pass",
-          "measured": 9.665464788000651,
-          "margin": 15.334535211999349,
+          "measured": 9.665464788000513,
+          "margin": 15.334535211999487,
           "note": "",
           "evidence": {},
           "extra": {}
@@ -14169,8 +14169,8 @@
         {
           "case": "F05 Cabinet stand: cabinet_stand.stub_front, 8.8 kg carried by 1",
           "status": "pass",
-          "measured": 8.798124946489727,
-          "margin": 16.20187505351027,
+          "measured": 8.798124946489757,
+          "margin": 16.201875053510243,
           "note": "",
           "evidence": {},
           "extra": {}
@@ -14196,8 +14196,8 @@
         {
           "case": "B03 Cross members: bed.cross_11, 6.0 kg carried by 1",
           "status": "pass",
-          "measured": 5.98042830000006,
-          "margin": 19.01957169999994,
+          "measured": 5.980428300000115,
+          "margin": 19.019571699999887,
           "note": "",
           "evidence": {},
           "extra": {}
@@ -14239,9 +14239,9 @@
           "extra": {}
         },
         {
-          "case": "X03 X blocks onto the rails: gantry_drives.x_block_bottom_r, 0.8 kg carried by 1",
+          "case": "X03 X blocks onto the rails: gantry_drives.x_block_bottom_l, 0.8 kg carried by 1",
           "status": "pass",
-          "measured": 0.7515750301658216,
+          "measured": 0.7515750301658217,
           "margin": 24.24842496983418,
           "note": "",
           "evidence": {},
@@ -14277,8 +14277,8 @@
         {
           "case": "G04 Stand the column onto the X blocks: column, 96.3 kg tilted up from a 900 mm trestle, 2 at the far end",
           "status": "pass",
-          "measured": 22.299227718864213,
-          "margin": 2.7007722811357873,
+          "measured": 22.29922771886421,
+          "margin": 2.700772281135791,
           "note": "",
           "evidence": {},
           "extra": {}
@@ -14304,8 +14304,8 @@
         {
           "case": "D03 Fit the bottom X drive: x_drive_bottom, 6.5 kg carried by 1",
           "status": "pass",
-          "measured": 6.495756916249671,
-          "margin": 18.50424308375033,
+          "measured": 6.495756916250066,
+          "margin": 18.504243083749934,
           "note": "",
           "evidence": {},
           "extra": {}
@@ -14313,8 +14313,8 @@
         {
           "case": "D04 Fit the top X drive: x_drive_top, 6.5 kg carried by 1",
           "status": "pass",
-          "measured": 6.495756916249357,
-          "margin": 18.504243083750644,
+          "measured": 6.495756916249915,
+          "margin": 18.504243083750083,
           "note": "",
           "evidence": {},
           "extra": {}
@@ -14329,10 +14329,10 @@
           "extra": {}
         },
         {
-          "case": "Y02 Y blocks onto the rails: y_carriage.y_block_140_l, 0.8 kg carried by 1",
+          "case": "Y02 Y blocks onto the rails: y_carriage.y_block_360_r, 0.8 kg carried by 1",
           "status": "pass",
-          "measured": 0.7515750301658229,
-          "margin": 24.248424969834176,
+          "measured": 0.7515750301658217,
+          "margin": 24.24842496983418,
           "note": "",
           "evidence": {},
           "extra": {}
@@ -14340,8 +14340,8 @@
         {
           "case": "Y03 Y screw, supports and brake on the bench: gantry_drives.y_screw, 5.7 kg carried by 1",
           "status": "pass",
-          "measured": 5.6542659468666185,
-          "margin": 19.34573405313338,
+          "measured": 5.654265946866618,
+          "margin": 19.345734053133384,
           "note": "",
           "evidence": {},
           "extra": {}
@@ -14349,8 +14349,8 @@
         {
           "case": "Y04 Fit the Y screw: y_screw, 9.9 kg carried by 1",
           "status": "pass",
-          "measured": 9.93698638138597,
-          "margin": 15.06301361861403,
+          "measured": 9.93698638138596,
+          "margin": 15.06301361861404,
           "note": "",
           "evidence": {},
           "extra": {}
@@ -14376,7 +14376,7 @@
         {
           "case": "C02 Z blocks: z_axis.z_block_r_50, 0.8 kg carried by 1",
           "status": "pass",
-          "measured": 0.7515750301658222,
+          "measured": 0.7515750301658216,
           "margin": 24.24842496983418,
           "note": "",
           "evidence": {},
@@ -14403,8 +14403,8 @@
         {
           "case": "C05 Fit the carriage on the Y blocks: carriage, 34.4 kg carried by 2",
           "status": "pass",
-          "measured": 17.20735810465328,
-          "margin": 7.792641895346719,
+          "measured": 17.207358104653608,
+          "margin": 7.792641895346392,
           "note": "",
           "evidence": {},
           "extra": {}
@@ -14457,8 +14457,8 @@
         {
           "case": "W01 Top slab, sheave and rope: cw_top, 20.5 kg carried by 1",
           "status": "pass",
-          "measured": 20.462735982287064,
-          "margin": 4.5372640177129355,
+          "measured": 20.462735982287054,
+          "margin": 4.537264017712946,
           "note": "",
           "evidence": {},
           "extra": {}
@@ -14529,8 +14529,8 @@
         {
           "case": "K01 Chain arm and brackets: gantry_frame.chain_arm, 1.9 kg carried by 1",
           "status": "pass",
-          "measured": 1.8839957348754477,
-          "margin": 23.116004265124552,
+          "measured": 1.8839957348754515,
+          "margin": 23.11600426512455,
           "note": "",
           "evidence": {},
           "extra": {}
@@ -14547,8 +14547,8 @@
         {
           "case": "K03 Tool rack: atc_rack.stand_0, 1.0 kg carried by 1",
           "status": "pass",
-          "measured": 0.9971167213709912,
-          "margin": 24.00288327862901,
+          "measured": 0.9971167213709671,
+          "margin": 24.00288327862903,
           "note": "",
           "evidence": {},
           "extra": {}
@@ -14556,8 +14556,8 @@
         {
           "case": "E01 Hang the enclosure: cabinet.enclosure, 14.0 kg carried by 2",
           "status": "pass",
-          "measured": 7.015161789597989,
-          "margin": 17.98483821040201,
+          "measured": 7.015161789598076,
+          "margin": 17.984838210401925,
           "note": "",
           "evidence": {},
           "extra": {}
@@ -14574,8 +14574,8 @@
         {
           "case": "E03 Backplate into the enclosure: backplate, 25.1 kg carried by 2",
           "status": "pass",
-          "measured": 12.55237723841186,
-          "margin": 12.44762276158814,
+          "measured": 12.552377238411866,
+          "margin": 12.447622761588134,
           "note": "",
           "evidence": {},
           "extra": {}
@@ -14583,8 +14583,8 @@
         {
           "case": "E04 Gland plate, fan, filter, door: cabinet.door, 8.4 kg carried by 1",
           "status": "pass",
-          "measured": 8.39077079999978,
-          "margin": 16.60922920000022,
+          "measured": 8.390770799999759,
+          "margin": 16.609229200000243,
           "note": "",
           "evidence": {},
           "extra": {}
@@ -14601,8 +14601,8 @@
         {
           "case": "E06 Cable ducts: ducts.tray, 1.1 kg carried by 1",
           "status": "pass",
-          "measured": 1.0761329738605925,
-          "margin": 23.92386702613941,
+          "measured": 1.0761329738605967,
+          "margin": 23.923867026139405,
           "note": "",
           "evidence": {},
           "extra": {}
@@ -14637,7 +14637,7 @@
         {
           "case": "M03 Tool rack: atc_rack.holder_1, 1.0 kg carried by 1",
           "status": "pass",
-          "measured": 1.0342944176035642,
+          "measured": 1.0342944176035649,
           "margin": 23.965705582396435,
           "note": "",
           "evidence": {},
@@ -14646,7 +14646,7 @@
         {
           "case": "M04 First tool: spindle.holder, 1.0 kg carried by 1",
           "status": "pass",
-          "measured": 0.9854646429888057,
+          "measured": 0.9854646429888061,
           "margin": 24.014535357011194,
           "note": "",
           "evidence": {},
@@ -15066,7 +15066,7 @@
           "extra": {}
         },
         {
-          "case": "D01 gantry_drives.x_pinion_bottom_set: 1 x M5 x 4 ISO 4026 set screw, cup point; 0.0 mm engaged",
+          "case": "D01 gantry_drives.x_pinion_bottom_set: 1 x M5 x 4 ISO 4026 set screw, cup point; 3.9 mm engaged",
           "status": "pass",
           "measured": 0,
           "margin": 0,

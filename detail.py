@@ -33,7 +33,8 @@ def cyl(axis, c, r, a0, a1):
 
 def fuse(parts):
     parts = [p for p in parts if p is not None]
-    return parts[0].fuse_all(parts[1:]) if len(parts) > 1 else parts[0]
+    # fuse_all changes its part in golf: fuse into a copy, so the parts given stay as they are
+    return parts[0].fork().fuse_all(parts[1:]) if len(parts) > 1 else parts[0]
 
 
 _FACE = {"+z": None, "-z": (Axis.X, 180), "+x": (Axis.Y, 90), "-x": (Axis.Y, -90), "+y": (Axis.X, -90), "-y": (Axis.X, 90)}
@@ -43,6 +44,7 @@ def drill(part, face, pts, r, depth=None, cbore=None):
     """Holes from the face whose outward normal is `face`, at points on that face. cbore = (radius, depth)."""
     if not pts:
         return part
+    part = part.fork()                      # golf's hole() changes its part: drill a copy
     rot = _FACE[face]
     locs = [Location.translation(*p) * (Location.about(*rot) if rot else Location.translation(0, 0, 0)) for p in pts]
     if cbore:
@@ -535,7 +537,7 @@ def gantry_assembly(g, xs):
     screw("gantry_frame.sheave_axle", "G03", ["gantry_frame.flange_front", "gantry_frame.rope_sheave", "gantry_frame.sheave_axle_nut"], "HEX", 12,
           [(sx, sy_, z1)], (0, 0, -1), grip=COL_D - COL_T - 10.8, L=COL_D - COL_T + 3, into="nut")
     for i, zr in enumerate((ZC0 + 40, ZC0 + COL_D - 40)):
-        riser = box(c1, c1 + g["Y_RISER"], g["Y_RAIL"][0], g["Y_RAIL"][1], zr - 12.5, zr + 12.5)
+        riser = box(c1, c1 + g["Y_RISER"], g["Y_RAIL"][0], g["Y_RAIL"][1], zr - g["Y_RISER_H"] / 2, zr + g["Y_RISER_H"] / 2)
         rh = rail_holes(g["Y_RAIL"][1] - g["Y_RAIL"][0])
         riser = drill(riser, "+x", [(c1 + g["Y_RISER"], g["Y_RAIL"][0] + h, zr) for h in rh], 2.5, depth=14)
         out.append(item(f"gantry_frame.y_riser_{i}", riser, "steel", "made", "flat 40x25 welded on, flattened by hand; M6 tapped at 60", G))
@@ -932,7 +934,7 @@ def chain_links(spec, m, shift=(0.0, 0.0, 0.0)):
         s = i * spec["L"] / (spec["N"] - 1)
         p, t = chain_point(spec, m, s)
         z = _cross(t, w)
-        parts.append(link.moved(frame(tuple(p[k] + shift[k] for k in range(3)), tuple(t), tuple(z))))
+        parts.append(link.fork().moved(frame(tuple(p[k] + shift[k] for k in range(3)), tuple(t), tuple(z))))
     return fuse(parts)
 
 

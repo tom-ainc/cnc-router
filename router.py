@@ -14,7 +14,7 @@ import detail as D
 def clear_travel(id, moving, fixed, place, tag, text, steps=9):
     """require_clear_travel with a tag on each case, for one requirement checked in several poses."""
     for i in range(steps):
-        there = moving.moved(place(i / (steps - 1)))
+        there = moving.fork().moved(place(i / (steps - 1)))
         for name, other in fixed.items():
             require(id, text, _shared(there, other), "<=", 0, "mm^3", case=f"{tag}: {name}, step {i} of {steps - 1}")
 
@@ -53,7 +53,7 @@ BF15 = dict(h=28.0, B=70.0, H=47.0, L=20.0)
 SUP_SPACER = 6.0                         # support blocks sit on 6 mm spacers so the nut flanges clear the face below
 NUT_CLEAR = 3.0                          # flange to face clearance
 # Rail risers: the screw and its nut sit between the rails, so the blocks are lifted clear of the nut flange
-Y_RISER = 40.0                           # steel bar welded to the column face, rails on top
+Y_RISER, Y_RISER_H = 40.0, 25.0          # steel flat 40 x 25 welded to the column face, rails on top
 Z_RISER = 32.0                           # aluminium bar on the Y plate: lifts the Z blocks clear of BK15 at the top of the stroke
 BRAKE_D, BRAKE_L = 70.0, 45.0            # 24 V spring-applied brake on the Y screw's bottom end
 Z_RAIL_DY = 50.0                         # Z rails at +-50: the Y blocks' bolt holes (at +-88 +-17.5) stay clear of the Z risers
@@ -186,7 +186,8 @@ BLK_Z = -SPOIL_T + BLK_H                       # top of X blocks
 
 def fuse(parts):
     parts = list(parts)
-    return parts[0].fuse_all(parts[1:]) if len(parts) > 1 else parts[0]
+    # fuse_all changes its part in golf: fuse into a copy, so the parts given stay as they are
+    return parts[0].fork().fuse_all(parts[1:]) if len(parts) > 1 else parts[0]
 
 
 def box(x0, x1, y0, y1, z0, z1):
@@ -319,7 +320,7 @@ def gantry(xs, motors=True, with_arm=True):
     feet = [box(c0, c1, y - 40, y + 40, BLK_Z, ZC0) for y in (Y_RB, Y_RT)]
     blocks = [D.c_block_env().moved(D.frame((cc + dx, y, -SPOIL_T), (1 if dx < 0 else -1, 0, 0), (0, 0, 1))) for y in (Y_RB, Y_RT) for dx in (-45, 45)]
     # X motors: shaft towards the bed into a 3:1 belt to the pinion, cable outlet away from the column
-    xmot = [MOTOR.moved(x_motor_loc(c0, y)) for y in (Y_RB, Y_RT)] if motors else []
+    xmot = [MOTOR.fork().moved(x_motor_loc(c0, y)) for y in (Y_RB, Y_RT)] if motors else []
     # X drive: 15T on the motor, 45T on the pinion shaft (3:1), pinion meshing the outward face of the rack;
     # its bearing housing pivots on the foot and a spring pulls it into mesh
     belt_x = []
@@ -334,8 +335,8 @@ def gantry(xs, motors=True, with_arm=True):
         shaft = cyl_z(xp, yp, 7.5, zp + PIN_FACE / 2 - 0.5, BLK_Z + 1) + cyl_z(xp, yp, 12.5, zp - PIN_FACE / 2 - 10.5, zp - PIN_FACE / 2 + 0.5)
         belt_x += [pinion, housing, belt, shaft]
     # Y motor beside the column top, parallel to the screw, shaft up into a 30T:20T belt step-up
-    ymot = [MOTOR.moved(y_motor_loc(c0))] if motors else []
-    risers = [box(c1, c1 + Y_RISER, Y_RAIL[0], Y_RAIL[1], z - RAIL_W / 2, z + RAIL_W / 2) for z in (ZC0 + 40, ZC0 + COL_D - 40)]
+    ymot = [MOTOR.fork().moved(y_motor_loc(c0))] if motors else []
+    risers = [box(c1, c1 + Y_RISER, Y_RAIL[0], Y_RAIL[1], z - Y_RISER_H / 2, z + Y_RISER_H / 2) for z in (ZC0 + 40, ZC0 + COL_D - 40)]
     yrails = [box(c1 + Y_RISER, c1 + Y_RISER + RAIL_H, Y_RAIL[0], Y_RAIL[1], z - RAIL_W / 2, z + RAIL_W / 2)
               for z in (ZC0 + 40, ZC0 + COL_D - 40)]
     # Y screw: BK20 at the top (drive end), BF20 at the bottom with the brake below the column's end
@@ -349,6 +350,7 @@ def gantry(xs, motors=True, with_arm=True):
     # arm from the top foot over the bed's top edge, down behind it to the X cable chain's moving end
     # arm from the top foot up past the bed's top edge (over the rack) to the X chain's moving end on its upper run
     arm = fuse([box(c0 + 60, c0 + 140, Y_RT - 40, XCH_Y[1] + 12, -3, BLK_Z + 15),
+                box(c0 + 60, c0 + 140, Y_RT + 40.5, Y_RT + 43.5, BLK_Z, BLK_Z + 20),         # the tab bolted to the foot's end
                 box(c0 + 60, c0 + 140, XCH_Y[1] + 0.5, XCH_Y[1] + 12, XCH_Z[0], -3 + 0.5)])
     # Y chain's fixed end: a bracket from the column's front face
     ych_fix = box(cc - CHAIN["Y"]["w"] / 2, cc + CHAIN["Y"]["w"] / 2, Y_FIX - 30, Y_FIX + 30, ZC0 + COL_D + 0.5, ZC0 + COL_D + 4.5)
@@ -375,7 +377,7 @@ def head(xs, ys, tip, motors=True, zchain=True):
                  cyl_y(xs_, YS_Z, YN_FL / 2, ys + YN_L / 2 - YN_FT, ys + YN_L / 2)]) - cyl_y(xs_, YS_Z, YS_D / 2 + 0.5, ys - 200, ys + 200)
     # counterweight rope anchor, reaching from the plate into the gap
     anchor = box(c1 + ROPE_X - 6, x, ys, ys + 20, SHEAVE_Z - 10, SHEAVE_Z + 10)
-    zmot = [MOTOR.moved(z_motor_loc(c1, ys))] if motors else []
+    zmot = [MOTOR.fork().moved(z_motor_loc(c1, ys))] if motors else []
     x += PL                                        # Y plate outer face
     zx = x
     zrisers = [box(x, x + Z_RISER, ys + dy - RAIL_W / 2, ys + dy + RAIL_W / 2, ZYP0, ZYP1) for dy in (-Z_RAIL_DY, Z_RAIL_DY)]
@@ -419,13 +421,14 @@ def head(xs, ys, tip, motors=True, zchain=True):
 
 # ------------------------------------------------------------------ tilt into the world
 LIFT_PROBE = Location.about(Axis.X, 90 - TILT)
-_low = bed.moved(LIFT_PROBE).bounding_box().min()[2]
+_low = bed.fork().moved(LIFT_PROBE).bounding_box().min()[2]
 H0 = FOOT_H + BASE_H - _low            # lift so the bed's lowest edge sits on the floor frame (R11 checks the gantry clears it)
 W = Location.translation(0, 0, H0) * LIFT_PROBE
 
 
 def world(p):
-    return p.moved(W)
+    """A copy of p placed in the world (golf's named edits change their part, so move a fork)."""
+    return p.fork().moved(W)
 
 
 def wpt(x, y, z):
@@ -1092,7 +1095,7 @@ for _k, _yc in enumerate(ATC_YC):
     _held = (_h + _t).moved(Location.translation(ATC_SLIDE0, _yc, z_nose_atc))
     _obst = atc_items + [it for it in items if it["name"].startswith("bed.spoilboard") or it["name"] == "sheet"]
     for _s in range(6):
-        _p = _held.moved(Location.translation((ATC_XC - ATC_SLIDE0) * _s / 5, 0, 0))
+        _p = _held.fork().moved(Location.translation((ATC_XC - ATC_SLIDE0) * _s / 5, 0, 0))
         _vol = sum(_shared(_p, it["part"]) for it in _obst if it["name"] != f"atc_rack.holder_{_k}")
         require("R54", "A held tool shall slide into its fork through the slot without touching the fork, the other holders, the spoilboard or a 25 mm sheet",
                 _vol, "<=", 0, "mm^3", case=f"pocket {_k}, step {_s} of 5")
@@ -1272,33 +1275,23 @@ V["cables"] = [dict(name=c["name"], od=c["od"], info=f"{c['what']}: {c['dev']} t
                 for c in CABLE_ROUTES.values()]
 V["ropes"] = [{"name": "gantry_frame.rope", "r": 2.5, "pts": [[*p, grp] for p, grp in ROPE_PTS],
                 "info": [it for it in items if it["name"] == "gantry_frame.rope"][0]["note"]}]
-# The page draws the parts with golf's viewer from a golf bundle (page/golf). This script runs on an older golf, so it
-# writes each shown part, placed in the world, as a STEP file with page_model.json; page_model.py shows them on the current golf and `golf bundle` writes page/golf.
-# Set PAGE_MODEL=1 to write them; the page's data needs only each part's group, colour and note.
-import os as _os
-_PM = _os.environ.get("PAGE_MODEL")
-_pm_index = []
-if _PM:
-    _os.makedirs("page_model", exist_ok=True)
+# The page draws the parts with golf's viewer: golf_models writes them, placed in the world, as golf models in
+# page/golf (packed under the viewer's 16 MiB a model). The chains, cables and rope are drawn by the page as they move.
+_page_parts = []
 for _it in items:
     if _it["name"] in CHAIN_SPECS or _it["name"] == "gantry_frame.rope":
         continue
     V["parts"][_it["name"]] = dict(group=_it["group"], colour=_hex(_it["colour"]),
                                    info=f"{_it['note']} | {_it['mat']} | {_it['kg']:.2f} kg", kind=_it["kind"])
-    if _PM:
-        _f = f"page_model/{_it['name']}.step"
-        export_step_file([_it["part"] if _it["group"] == "world" else world(_it["part"])], _f)
-        _pm_index.append(dict(name=_it["name"], file=_f, colour=list(_it["colour"]), group=_it["group"]))
-# the motors: golf cannot mesh their STEP (nor read their gmsh mesh as a solid), so the page draws that mesh itself
+    _page_parts.append((_it["name"], _it["part"] if _it["group"] == "world" else world(_it["part"]), _it["colour"], _it["group"]))
+# the motors: golf cannot mesh their STEP in reasonable time, so the page draws their gmsh mesh itself
 for name, loc, grp, nd in (("gantry_drives.x_motor_bottom", x_motor_loc(_c1 - COL_W, Y_RB), "x", "GAN"),
                            ("gantry_drives.x_motor_top", x_motor_loc(_c1 - COL_W, Y_RT), "x", "GAN"),
                            ("gantry_drives.y_motor", y_motor_loc(_c1 - COL_W), "x", "GAN"), ("y_carriage.z_motor", z_motor_loc(_c1, REF[1]), "xy", "YC")):
     V["parts"][name] = dict(shared="motor", group=grp, colour="#34383f", loc=loc_matrix(loc),
                             info="StepperOnline 34E1K-120, 12 N*m closed-loop (salvaged) | 5.0 kg", kind="bought")
-if _PM:
-    with open("page_model/page_model.json", "w") as _fh:
-        json.dump(_pm_index, _fh)
-V["golf"] = "golf"
+_t_pm = _time.time()
+print("page models:", V.golf_models(_page_parts), f"in {_time.time() - _t_pm:.0f} s")
 # which product-tree node shows which parts
 for node, prefixes in ((N_BED, ("bed.",)), (N_GAN, ("gantry_frame.", "gantry_drives.", "counterweight.")), (N_YC, ("y_carriage.",)),
                        (N_ZA, ("z_axis.",)), (N_SP, ("spindle.", "tool")), (N_ATC, ("atc_rack.",)), (N_BASE, ("floor_frame.", "feet.")),

@@ -16,7 +16,7 @@ Weld an M16 nut under each rail at the five leg stations. Screw a levelling foot
 
 Clamp the five cross members between the rails at the leg stations and tack them. Check the diagonals agree within 2 mm, then tack the five outriggers to the front rail's front face. Weld out all joints, alternating ends.
 
-- Heaviest handling: floor_frame.outrigger_3, 3.2 kg, carried by 1 (3.2 kg each)
+- Heaviest handling: floor_frame.outrigger_4, 3.2 kg, carried by 1 (3.2 kg each)
 - Tools: MIG welder, framing square, tape, 4 F-clamps
 - Parts: floor_frame.cross_0, floor_frame.cross_1, floor_frame.cross_2, floor_frame.cross_3, floor_frame.cross_4, floor_frame.outrigger_0, floor_frame.outrigger_1, floor_frame.outrigger_2, floor_frame.outrigger_3, floor_frame.outrigger_4
 
@@ -170,7 +170,7 @@ Fit the racks on their lands, teeth facing away from the rails. Butt each joint 
 
 Slide the four HGH25CA blocks off their dummy rails onto the X rails at the rail ends (never off the rail: the balls fall out). Set them at the gantry's station, 90 mm apart in pairs.
 
-- Heaviest handling: gantry_drives.x_block_bottom_r, 0.8 kg, carried by 1 (0.8 kg each)
+- Heaviest handling: gantry_drives.x_block_bottom_l, 0.8 kg, carried by 1 (0.8 kg each)
 - Tools: block dummy rails
 - Parts: gantry_drives.x_block_bottom_l, gantry_drives.x_block_bottom_r, gantry_drives.x_block_top_l, gantry_drives.x_block_top_r
 
@@ -290,7 +290,7 @@ Bolt the two Y rails on the risers; set the first straight against the straighte
 
 Slide the four Y blocks onto the rails from the top ends. The rails are near vertical: put a rail stop clamp under each pair before letting go.
 
-- Heaviest handling: y_carriage.y_block_140_l, 0.8 kg, carried by 1 (0.8 kg each)
+- Heaviest handling: y_carriage.y_block_360_r, 0.8 kg, carried by 1 (0.8 kg each)
 - Tools: block dummy rails, 4 rail stop clamps
 - Temporary: rail stop clamps under the Y blocks, until C05
 - Parts: y_carriage.y_block_140_l, y_carriage.y_block_140_r, y_carriage.y_block_360_l, y_carriage.y_block_360_r

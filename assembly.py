@@ -456,7 +456,7 @@ def V_(a, b):
     from golf_py import Location
     for d in ((0, 0, 0), (0.003, 0.002, 0.001), (-0.002, 0.003, -0.002)):
         try:
-            return float((a.moved(Location.translation(*d)) & b).volume() if any(d) else (a & b).volume())
+            return float((a.fork().moved(Location.translation(*d)) & b).volume() if any(d) else (a & b).volume())
         except Exception:
             continue
     return 0.0
@@ -632,7 +632,7 @@ class Space:
                 p = it["part"]
             else:
                 o = self.off(it["group"], pose)
-                p = it["part"].moved(self.W * self.L.translation(*o))
+                p = it["part"].fork().moved(self.W * self.L.translation(*o))
             self.cache[k] = p
             self.bbc[k] = _bb(p)
         return self.cache[k]
@@ -758,7 +758,7 @@ def check_space(g, items, require, joints, W):
                     for m in there:
                         if _exempt(n, m) or not _overlap(sbb, SP.bb(m, pose), 0.01):
                             continue
-                        moved = moved or SP.part(n, pose).moved(T)
+                        moved = moved or SP.part(n, pose).fork().moved(T)
                         v = V_(moved, SP.part(m, pose))
                         if v > worst_v:
                             worst_v, worst_c = v, f"{n} hits {m}"

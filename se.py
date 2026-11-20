@@ -221,7 +221,7 @@ def require_held(id, holder, held, free=(), step=20.0, text="The held thing shal
     ):
         if name in free:
             continue
-        pushed = held.moved(Location.translation(*(step * d for d in move)))
+        pushed = held.fork().moved(Location.translation(*(step * d for d in move)))
         m = _m()
         stop_id = id + "-stops"
         if stop_id not in m.requirements:
@@ -245,7 +245,7 @@ def require_clear_travel(
     `fixed` is {"name": solid}; `place(t)` gives the Location of the moving solid for t from 0 to 1,
     measured from where `moving` is now: `place=lambda t: Location.translation(t * 80, 0, 0)`."""
     for i in range(steps):
-        there = moving.moved(place(i / (steps - 1)))
+        there = moving.fork().moved(place(i / (steps - 1)))
         for name, other in fixed.items():
             require(id, text, _shared(there, other), "<=", 0, "mm^3", case=f"{name}, step {i} of {steps - 1}")
 
@@ -358,6 +358,50 @@ class PageView(dict):
         shows each part with group= its moving group (the groups below), and the page moves the instances by name.
         Parts given here with meshes are drawn too, beside the golf model."""
         self["golf"] = folder
+        self["golf_bundle"] = True
+
+    def golf_models(self, parts, folder="page/golf", max_mb=12.0):
+        """Write the parts as golf models for the page's viewer, from the design script itself (golf 0.1.0-rc.25 or
+        later): parts is [(name, part, colour (r, g, b), group)], each part placed in the world. golf's viewer loads a
+        model of at most 16 MiB of text, so the parts are packed into as many models as that takes. Writes
+        <folder>/models/*.golf-transfer.b64.txt and <folder>/bundle.json, and sets V["golf"]; the viewer itself is
+        page/cinema/ (from this skill). Returns the number of models."""
+        import base64
+        import hashlib
+        import json
+        import os
+        from golf_py import Group, export_transfer
+        os.makedirs(os.path.join(folder, "models"), exist_ok=True)
+        for f in os.listdir(os.path.join(folder, "models")):
+            os.remove(os.path.join(folder, "models", f))
+        cap = max_mb * 1024 * 1024 * 3 / 4                    # bytes of transfer per model, before base64
+        models, todo = [], [list(parts)]
+        while todo:
+            share = todo.pop(0)
+            g = Group("page")
+            for name, part, colour, group in share:
+                g = g.with_part(part.fork().with_name(name).with_colour(tuple(colour)))
+            data = export_transfer(g)
+            if len(data) > cap and len(share) > 1:             # too big for one model: split it by faces and try again
+                n = max(2, -(-int(len(data) * 1.2) // int(cap)))
+                load, shares = [0] * n, [[] for _ in range(n)]
+                for e in sorted(share, key=lambda e: -e[1].num_faces()):
+                    k = load.index(min(load)); shares[k].append(e); load[k] += e[1].num_faces()
+                todo[:0] = [x for x in shares if x]
+                continue
+            models.append((share, data))
+        bundle = {"schema": 1, "transfer_version": 5, "current": len(models), "models": {}}
+        for i, (share, data) in enumerate(models, 1):
+            text = base64.b64encode(data).decode()
+            path = f"models/{i}.golf-transfer.b64.txt"
+            with open(os.path.join(folder, path), "w") as f:
+                f.write(text)
+            bundle["models"][str(i)] = {"path": path, "status": "ok", "parts": [n for n, *_ in share],
+                                        "sha256": hashlib.sha256(text.encode()).hexdigest()}
+        with open(os.path.join(folder, "bundle.json"), "w") as f:
+            json.dump(bundle, f, indent=1)
+        self["golf"] = folder[len("page/"):] if folder.startswith("page/") else folder
+        return len(models)
 
     def frame(self, translate=(0, 0, 0), rotate=(0, 0, 0)):
         """Where the model's own frame sits in the world (z up, mm): a move, then rotations about x, y, z in degrees."""
