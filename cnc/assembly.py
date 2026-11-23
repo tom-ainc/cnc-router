@@ -479,7 +479,7 @@ def _gap(a, b):
 def check_joints(g, items, require, joints, welds):
     """Every fastener through real holes, with enough thread engaged, its head and nut on material and clear of
     everything else, fitted no earlier than its parts; every weld between parts that touch. Returns per-joint results."""
-    import fasteners as FA
+    from cnc.parts import fasteners as FA
     steps = g["ASM_STEPS"]
     step_ix = {st["id"]: i for i, st in enumerate(steps)}
     fitted = {}
@@ -654,7 +654,7 @@ class Space:
 def check_space(g, items, require, joints, W):
     """R66: nothing overlaps in the built machine. R61: each part's path into place is clear of what is already there.
     R62: each fastener's tool reaches it at its step. All in the world frame, with the axes where each step puts them."""
-    import fasteners as FA
+    from cnc.parts import fasteners as FA
     from golf_py import Location
     SP = Space(g, items, W)
     steps = g["ASM_STEPS"]

@@ -6,8 +6,8 @@ so the floor depth is unchanged. World frame for the cabinet and stand (X along 
 """
 import math
 
-import detail as D
-from detail import box, cyl, drill, item, screw, weld, fuse
+from cnc.parts import detail as D
+from cnc.parts.detail import box, cyl, drill, item, screw, weld, fuse
 
 # ------------------------------------------------------------------ the cabinet: size and where it sits (world)
 CAB = dict(x0=2660.0, x1=3260.0, y0=38.5, y1=338.5, z0=520.0, z1=1320.0, t=1.5)     # 600 W x 800 H x 300 D sheet steel

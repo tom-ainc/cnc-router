@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "name": "Tilted-bed CNC router, 2400 x 1200",
-  "written": "2026-11-20 16:16:54",
+  "written": "2026-11-23 13:40:52",
   "task": {
     "kind": "new_design"
   },
@@ -996,23 +996,6 @@
       "extra": {}
     },
     {
-      "id": "R33",
-      "text": "Each motor's peak draw shall be within its 60 V 350 W supply",
-      "applies_to": [
-        "ELEC"
-      ],
-      "source": "implied",
-      "method": "simulate",
-      "kind": "max",
-      "limit": 350.0,
-      "unit": "W",
-      "tolerance": 0.0,
-      "confirmed": false,
-      "depends": [],
-      "fragile": [],
-      "extra": {}
-    },
-    {
       "id": "R22",
       "text": "The column shall deflect no more than 0.02 mm under the largest cutting force (now or on 3-phase) at mid-height",
       "applies_to": [
@@ -1138,6 +1121,23 @@
       "extra": {
         "why": "a fabrication process"
       }
+    },
+    {
+      "id": "R33",
+      "text": "Each motor's peak draw shall be within its 60 V 350 W supply",
+      "applies_to": [
+        "ELEC"
+      ],
+      "source": "implied",
+      "method": "simulate",
+      "kind": "max",
+      "limit": 350.0,
+      "unit": "W",
+      "tolerance": 0.0,
+      "confirmed": false,
+      "depends": [],
+      "fragile": [],
+      "extra": {}
     },
     {
       "id": "R23",
@@ -8894,70 +8894,6 @@
       "regressed": false
     },
     {
-      "requirement": "R33",
-      "case": "Y motor",
-      "status": "pass",
-      "measured": 172.9527928144596,
-      "margin": 177.0472071855404,
-      "note": "",
-      "evidence": {
-        "tool": "P = T w / 0.8 + 2 I^2 R",
-        "leaves_out": "supply sharing, if drivers share a supply"
-      },
-      "extra": {},
-      "cases": [
-        {
-          "case": "X motor",
-          "status": "pass",
-          "measured": 132.64847113492982,
-          "margin": 217.35152886507018,
-          "note": "",
-          "evidence": {
-            "tool": "P = T w / 0.8 + 2 I^2 R",
-            "leaves_out": "supply sharing, if drivers share a supply"
-          },
-          "extra": {}
-        },
-        {
-          "case": "Y motor",
-          "status": "pass",
-          "measured": 172.9527928144596,
-          "margin": 177.0472071855404,
-          "note": "",
-          "evidence": {
-            "tool": "P = T w / 0.8 + 2 I^2 R",
-            "leaves_out": "supply sharing, if drivers share a supply"
-          },
-          "extra": {}
-        },
-        {
-          "case": "Z motor",
-          "status": "pass",
-          "measured": 160.41560970213962,
-          "margin": 189.58439029786038,
-          "note": "",
-          "evidence": {
-            "tool": "P = T w / 0.8 + 2 I^2 R",
-            "leaves_out": "supply sharing, if drivers share a supply"
-          },
-          "extra": {}
-        }
-      ],
-      "standing": "draft",
-      "why": [
-        "the requirement or its limit is implied, not confirmed by the user",
-        "rests on A5, not confirmed: Motor torque follows the published 48 V DM860T pull-out curve",
-        "rests on A9, not confirmed: Rapids X 15, Y 10, Z 5 m/min; 1 m/s^2; 300 N cutting force at 6 m/min"
-      ],
-      "validations": [],
-      "before": {
-        "status": "pass",
-        "measured": 171.76837549700357,
-        "margin": 178.23162450299643
-      },
-      "regressed": false
-    },
-    {
       "requirement": "R22",
       "case": "",
       "status": "pass",
@@ -9195,6 +9131,70 @@
         "status": "cannot_verify",
         "measured": null,
         "margin": null
+      },
+      "regressed": false
+    },
+    {
+      "requirement": "R33",
+      "case": "Y motor",
+      "status": "pass",
+      "measured": 172.9527928144596,
+      "margin": 177.0472071855404,
+      "note": "",
+      "evidence": {
+        "tool": "P = T w / 0.8 + 2 I^2 R",
+        "leaves_out": "supply sharing, if drivers share a supply"
+      },
+      "extra": {},
+      "cases": [
+        {
+          "case": "X motor",
+          "status": "pass",
+          "measured": 132.64847113492982,
+          "margin": 217.35152886507018,
+          "note": "",
+          "evidence": {
+            "tool": "P = T w / 0.8 + 2 I^2 R",
+            "leaves_out": "supply sharing, if drivers share a supply"
+          },
+          "extra": {}
+        },
+        {
+          "case": "Y motor",
+          "status": "pass",
+          "measured": 172.9527928144596,
+          "margin": 177.0472071855404,
+          "note": "",
+          "evidence": {
+            "tool": "P = T w / 0.8 + 2 I^2 R",
+            "leaves_out": "supply sharing, if drivers share a supply"
+          },
+          "extra": {}
+        },
+        {
+          "case": "Z motor",
+          "status": "pass",
+          "measured": 160.41560970213962,
+          "margin": 189.58439029786038,
+          "note": "",
+          "evidence": {
+            "tool": "P = T w / 0.8 + 2 I^2 R",
+            "leaves_out": "supply sharing, if drivers share a supply"
+          },
+          "extra": {}
+        }
+      ],
+      "standing": "draft",
+      "why": [
+        "the requirement or its limit is implied, not confirmed by the user",
+        "rests on A5, not confirmed: Motor torque follows the published 48 V DM860T pull-out curve",
+        "rests on A9, not confirmed: Rapids X 15, Y 10, Z 5 m/min; 1 m/s^2; 300 N cutting force at 6 m/min"
+      ],
+      "validations": [],
+      "before": {
+        "status": "pass",
+        "measured": 171.76837549700357,
+        "margin": 178.23162450299643
       },
       "regressed": false
     },

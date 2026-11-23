@@ -1,0 +1,106 @@
+"""Documents from the detail: cut list, bought and made parts, cable list, build procedure."""
+import csv
+import math
+from cnc.parts import electrical as EL
+from cnc.parts import fasteners as FA
+from cnc.params import (
+    BLK_Z, COL_D, COL_T, COL_W, M_KG, SHEET_L, SHEET_W, SPOIL_T, X_BED, Y_RAIL, Y_RB, Y_RISER, Y_RT, ZC0)
+from cnc.geometry.bed import SUBSTRATE_T, n_cross
+from cnc.geometry.world import N_LEGS, Y_FRONT, Y_REAR, ZB1, back_hi, front_lo
+from cnc.parts.items import items
+from cnc.checks.build import CABLE_M, JOINT_RESULTS
+from cnc.outputs.build_steps import STEPS
+
+# ---- steel and board, member by member: the cut list, and the masses below
+def rhs_kgm(b, d, t):
+    return (2 * t * (b + d) - 4 * t * t) * 7.85e-3
+
+
+L_bed = X_BED[1] - X_BED[0]
+L_col = Y_RT - Y_RB + 80
+L_cross = (Y_RT - 20) - (Y_RB + 20)
+post_len = [math.dist((0, Y_REAR - 40, ZB1 - 20), (0, back_hi[1], back_hi[2]))] * N_LEGS
+MEMBERS = [  # (assembly, member, section, length mm, qty, kg/m)
+    ("bed", "rail beam", "RHS 100x80x5", L_bed, 2, rhs_kgm(100, 80, 5)),
+    ("bed", "cross member", "RHS 50x50x3", L_cross, n_cross, rhs_kgm(50, 50, 3)),
+    ("bed", "substrate", f"MDF {SUBSTRATE_T:g}", L_bed, 1, (L_cross / 1000) * SUBSTRATE_T / 1000 * 750),
+    ("bed", "spoilboard", f"MDF {SPOIL_T:g}", SHEET_L + 40, 1, (SHEET_W + 60) / 1000 * SPOIL_T / 1000 * 750),
+    ("column", "web plate (+x and -x faces)", f"plate {COL_D:g}x{COL_T:g}", L_col, 2, COL_D * COL_T * 7.85e-3),
+    ("column", "flange plate (front and back)", f"plate {COL_W - 2 * COL_T:g}x{COL_T:g}", L_col, 2, (COL_W - 2 * COL_T) * COL_T * 7.85e-3),
+    ("column", "end cap", f"plate {COL_W:g}x{COL_D:g}x10", COL_W, 2, COL_D * 10 * 7.85e-3),
+    ("column", "Y rail riser", f"flat {Y_RISER:g}x25", Y_RAIL[1] - Y_RAIL[0], 2, Y_RISER * 25 * 7.85e-3),
+    ("column", "foot", f"plate {COL_W:g}x80x{ZC0 - BLK_Z:g} (fabricated)", 80, 2, COL_W * (ZC0 - BLK_Z) * 7.85e-3 * 0.4),
+    ("floor frame", "front rail", "RHS 100x50x4", L_bed, 1, rhs_kgm(100, 50, 4)),
+    ("floor frame", "rear rail", "RHS 100x50x4", L_bed, 1, rhs_kgm(100, 50, 4)),
+    ("floor frame", "cross member", "RHS 100x50x4", Y_REAR - front_lo[1] - 10, N_LEGS, rhs_kgm(100, 50, 4)),
+    ("floor frame", "outrigger", "RHS 100x50x4 laid flat", front_lo[1] + 30 - Y_FRONT, N_LEGS, rhs_kgm(100, 50, 4)),
+    ("floor frame", "rear post", "SHS 60x60x4", post_len[0], N_LEGS, rhs_kgm(60, 60, 4)),
+]
+mass_of = lambda asm: sum(L / 1000 * q * kgm for a, _, _, L, q, kgm in MEMBERS if a == asm)
+with open("cut_list.csv", "w") as f:
+    f.write("assembly,member,section,length_mm,qty,kg_each\n")
+    for a, m, sec, L, q, kgm in MEMBERS:
+        f.write(f"{a},{m},{sec},{L:.0f},{q},{L / 1000 * kgm:.1f}\n")
+# ---- parts lists from the detail
+_bought = {}
+for _it in items:
+    if _it["kind"] == "bought":
+        k = _it["note"]
+        _bought.setdefault(k, [0, _it["kg"], []])
+        _bought[k][0] += 1
+        _bought[k][2].append(_it["name"])
+_bought["StepperOnline 34E1K-120 closed-loop stepper (salvaged)"] = [4, M_KG, ["x_motor_bottom", "x_motor_top", "y_motor", "z_motor"]]
+with open("bought_parts.csv", "w", newline="") as f:
+    w = csv.writer(f)
+    w.writerow(["item", "qty", "kg_each", "where"])
+    for k, (q, kg, where) in sorted(_bought.items()):
+        w.writerow([k, q, f"{kg:.2f}", " ".join(where)])
+with open("made_parts.csv", "w", newline="") as f:
+    w = csv.writer(f)
+    w.writerow(["part", "material", "how", "size_x", "size_y", "size_z", "kg", "step_file"])
+    for _it in items:
+        if _it["kind"] == "made":
+            _b = _it["part"].bounding_box()
+            w.writerow([_it["name"], _it["mat"], _it["note"], *(f"{_b.max()[i] - _b.min()[i]:.1f}" for i in range(3)), f"{_it['kg']:.2f}",
+                        _it["name"] + ".step"])
+print("parts lists:", len(_bought), "bought lines,", sum(1 for it in items if it["kind"] == "made"), "made parts")
+# ---- build documents: the procedure, the cable list, fasteners in the bought list
+_fcount = {}
+for _J in JOINT_RESULTS:
+    if _J["f"]["type"] != "STUD":
+        _fcount[FA.label(_J["f"])] = _fcount.get(FA.label(_J["f"]), 0) + len(_J["pts"])
+with open("bought_parts.csv", "a", newline="") as f:
+    w = csv.writer(f)
+    for k, q in sorted(_fcount.items()):
+        w.writerow([k, q, "", "fasteners"])
+    for c in EL.CABLE_LIST:
+        w.writerow([f"{c[1]} ({c[0]})", f"{CABLE_M[c[0]]:.1f} m", f"{c[3]:.2f}/m", f"{c[4]} to {c[6]}"])
+with open("cable_list.csv", "w", newline="") as f:
+    w = csv.writer(f)
+    w.writerow(["cable", "type", "od_mm", "from", "chains", "to", "length_m"])
+    for c in EL.CABLE_LIST:
+        w.writerow([c[0], c[1], c[2], c[4], " ".join(c[5]) or "-", c[6], f"{CABLE_M[c[0]]:.1f}"])
+    w.writerow([])
+    w.writerow(["wire", "from", "to", "what"])
+    for i, (a_, b_, t_) in enumerate(EL.WIRES):
+        w.writerow([f"wire.{i:02d}", a_, b_, t_])
+with open("assembly_procedure.md", "w") as f:
+    f.write("# Tilted-bed CNC router: build procedure\n\nGenerated by router.py; every step below is checked (R57-R68).\n")
+    _ph = None
+    for _st in STEPS:
+        if _st["phase"] != _ph:
+            _ph = _st["phase"]
+            f.write(f"\n## {_ph}\n")
+        f.write(f"\n### {_st['id']} {_st['title']}\n\n{_st['text']}\n\n")
+        if _st.get("lift"):
+            f.write(f"- Heaviest handling: {_st['lift']['what']}, {_st['lift']['kg']} kg, {_st['lift']['how']} ({_st['lift']['force']} kg each)\n")
+        for _fz in _st.get("fasteners", []):
+            f.write(f"- {_fz['n']} x {_fz['label']}: {_fz['tool']}" + (f", {_fz['torque']} N*m" if _fz["torque"] else "") + "\n")
+        for _wz in _st.get("welds", []):
+            f.write(f"- Weld {_wz['a']} to {_wz['b']}: {_wz['how']}\n")
+        if _st["tools"]:
+            f.write(f"- Tools: {', '.join(_st['tools'])}\n")
+        if _st["fixture"]:
+            f.write(f"- Temporary: {_st['fixture']}\n")
+        if _st["adds"]:
+            f.write(f"- Parts: {', '.join(_st['adds'])}\n")

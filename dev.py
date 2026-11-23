@@ -1,5 +1,5 @@
 """Run router.py in plain Python (no golf runner): golf's names and a no-op show() are put in builtins.
-   python dev.py [probe.py ...]  - each probe runs afterwards with the router's globals."""
+   python dev.py [probe.py ...]  - each probe runs afterwards with the design's names (cnc.design.namespace())."""
 import builtins, sys, time, runpy, os
 import golf_py
 for n in dir(golf_py):
@@ -10,6 +10,8 @@ builtins.show = lambda part, name, **k: SHOWN.append((name, k))
 os.environ["ROUTER_DEV"] = "1"
 t = time.time()
 g = runpy.run_path("router.py", run_name="__main__")
+from cnc.design import namespace
+g = {**namespace(), **g}                 # the design's names, for the probes
 print(f"dev run {time.time() - t:.0f} s, shown {len(SHOWN)}")
 import code
 for p in sys.argv[1:]:

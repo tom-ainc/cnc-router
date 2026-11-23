@@ -4,7 +4,7 @@ Run after router.py (it writes sim_params.json): python3 sensitivity.py. Writes 
 Each variation runs every job and reports the worst case of each requirement the simulation checks (R69-R79)."""
 import json, os, subprocess, sys, time
 from concurrent.futures import ThreadPoolExecutor
-import simulation as SIM
+from cnc import simulation as SIM
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 P = json.load(open(os.path.join(HERE, "sim_params.json")))

@@ -4,7 +4,7 @@ The model itself is page/sim.js: one implementation, run live in the page and he
 checked on exactly the model the page shows. Parameters not set by the design are assumptions, each named below."""
 import hashlib, json, math, os, subprocess, tempfile
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))     # the project folder
 SIM_JS = os.path.join(HERE, "page", "sim.js")
 
 # ---- assumptions: values the design does not fix (catalogue orders of magnitude)

@@ -239,7 +239,7 @@ def item(name, part, mat, kind, note, group, qty=1):
 
 
 # ------------------------------------------------------------------ joints: every fastener and weld, registered where the holes are drilled
-import fasteners as FA
+from cnc.parts import fasteners as FA
 
 JOINTS = []     # dict(name, step, parts (head side first; the last takes the thread unless there is a nut), f, pts, dir, grip, hole, into)
 WELDS = []      # dict(name, step, a, b, how)
